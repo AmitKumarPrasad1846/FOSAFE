@@ -1,99 +1,111 @@
-/* FOSAFE Design Tokens - Industrial Engineering Grade */
+/* ==========================================================================
+   FOSAFE v2 — Industrial Survey & Instrument Design Tokens
+   Strict palette: Graphite/Near-Black base, warm off-white, steel structure,
+   restrained amber accent, and functional-only state colors.
+   ========================================================================== */
+
 :root {
-  /* Surface & Background Palettes */
-  --bg-void: #07080A;
-  --bg-base: #0B0D12;
-  --bg-surface: #11141B;
-  --bg-elevated: #161A23;
-  --bg-card: #141820;
-  --bg-card-hover: #191E28;
-  --bg-inset: #090B0F;
+  /* Surface & Background Hierarchy */
+  --bg-void: #050608;
+  --bg-base: #080A0F;
+  --bg-surface: #0E121A;
+  --bg-elevated: #141A24;
+  --bg-panel: rgba(14, 18, 26, 0.88);
+  --bg-panel-solid: #111622;
+  --bg-inset: #06080C;
 
-  /* Industrial Borders & Structural Dividers */
-  --border-subtle: #1F2531;
-  --border-medium: #2B3342;
-  --border-strong: #3D485C;
-  --border-accent: rgba(245, 158, 11, 0.4);
-  --border-focus: #F59E0B;
+  /* Survey Linework & Instrument Dividers (1px crisp lines) */
+  --line-subtle: rgba(255, 255, 255, 0.06);
+  --line-grid: rgba(255, 255, 255, 0.09);
+  --line-structure: #1F2737;
+  --line-strong: #333F56;
+  --line-accent: rgba(245, 158, 11, 0.4);
+  --crosshair-color: rgba(255, 255, 255, 0.18);
+  --tick-color: rgba(255, 255, 255, 0.22);
 
-  /* Text & Readout Hierarchy */
-  --text-primary: #EDEFEF;
-  --text-secondary: #C1C6D0;
-  --text-muted: #7E8899;
-  --text-dim: #4D5666;
-  --text-inverted: #0B0D12;
+  /* Text & Readout Contrast (Warm off-white, no blue neon) */
+  --text-primary: #F2F4F7;
+  --text-secondary: #B4BCCB;
+  --text-muted: #727E94;
+  --text-dim: #444E61;
+  --text-inverted: #080A0F;
 
   /* Muted Industrial Steel */
-  --steel-100: #E2E6EC;
-  --steel-300: #9AA6B8;
-  --steel-500: #627084;
-  --steel-700: #384252;
-  --steel-900: #1B212B;
+  --steel-100: #E6EAF0;
+  --steel-300: #A2AEC2;
+  --steel-500: #5D6C84;
+  --steel-700: #303A4C;
+  --steel-850: #1B222E;
+  --steel-950: #0D1219;
 
-  /* Safety Status Semantics (strictly functional, not decorative) */
-  --status-normal: #10B981;
-  --status-normal-bg: rgba(16, 185, 129, 0.1);
-  --status-normal-border: rgba(16, 185, 129, 0.3);
+  /* System States (Functional only: Normal / Warning / Critical) */
+  --state-normal: #10B981;
+  --state-normal-rgb: 16, 185, 129;
+  --state-normal-bg: rgba(16, 185, 129, 0.08);
+  --state-normal-border: rgba(16, 185, 129, 0.28);
 
-  --status-warning: #F59E0B;
-  --status-warning-bg: rgba(245, 158, 11, 0.12);
-  --status-warning-border: rgba(245, 158, 11, 0.4);
+  --state-warning: #F59E0B;
+  --state-warning-rgb: 245, 158, 11;
+  --state-warning-bg: rgba(245, 158, 11, 0.10);
+  --state-warning-border: rgba(245, 158, 11, 0.35);
 
-  --status-critical: #EF4444;
-  --status-critical-bg: rgba(239, 68, 68, 0.14);
-  --status-critical-border: rgba(239, 68, 68, 0.45);
+  --state-critical: #EF4444;
+  --state-critical-rgb: 239, 68, 68;
+  --state-critical-bg: rgba(239, 68, 68, 0.12);
+  --state-critical-border: rgba(239, 68, 68, 0.42);
 
-  /* Primary Industrial Safety Accent */
+  /* Single Brand Accent: Restrained Safety Amber */
   --accent-amber: #F59E0B;
-  --accent-amber-dark: #D97706;
+  --accent-amber-hover: #D97706;
   --accent-amber-deep: #B45309;
   --accent-amber-glow: rgba(245, 158, 11, 0.15);
 
-  /* Atmospheric & Visibility Variables */
-  --fog-tone: #242B36;
-  --fog-overlay: rgba(26, 32, 42, 0.65);
-  --grid-line: rgba(77, 86, 102, 0.14);
-  --grid-line-strong: rgba(77, 86, 102, 0.28);
+  /* Atmospheric Variables */
+  --fog-deep: #161D28;
+  --fog-haze: rgba(22, 29, 40, 0.72);
 
-  /* Typography Scale & Families */
-  --font-display: 'Chivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-body: 'Chivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+  /* Provenance Indicator Tokens */
+  --badge-live-bg: rgba(16, 185, 129, 0.12);
+  --badge-live-border: #10B981;
+  --badge-live-text: #10B981;
+  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.07), rgba(245, 158, 11, 0.07) 6px, rgba(245, 158, 11, 0.14) 6px, rgba(245, 158, 11, 0.14) 12px);
+  --badge-sim-border: rgba(245, 158, 11, 0.5);
+  --badge-sim-text: #F59E0B;
 
-  /* Controlled Spacing Scale */
-  --space-1: 0.25rem;  /* 4px */
-  --space-2: 0.5rem;   /* 8px */
-  --space-3: 0.75rem;  /* 12px */
-  --space-4: 1rem;     /* 16px */
-  --space-5: 1.25rem;  /* 20px */
-  --space-6: 1.5rem;   /* 24px */
-  --space-8: 2rem;     /* 32px */
-  --space-10: 2.5rem;  /* 40px */
-  --space-12: 3rem;    /* 48px */
-  --space-16: 4rem;    /* 64px */
-  --space-20: 5rem;    /* 80px */
-  --space-24: 6rem;    /* 96px */
+  /* Typography Families */
+  --font-display: 'Barlow Condensed', -apple-system, sans-serif;
+  --font-body: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* Structural Geometry */
+  /* Spacing Rhythm */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+  --sp-24: 6rem;
+  --sp-32: 8rem;
+
+  /* Precise Technical Geometry */
+  --radius-none: 0px;
   --radius-xs: 2px;
   --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-full: 9999px;
 
-  /* Precision Shadows (Subtle, Dark, Depth-first) */
-  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
-  --shadow-heavy: 0 12px 36px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  --shadow-radar: 0 0 40px rgba(11, 13, 18, 0.9);
+  /* Layer Indexing */
+  --z-canvas-pinned: 1;
+  --z-grid-overlay: 2;
+  --z-content: 10;
+  --z-rail: 90;
+  --z-nav: 100;
+  --z-overlay: 200;
 
-  /* Layout Boundaries */
-  --container-max: 1240px;
-  --header-height: 64px;
-  --header-height-scrolled: 54px;
-
-  /* Transitions */
-  --trans-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
-  --trans-base: 240ms cubic-bezier(0.16, 1, 0.3, 1);
-  --trans-smooth: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Motion & Easing Tokens */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-reveal: 600ms;
 }

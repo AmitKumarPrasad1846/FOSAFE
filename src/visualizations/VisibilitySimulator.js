@@ -32,6 +32,13 @@ export class VisibilitySimulator {
     this.currentMode = modeKey;
     appState.setVisibilityMode(modeKey);
     this.updateView();
+
+    const data = VISIBILITY_STATES[modeKey];
+    if (data) {
+      window.dispatchEvent(new CustomEvent('fosafe:set-fog-density', { 
+        detail: { density: parseFloat(data.fogDensityValue) } 
+      }));
+    }
   }
 
   updateView() {
@@ -205,6 +212,10 @@ export class VisibilitySimulator {
               <div style="margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim);">
                 DHT11 provides ambient relative humidity / condensation baseline. Operational modes enforce deterministic stopping envelopes.
               </div>
+            </div>
+
+            <div class="sensor-honesty-note font-mono" style="grid-column: 1 / -1; margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(245, 158, 11, 0.06); border: 1px dashed rgba(245, 158, 11, 0.3); font-size: 0.72rem; color: var(--text-secondary);">
+              <strong style="color: var(--accent-amber);">HONESTY DISCLOSURE:</strong> The prototype uses a configurable visibility mode selector. The onboard DHT11 sensor provides ambient temperature and relative humidity context only, and does not directly measure optical attenuation.
             </div>
           </div>
         </div>

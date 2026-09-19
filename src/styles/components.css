@@ -1,300 +1,591 @@
-/* FOSAFE Components - Industrial UI Elements */
+/* ==========================================================================
+   FOSAFE v2 — Industrial Instrument Components
+   Survey linework, tactile buttons, progress rail, overlay navigation,
+   and rigorous provenance badges (Live vs Simulation).
+   ========================================================================== */
 
-/* Industrial Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  padding: 0.75rem 1.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  border-radius: var(--radius-xs);
-  transition: all var(--trans-fast);
-  position: relative;
-  user-select: none;
-  text-decoration: none;
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.btn-primary {
-  background-color: var(--accent-amber);
-  color: var(--bg-void);
-  border: 1px solid var(--accent-amber-dark);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-
-.btn-primary:hover {
-  background-color: #FBBF24;
-  border-color: var(--accent-amber);
-  color: #000;
-}
-
-.btn-secondary {
-  background-color: var(--bg-surface);
-  color: var(--text-primary);
-  border: 1px solid var(--border-medium);
-}
-
-.btn-secondary:hover {
-  background-color: var(--bg-elevated);
-  border-color: var(--steel-500);
-  color: #fff;
-}
-
-.btn-outline {
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
-}
-
-.btn-outline:hover {
-  border-color: var(--border-medium);
-  color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
-.btn-sm {
-  padding: 0.45rem 0.85rem;
-  font-size: 0.75rem;
-}
-
-.btn-lg {
-  padding: 0.95rem 1.8rem;
-  font-size: 0.9rem;
-}
-
-.btn-danger {
-  background: var(--status-critical-bg);
-  border: 1px solid var(--status-critical-border);
-  color: var(--status-critical);
-}
-
-.btn-danger:hover {
-  background: rgba(239, 68, 68, 0.25);
-}
-
-/* Tactile Push-Button (Used in Section 08 Physical + Digital) */
-.tactile-button {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #2D3545 0%, #171B24 70%, #0F1218 100%);
-  border: 4px solid #364052;
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.8),
-    0 2px 4px rgba(0, 0, 0, 0.6),
-    inset 0 2px 4px rgba(255, 255, 255, 0.15),
-    inset 0 -4px 8px rgba(0, 0, 0, 0.6);
-  cursor: pointer;
-  transition: all 0.1s ease;
-  user-select: none;
-  position: relative;
-}
-
-.tactile-button::before {
-  content: "";
-  position: absolute;
-  top: -12px;
-  left: -12px;
-  right: -12px;
-  bottom: -12px;
-  border-radius: 50%;
-  border: 2px dashed rgba(245, 158, 11, 0.3);
-  pointer-events: none;
-  animation: rotateDashed 25s linear infinite;
-}
-
-@keyframes rotateDashed {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.tactile-button:hover {
-  border-color: #4B576F;
-}
-
-.tactile-button:active, .tactile-button.is-pressed {
-  transform: scale(0.95);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.9),
-    inset 0 4px 12px rgba(0, 0, 0, 0.8);
-  border-color: var(--accent-amber);
-}
-
-.tactile-button .button-cap {
-  width: 86px;
-  height: 86px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #F59E0B, #B45309);
+/* --------------------------------------------------------------------------
+   Top Instrument Navigation Header
+   -------------------------------------------------------------------------- */
+.inst-nav-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  z-index: var(--z-nav);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #07080A;
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-}
-
-.tactile-button.is-pressed .button-cap {
-  background: radial-gradient(circle at 35% 35%, #FBBF24, #D97706);
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
-}
-
-/* Technical Panels & Blueprint Framing */
-.tech-panel {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: var(--space-6);
-  position: relative;
-  box-shadow: var(--shadow-panel);
-}
-
-.tech-panel::before, .tech-panel::after {
-  content: "";
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-color: var(--steel-500);
-  pointer-events: none;
-}
-
-.tech-panel::before {
-  top: -1px;
-  left: -1px;
-  border-top: 2px solid var(--accent-amber);
-  border-left: 2px solid var(--accent-amber);
-}
-
-.tech-panel::after {
-  bottom: -1px;
-  right: -1px;
-  border-bottom: 2px solid var(--steel-500);
-  border-right: 2px solid var(--steel-500);
-}
-
-.tech-header {
-  display: flex;
-  align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
+  align-items: center;
+  padding: 0 var(--sp-6);
+  background: rgba(8, 10, 15, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-subtle);
+  transition: transform var(--dur-base) var(--ease-reveal);
 }
 
-.tech-title {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
+.inst-nav-header.is-hidden {
+  transform: translateY(-100%);
+}
+
+.inst-nav-left {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--sp-4);
 }
 
-/* Metric Display Unit */
-.metric-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+.inst-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.inst-wordmark {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+}
+
+.inst-status-tick {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 2px 8px;
+  background: var(--state-normal-bg);
+  border: 1px solid var(--state-normal-border);
   border-radius: var(--radius-xs);
-  padding: var(--space-4);
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--state-normal);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  animation: pulse-live 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.85); }
+}
+
+.tick-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--state-normal);
+}
+
+.inst-nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+/* Tactile Instrument Access Button */
+.btn-instrument {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  background: var(--steel-850);
+  border: 1px solid var(--steel-700);
+  border-radius: var(--radius-xs);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: transform 90ms ease, background var(--dur-fast), border-color var(--dur-fast);
+  cursor: pointer;
+}
+
+.btn-instrument:hover {
+  background: var(--steel-700);
+  border-color: var(--accent-amber);
+  color: #FFFFFF;
+}
+
+.btn-instrument:active {
+  transform: scale(0.96) translateY(1px);
+}
+
+.btn-instrument-icon {
+  color: var(--accent-amber);
+  font-size: 0.85rem;
+}
+
+/* Menu Trigger Button */
+.inst-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.9rem;
+  background: transparent;
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.inst-menu-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.menu-btn-icon {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 4px;
+  width: 14px;
 }
 
-.metric-box .val-row {
+.menu-line {
+  height: 1.5px;
+  background: currentColor;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Vertical Scroll Progress Rail (Desktop)
+   -------------------------------------------------------------------------- */
+.inst-progress-rail {
+  position: fixed;
+  right: 1.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: var(--z-rail);
   display: flex;
-  align-items: baseline;
-  gap: 0.25rem;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: auto;
 }
 
-.metric-box .metric-value {
-  font-family: var(--font-mono);
-  font-size: 1.6rem;
+.rail-markers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.rail-marker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 3px 0;
+  transition: all var(--dur-fast);
+  text-align: right;
+}
+
+.rail-pip {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--steel-700);
+  transition: all var(--dur-fast);
+}
+
+.rail-label {
+  font-size: 0.625rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: all var(--dur-fast);
+  white-space: nowrap;
+}
+
+.rail-marker:hover .rail-label {
+  opacity: 0.85;
+  transform: translateX(0);
+}
+
+.rail-marker.is-active .rail-pip {
+  background: var(--accent-amber);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
+  transform: scale(1.4);
+}
+
+.rail-marker.is-active .rail-label {
+  opacity: 1;
+  color: var(--accent-amber);
   font-weight: 700;
-  color: var(--text-primary);
-  line-height: 1;
+  transform: translateX(0);
 }
 
-.metric-box .metric-unit {
-  font-family: var(--font-mono);
+/* --------------------------------------------------------------------------
+   Full-Screen Navigation Index Overlay
+   -------------------------------------------------------------------------- */
+.inst-index-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-base) ease, visibility var(--dur-base);
+}
+
+.inst-index-overlay.is-open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 7, 10, 0.94);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.overlay-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+  padding: var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-structure);
+}
+
+.overlay-header-tag {
+  display: flex;
+  gap: var(--sp-4);
   font-size: 0.75rem;
   color: var(--text-muted);
 }
 
-.metric-box .metric-label {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.overlay-close-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--line-structure);
+  color: var(--text-secondary);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--dur-fast);
 }
 
-/* Industrial Grid Cards */
-.industrial-grid {
+.overlay-close-btn:hover {
+  border-color: var(--accent-amber);
+  color: var(--text-primary);
+}
+
+.overlay-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.overlay-nav-item {
   display: grid;
-  gap: var(--space-4);
+  grid-template-columns: 48px 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-6);
+  padding: var(--sp-4) var(--sp-3);
+  border-bottom: 1px solid var(--line-subtle);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: background var(--dur-fast), transform var(--dur-fast);
 }
 
-@media (min-width: 640px) {
-  .industrial-grid-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.overlay-nav-item:hover {
+  background: rgba(255, 255, 255, 0.025);
+  transform: translateX(8px);
 }
 
-@media (min-width: 1024px) {
-  .industrial-grid-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  .industrial-grid-4 {
-    grid-template-columns: repeat(4, 1fr);
-  }
+.overlay-nav-item .item-num {
+  font-size: 1rem;
+  color: var(--text-muted);
 }
 
-/* Status Indicator Dot */
-.status-indicator {
+.overlay-nav-item .item-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+}
+
+.overlay-nav-item:hover .item-title {
+  color: var(--accent-amber);
+}
+
+.overlay-nav-item .item-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.overlay-nav-item.login-item {
+  border-top: 1px solid var(--line-structure);
+  margin-top: var(--sp-2);
+}
+
+.overlay-nav-item.login-item .item-title {
+  color: var(--accent-amber);
+}
+
+.overlay-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-subtle);
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Bottom Thumb Bar
+   -------------------------------------------------------------------------- */
+.inst-mobile-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 52px;
+  z-index: var(--z-nav);
+  background: rgba(8, 10, 15, 0.92);
+  border-top: 1px solid var(--line-structure);
+  backdrop-filter: blur(12px);
+  padding: 0 var(--sp-4);
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-station-badge {
+  font-size: 0.8rem;
+  color: var(--accent-amber);
+  font-weight: 700;
+}
+
+.mobile-station-total {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.mobile-platform-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  background: var(--accent-amber);
+  color: #000;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+
+/* --------------------------------------------------------------------------
+   Rigorous Data Provenance Badges (Live vs Simulation)
+   -------------------------------------------------------------------------- */
+.provenance-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 2px 7px;
   font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--radius-xs);
+  user-select: none;
+}
+
+.provenance-tag.live {
+  background: var(--badge-live-bg);
+  border: 1px solid var(--badge-live-border);
+  color: var(--badge-live-text);
+}
+
+.provenance-tag.live::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+}
+
+.provenance-tag.sim {
+  background: var(--badge-sim-bg);
+  border: 1px dashed var(--badge-sim-border);
+  color: var(--badge-sim-text);
+}
+
+.provenance-tag.sim::before {
+  content: "⬚";
+  display: inline-block;
   font-size: 0.75rem;
 }
 
-.status-indicator-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+/* --------------------------------------------------------------------------
+   Asymmetric Station Panels & Technical Blueprints
+   -------------------------------------------------------------------------- */
+.station-panel {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-xs);
+  padding: var(--sp-8);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
 }
 
-.status-indicator.normal .status-indicator-dot {
-  background-color: var(--status-normal);
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+.station-panel::before {
+  content: "+";
+  position: absolute;
+  top: -7px;
+  left: -5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--crosshair-color);
+  line-height: 1;
 }
 
-.status-indicator.warning .status-indicator-dot {
-  background-color: var(--status-warning);
-  box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+.station-panel::after {
+  content: "+";
+  position: absolute;
+  bottom: -7px;
+  right: -5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--crosshair-color);
+  line-height: 1;
 }
 
-.status-indicator.critical .status-indicator-dot {
-  background-color: var(--status-critical);
-  box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+/* Instrument Technical Readout Box */
+.tech-readout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.tech-readout-cell {
+  background: var(--bg-inset);
+  border: 1px solid var(--line-subtle);
+  padding: var(--sp-4);
+  border-radius: var(--radius-none);
+}
+
+.tech-readout-cell .cell-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.tech-readout-cell .cell-value {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Action Buttons */
+.btn-action-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-amber);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--accent-amber-hover);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: transform 90ms ease, background var(--dur-fast);
+}
+
+.btn-action-primary:hover {
+  background: #FBBF24;
+}
+
+.btn-action-primary:active {
+  transform: scale(0.97) translateY(1px);
+}
+
+.btn-action-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--steel-950);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: transform 90ms ease, border-color var(--dur-fast);
+}
+
+.btn-action-secondary:hover {
+  border-color: var(--text-secondary);
+  color: #FFFFFF;
+}
+
+.btn-action-secondary:active {
+  transform: scale(0.97) translateY(1px);
+}
+
+/* Keyboard focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .inst-progress-rail {
+    display: none;
+  }
+  .inst-mobile-bar {
+    display: flex;
+  }
+  .overlay-nav-item {
+    grid-template-columns: 32px 1fr;
+  }
+  .overlay-nav-item .item-desc {
+    display: none;
+  }
 }

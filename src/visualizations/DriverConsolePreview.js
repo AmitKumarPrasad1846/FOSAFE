@@ -5,6 +5,7 @@
  */
 
 import { FLEET_VEHICLES } from '../lib/telemetry.js';
+import { ticker } from '../lib/ticker.js';
 
 export class DriverConsolePreview {
   constructor(containerElement) {
@@ -13,7 +14,6 @@ export class DriverConsolePreview {
     this.distance = 8.4;
     this.simulatedState = 'warning'; // 'normal' | 'warning' | 'critical'
     this.radarAngle = 0;
-    this.animationId = null;
 
     this.init();
   }
@@ -37,15 +37,13 @@ export class DriverConsolePreview {
   }
 
   startRadarAnimation() {
-    const radarNeedle = this.container.querySelector('#cab-radar-sweep');
-    const animate = () => {
-      this.radarAngle = (this.radarAngle + 2) % 360;
+    ticker.add('driver_console_sweep', (delta) => {
+      this.radarAngle = (this.radarAngle + 0.12 * delta) % 360;
+      const radarNeedle = this.container.querySelector('#cab-radar-sweep');
       if (radarNeedle) {
         radarNeedle.setAttribute('transform', `rotate(${this.radarAngle} 150 140)`);
       }
-      this.animationId = requestAnimationFrame(animate);
-    };
-    this.animationId = requestAnimationFrame(animate);
+    });
   }
 
   updateDisplay() {
@@ -134,7 +132,7 @@ export class DriverConsolePreview {
           </div>
           <div style="display: flex; align-items: center; gap: 1rem;">
             <span class="mono-readout" style="color: var(--steel-300);">RAMP 04 // +7.4% GRADE</span>
-            <span class="telemetry-tag normal"><span class="pulse-dot"></span>FOSAFE LINK: 12ms</span>
+            <span class="provenance-tag sim">PREVIEW // COCKPIT HUD</span>
           </div>
         </div>
 
@@ -246,8 +244,6 @@ export class DriverConsolePreview {
   }
 
   destroy() {
-    if (this.animationId) {
-      cancelAnimationFrame(this.animationId);
-    }
+    ticker.remove('driver_console_sweep');
   }
 }

@@ -154,7 +154,7 @@ export class MineControlRoomPreview {
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span class="telemetry-tag normal"><span class="pulse-dot"></span>DISPATCH RADAR // LIVE FLEET</span>
+              <span class="provenance-tag sim">CONCEPT // DISPATCH SIMULATION</span>
               <span class="mono-readout" style="font-size: 0.72rem; color: var(--text-muted);">SECTOR 04 CENTRAL PIT</span>
             </div>
             <span class="mono-readout" style="font-size: 0.72rem; color: var(--steel-300);">UPLINK: 868MHz + LTE</span>

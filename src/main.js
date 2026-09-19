@@ -13,6 +13,7 @@ import './styles/visualizations.css';
 import { Router } from './lib/router.js';
 import { Navigation } from './components/Navigation.js';
 import { Footer } from './components/Footer.js';
+import { scrollManager } from './lib/scroll.js';
 
 import { HomePage } from './pages/HomePage.js';
 import { TechnologyPage } from './pages/TechnologyPage.js';
@@ -30,21 +31,26 @@ class App {
     this.router = null;
 
     this.initShell();
+    this.initScrollEngine();
     this.initRouter();
   }
 
   initShell() {
     this.appElement.innerHTML = `
-      <header id="site-header" class="site-header"></header>
+      <div id="site-nav-container"></div>
       <main id="page-content" role="main"></main>
       <footer id="site-footer" class="site-footer"></footer>
     `;
 
-    const headerEl = document.getElementById('site-header');
+    const navContainer = document.getElementById('site-nav-container');
     const footerEl = document.getElementById('site-footer');
 
-    this.navInstance = new Navigation(headerEl, '/');
+    this.navInstance = new Navigation(navContainer, '/');
     new Footer(footerEl);
+  }
+
+  initScrollEngine() {
+    scrollManager.init();
   }
 
   initRouter() {
@@ -101,6 +107,9 @@ class App {
       if (this.currentPageInstance && typeof this.currentPageInstance.mount === 'function') {
         this.currentPageInstance.mount();
       }
+
+      // Scroll to top smoothly on navigation
+      scrollManager.scrollTo(0, { immediate: true });
     });
 
     this.router.init();

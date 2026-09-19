@@ -1,356 +1,312 @@
-/* FOSAFE Layout & Shell Styles */
+/* ==========================================================================
+   FOSAFE v2 — Single Continuous Scene Layout & Grid Architecture
+   Persistent pinned canvas background with layered scroll-driven station panels.
+   Asymmetric editorial compositions, deliberate negative space.
+   ========================================================================== */
 
-/* Container */
-.container {
+/* App Container */
+#app {
+  position: relative;
   width: 100%;
-  max-width: var(--container-max);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--space-4);
-  padding-right: var(--space-4);
+  min-height: 100vh;
+  background-color: var(--bg-void);
+  overflow-x: hidden;
 }
 
-@media (min-width: 768px) {
-  .container {
-    padding-left: var(--space-6);
-    padding-right: var(--space-6);
-  }
-}
-
-/* Header & Navigation Bar */
-.site-header {
-  position: sticky;
+/* --------------------------------------------------------------------------
+   Persistent Pinned Canvas Layer
+   -------------------------------------------------------------------------- */
+.scene-pinned-wrapper {
+  position: fixed;
   top: 0;
   left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: var(--z-canvas-pinned);
+  pointer-events: none;
+}
+
+.scene-pinned-canvas {
   width: 100%;
-  z-index: 100;
-  background-color: rgba(11, 13, 18, 0.94);
-  border-bottom: 1px solid var(--border-subtle);
-  transition: padding var(--trans-base), background-color var(--trans-base);
-  padding: 0.85rem 0;
-  backdrop-filter: blur(8px);
-}
-
-.site-header.is-scrolled {
-  padding: 0.55rem 0;
-  background-color: rgba(9, 11, 15, 0.98);
-  border-bottom-color: var(--border-medium);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-}
-
-.nav-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-
-/* Brand Identity */
-.brand-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  text-decoration: none;
-}
-
-.brand-logo-mark {
-  width: 32px;
-  height: 32px;
-  background: #161B24;
-  border: 1px solid var(--border-strong);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-amber);
-  position: relative;
-}
-
-.brand-logo-mark::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 4px;
-  height: 4px;
-  background: var(--accent-amber);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.brand-title {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-.brand-subtitle {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-}
-
-.nav-heartbeat {
-  display: none;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--status-normal);
-  padding: 0.2rem 0.6rem;
-  background: var(--status-normal-bg);
-  border: 1px solid var(--status-normal-border);
-  border-radius: var(--radius-xs);
-  margin-left: var(--space-2);
-}
-
-@media (min-width: 1024px) {
-  .nav-heartbeat {
-    display: inline-flex;
-  }
-}
-
-/* Nav Menu Links */
-.nav-menu {
-  display: none;
-  align-items: center;
-  gap: var(--space-6);
-}
-
-@media (min-width: 880px) {
-  .nav-menu {
-    display: flex;
-  }
-}
-
-.nav-link {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-secondary);
-  letter-spacing: 0.03em;
-  position: relative;
-  padding: 0.4rem 0;
-  transition: color var(--trans-fast);
-}
-
-.nav-link:hover {
-  color: var(--text-primary);
-}
-
-.nav-link.is-active {
-  color: var(--accent-amber);
-}
-
-.nav-link.is-active::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--accent-amber);
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-/* Mobile Toggle */
-.mobile-menu-toggle {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  width: 36px;
-  height: 36px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  padding: 8px;
-  cursor: pointer;
-  border-radius: var(--radius-xs);
-}
-
-@media (min-width: 880px) {
-  .mobile-menu-toggle {
-    display: none;
-  }
-}
-
-.mobile-menu-toggle span {
+  height: 100%;
   display: block;
+}
+
+/* Subtle Vignette on Edges */
+.scene-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(5, 6, 8, 0.75) 100%);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Continuous Scroll Storyline Stations
+   -------------------------------------------------------------------------- */
+.storyline-container {
+  position: relative;
+  z-index: var(--z-content);
   width: 100%;
-  height: 2px;
-  background-color: var(--text-secondary);
-  transition: transform var(--trans-fast), opacity var(--trans-fast);
 }
 
-.mobile-menu-toggle.is-active span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-
-.mobile-menu-toggle.is-active span:nth-child(2) {
-  opacity: 0;
-}
-
-.mobile-menu-toggle.is-active span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-/* Mobile Drawer */
-.mobile-drawer {
-  display: none;
-  flex-direction: column;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border-medium);
-  padding: var(--space-4) var(--space-6) var(--space-6);
-}
-
-.mobile-drawer.is-open {
-  display: flex;
-}
-
-.mobile-nav-link {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
+.station-section {
+  position: relative;
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-12);
+  box-sizing: border-box;
 }
 
-.mobile-nav-link.is-active {
-  color: var(--accent-amber);
-}
-
-/* Section Shells */
-.section-wrapper {
-  padding: var(--space-20) 0;
-  position: relative;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.section-wrapper:last-of-type {
-  border-bottom: none;
-}
-
-.section-header {
-  margin-bottom: var(--space-12);
+.station-container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
   position: relative;
 }
 
-.section-header.text-center {
+/* Asymmetrical Compositions */
+.station-split-left {
+  display: grid;
+  grid-template-columns: minmax(360px, 580px) 1fr;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.station-split-right {
+  display: grid;
+  grid-template-columns: 1fr minmax(360px, 620px);
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.station-centered {
+  max-width: 880px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.section-header.text-center .section-eyebrow {
-  justify-content: center;
+.station-full {
+  width: 100%;
 }
 
-.section-title {
-  margin-bottom: var(--space-3);
+/* Editorial Negative Space Spacer */
+.station-spacer {
+  min-height: 25vh;
+  pointer-events: none;
 }
 
-.section-lead {
+/* --------------------------------------------------------------------------
+   Hero Station Specifics (Station 01)
+   -------------------------------------------------------------------------- */
+.hero-station-panel {
   max-width: 680px;
-  font-size: 1.05rem;
-  line-height: 1.65;
+}
+
+.hero-sub-text {
+  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+  line-height: 1.5;
   color: var(--text-secondary);
+  margin: var(--sp-4) 0 var(--sp-6);
+  max-width: 560px;
 }
 
-.section-lead.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+.hero-actions-row {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: center;
+  margin-top: var(--sp-6);
 }
 
-/* Footer */
-.site-footer {
-  background-color: var(--bg-void);
-  border-top: 1px solid var(--border-subtle);
-  padding: var(--space-16) 0 var(--space-8);
-  position: relative;
-}
-
-.footer-top {
+.hero-readout-strip {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-10);
-  margin-bottom: var(--space-12);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+  margin-top: var(--sp-8);
+  padding: var(--sp-4);
+  background: rgba(14, 18, 26, 0.9);
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-xs);
 }
 
-@media (min-width: 768px) {
-  .footer-top {
-    grid-template-columns: 1.6fr repeat(3, 1fr);
-  }
-}
-
-.footer-col-title {
+.hero-readout-col .col-label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.65rem;
+  color: var(--text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  display: block;
+}
+
+.hero-readout-col .col-val {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--space-4);
-  border-left: 2px solid var(--accent-amber);
-  padding-left: var(--space-2);
+  margin-top: 2px;
 }
 
-.footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.footer-link {
+.hero-readout-col .col-sub {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  transition: color var(--trans-fast);
-}
-
-.footer-link:hover {
-  color: var(--accent-amber);
-}
-
-.footer-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--border-subtle);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.6875rem;
   color: var(--text-dim);
 }
 
-@media (min-width: 768px) {
-  .footer-bottom {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+/* --------------------------------------------------------------------------
+   Station 02 (The Problem - Sightline Collapse)
+   -------------------------------------------------------------------------- */
+.problem-comparison-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.comparison-card {
+  background: var(--bg-inset);
+  border: 1px solid var(--line-structure);
+  padding: var(--sp-4);
+}
+
+.comparison-card.critical {
+  border-color: var(--state-critical-border);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+/* --------------------------------------------------------------------------
+   Station 03 (The Approach - Stepped Horizontal)
+   -------------------------------------------------------------------------- */
+.approach-sequence-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+}
+
+.approach-step-card {
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-structure);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 240px;
+}
+
+.approach-step-card .step-idx {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-amber);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.approach-step-card .step-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: var(--sp-3) 0 var(--sp-2);
+}
+
+.approach-step-card .step-desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   Station 09 (Platform Tiers - 3 Pillars)
+   -------------------------------------------------------------------------- */
+.platform-tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-6);
+  margin-top: var(--sp-8);
+}
+
+.tier-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--line-structure);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tier-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-4);
+}
+
+/* --------------------------------------------------------------------------
+   Station 10 (Field Trials & Collaboration)
+   -------------------------------------------------------------------------- */
+.collab-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+}
+
+.collab-spec-box {
+  background: var(--bg-panel);
+  border: 1px solid var(--line-structure);
+  padding: var(--sp-4);
+}
+
+/* Global Footer */
+.site-footer {
+  position: relative;
+  z-index: var(--z-content);
+  background: #040507;
+  border-top: 1px solid var(--line-structure);
+  padding: var(--sp-12) var(--sp-6) var(--sp-8);
+}
+
+.footer-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Responsive Overrides */
+@media (max-width: 1024px) {
+  .station-split-left,
+  .station-split-right {
+    grid-template-columns: 1fr;
+  }
+  .approach-sequence-grid,
+  .collab-specs-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .platform-tiers-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-.footer-spec-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.5rem;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  color: var(--steel-300);
+@media (max-width: 640px) {
+  .hero-readout-strip,
+  .problem-comparison-box,
+  .approach-sequence-grid,
+  .collab-specs-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
