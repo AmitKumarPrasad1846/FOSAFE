@@ -114,14 +114,14 @@ export class PlatformPage {
           </div>
 
           <!-- Platform Tab Navigation -->
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-medium); padding-bottom: 0.75rem;">
-            <button class="btn ${this.activeTab === 'driver' ? 'btn-primary' : 'btn-outline'} btn-sm" data-platform-tab="driver">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem;">
+            <button class="btn-instrument ${this.activeTab === 'driver' ? 'is-active' : ''}" data-platform-tab="driver" style="${this.activeTab === 'driver' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
               01 // DRIVER SAFETY CONSOLE
             </button>
-            <button class="btn ${this.activeTab === 'control' ? 'btn-primary' : 'btn-outline'} btn-sm" data-platform-tab="control">
+            <button class="btn-instrument ${this.activeTab === 'control' ? 'is-active' : ''}" data-platform-tab="control" style="${this.activeTab === 'control' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
               02 // MINE CONTROL ROOM
             </button>
-            <button class="btn ${this.activeTab === 'simulator' ? 'btn-primary' : 'btn-outline'} btn-sm" data-platform-tab="simulator">
+            <button class="btn-instrument ${this.activeTab === 'simulator' ? 'is-active' : ''}" data-platform-tab="simulator" style="${this.activeTab === 'simulator' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
               03 // SIMULATION ENVIRONMENT
             </button>
           </div>
@@ -129,12 +129,12 @@ export class PlatformPage {
           <!-- Tab Content Display -->
           ${this.activeTab === 'driver' ? `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
                 <div>
                   <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #EDEFEF;">In-Cab Heavy Vehicle Terminal</h3>
-                  <p style="font-size: 0.85rem; color: var(--text-secondary);">Direct operator interface running on local hardware. 360-degree radar proximity and dynamic braking alarms.</p>
+                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Direct operator interface running on local hardware. 360-degree radar proximity and dynamic braking alarms.</p>
                 </div>
-                <span class="telemetry-tag normal"><span class="pulse-dot"></span>LIVE HARDWARE INTERFACE</span>
+                <span class="provenance-tag live">LIVE HARDWARE INTERFACE</span>
               </div>
               <div id="platform-driver-mount"></div>
             </div>
@@ -142,12 +142,12 @@ export class PlatformPage {
 
           ${this.activeTab === 'control' ? `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
                 <div>
                   <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #EDEFEF;">Central Mine Dispatcher Console</h3>
-                  <p style="font-size: 0.85rem; color: var(--text-secondary);">Centralized radar map tracking all active haulage units, active fog assist flags, and bench risk indices.</p>
+                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Centralized radar map tracking all active haulage units, active fog assist flags, and bench risk indices.</p>
                 </div>
-                <span class="telemetry-tag warning"><span class="pulse-dot"></span>TELEMATICS UPLINK ACTIVE</span>
+                <span class="provenance-tag sim">SIMULATION // DISPATCH CONSOLE</span>
               </div>
               <div id="platform-control-mount"></div>
             </div>
@@ -156,8 +156,11 @@ export class PlatformPage {
           ${this.activeTab === 'simulator' ? `
             <div>
               <!-- SIMULATION WATERMARK NOTICE -->
-              <div style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.35); padding: 1rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+              <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span class="provenance-tag sim">SYNTHETIC ENVIRONMENT</span>
+                  <span class="small-mono" style="color: var(--text-secondary);">Offline Monte Carlo Engine &bull; Non-live Data Watermark Active</span>
+                </div>
                   <span style="display: inline-block; width: 10px; height: 10px; background: #60A5FA; border-radius: 50%;"></span>
                   <div>
                     <strong style="font-family: var(--font-mono); font-size: 0.82rem; color: #93C5FD;">OFFLINE SYNTHETIC SIMULATION SANDBOX</strong>
