@@ -1,7 +1,8 @@
 /**
- * FOSAFE PlatformPage
+ * FOSAFE v2 PlatformPage
  * Unified platform interface showing Driver Console, Control Room,
  * and Simulation Environment with rigorous data provenance separation.
+ * Fully supports Dark and Light modes.
  */
 
 import { DriverConsolePreview } from '../visualizations/DriverConsolePreview.js';
@@ -97,31 +98,30 @@ export class PlatformPage {
 
   render() {
     this.container.innerHTML = `
-      <div style="padding: var(--space-12) 0 var(--space-20);">
-        <div class="container">
+      <div style="padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-20);">
+        <div style="max-width: 1320px; margin: 0 auto;">
           <!-- Page Header -->
-          <div style="margin-bottom: var(--space-8);">
-            <div class="section-eyebrow">
-              <span class="pulse-dot"></span>
-              <span>UNIFIED SOFTWARE ARCHITECTURE</span>
+          <div style="margin-bottom: var(--sp-8); max-width: 860px;">
+            <div class="station-marker font-mono">
+              <span>UNIFIED SOFTWARE ARCHITECTURE // STATION 04</span>
             </div>
-            <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; color: #EDEFEF; text-transform: uppercase;">
+            <h1 style="font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 800; color: var(--text-primary); text-transform: uppercase;">
               FOSAFE PLATFORM SUITE
             </h1>
-            <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 780px; margin-top: 0.75rem; line-height: 1.6;">
+            <p class="lead-text" style="margin-top: 0.75rem;">
               Inspect the three operational tiers of the FOSAFE ecosystem: the in-cab driver safety terminal, the central dispatch control room, and the offline simulation sandbox.
             </p>
           </div>
 
           <!-- Platform Tab Navigation -->
-          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem;">
-            <button class="btn-instrument ${this.activeTab === 'driver' ? 'is-active' : ''}" data-platform-tab="driver" style="${this.activeTab === 'driver' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.85rem;">
+            <button class="capsule-nav-link ${this.activeTab === 'driver' ? 'is-active' : ''}" data-platform-tab="driver" style="font-size: 0.8rem; padding: 0.5rem 1rem; border: 1px solid ${this.activeTab === 'driver' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.activeTab === 'driver' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
               01 // DRIVER SAFETY CONSOLE
             </button>
-            <button class="btn-instrument ${this.activeTab === 'control' ? 'is-active' : ''}" data-platform-tab="control" style="${this.activeTab === 'control' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
+            <button class="capsule-nav-link ${this.activeTab === 'control' ? 'is-active' : ''}" data-platform-tab="control" style="font-size: 0.8rem; padding: 0.5rem 1rem; border: 1px solid ${this.activeTab === 'control' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.activeTab === 'control' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
               02 // MINE CONTROL ROOM
             </button>
-            <button class="btn-instrument ${this.activeTab === 'simulator' ? 'is-active' : ''}" data-platform-tab="simulator" style="${this.activeTab === 'simulator' ? 'border-color: var(--accent-amber); color: #fff;' : ''}">
+            <button class="capsule-nav-link ${this.activeTab === 'simulator' ? 'is-active' : ''}" data-platform-tab="simulator" style="font-size: 0.8rem; padding: 0.5rem 1rem; border: 1px solid ${this.activeTab === 'simulator' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.activeTab === 'simulator' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
               03 // SIMULATION ENVIRONMENT
             </button>
           </div>
@@ -129,10 +129,10 @@ export class PlatformPage {
           <!-- Tab Content Display -->
           ${this.activeTab === 'driver' ? `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
                 <div>
-                  <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #EDEFEF;">In-Cab Heavy Vehicle Terminal</h3>
-                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Direct operator interface running on local hardware. 360-degree radar proximity and dynamic braking alarms.</p>
+                  <h3 style="font-family: var(--font-display); font-size: 1.6rem; color: var(--text-primary); text-transform: uppercase;">In-Cab Heavy Vehicle Terminal</h3>
+                  <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Direct operator interface running on local hardware. 360-degree radar proximity and dynamic braking alarms.</p>
                 </div>
                 <span class="provenance-tag live">LIVE HARDWARE INTERFACE</span>
               </div>
@@ -142,10 +142,10 @@ export class PlatformPage {
 
           ${this.activeTab === 'control' ? `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
                 <div>
-                  <h3 style="font-family: var(--font-display); font-size: 1.4rem; color: #EDEFEF;">Central Mine Dispatcher Console</h3>
-                  <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">Centralized radar map tracking all active haulage units, active fog assist flags, and bench risk indices.</p>
+                  <h3 style="font-family: var(--font-display); font-size: 1.6rem; color: var(--text-primary); text-transform: uppercase;">Central Mine Dispatcher Console</h3>
+                  <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Centralized radar map tracking all active haulage units, active fog assist flags, and bench risk indices.</p>
                 </div>
                 <span class="provenance-tag sim">SIMULATION // DISPATCH CONSOLE</span>
               </div>
@@ -156,12 +156,12 @@ export class PlatformPage {
           ${this.activeTab === 'simulator' ? `
             <div>
               <!-- SIMULATION WATERMARK NOTICE -->
-              <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1.25rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                   <span class="provenance-tag sim">SYNTHETIC ENVIRONMENT</span>
                   <div>
-                    <strong style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-amber);">OFFLINE SYNTHETIC SIMULATION SANDBOX</strong>
-                    <div style="font-size: 0.75rem; color: var(--text-secondary);">
+                    <strong style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-amber);">OFFLINE SYNTHETIC SIMULATION SANDBOX</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px;">
                       NOTICE: All data displayed below is synthetically modeled. It does not represent active mining hardware or physical vehicle telemetries.
                     </div>
                   </div>
@@ -169,38 +169,43 @@ export class PlatformPage {
                 <span class="provenance-tag sim">SYNTHETIC MODEL ONLY</span>
               </div>
 
-              <div class="tech-panel">
-                <div class="tech-header">
-                  <span class="tech-title">MONTE CARLO TRAFFIC &amp; FOG STRESS ENGINE</span>
-                  <button id="run-sim-batch-btn" class="btn btn-primary btn-sm">▶ RUN SYNTHETIC SCENARIO</button>
+              <div class="station-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                  <div>
+                    <span class="survey-label">SYNTHETIC ENGINE</span>
+                    <h3 style="font-size: 1.6rem; color: var(--text-primary); margin-top: 0.2rem;">MONTE CARLO TRAFFIC &amp; FOG STRESS ENGINE</h3>
+                  </div>
+                  <button id="run-sim-batch-btn" class="btn-action-primary" style="font-size: 0.75rem; padding: 0.6rem 1.2rem;">
+                    ▶ RUN SYNTHETIC SCENARIO
+                  </button>
                 </div>
 
-                <div class="industrial-grid industrial-grid-3" style="margin-bottom: 1.5rem;">
-                  <div class="metric-box">
-                    <span class="metric-label">VIRTUAL VEHICLES SPAWNED</span>
-                    <div class="val-row">
-                      <span class="metric-value" style="color: #93C5FD;">24</span>
-                      <span class="metric-unit">UNITS</span>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-4); margin-bottom: 1.5rem;">
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.25rem; border-radius: var(--radius-xs);">
+                    <span class="survey-label">VIRTUAL VEHICLES SPAWNED</span>
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.35rem;">
+                      <span class="font-mono" style="font-size: 2.2rem; font-weight: 800; color: var(--accent-amber);">24</span>
+                      <span class="small-mono" style="color: var(--text-muted);">UNITS</span>
                     </div>
                   </div>
-                  <div class="metric-box">
-                    <span class="metric-label">MODELED FOG DENSITY</span>
-                    <div class="val-row">
-                      <span class="metric-value" style="color: var(--accent-amber);">94.2</span>
-                      <span class="metric-unit">%</span>
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.25rem; border-radius: var(--radius-xs);">
+                    <span class="survey-label">MODELED FOG DENSITY</span>
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.35rem;">
+                      <span class="font-mono" style="font-size: 2.2rem; font-weight: 800; color: var(--state-warning);">94.2</span>
+                      <span class="small-mono" style="color: var(--text-muted);">%</span>
                     </div>
                   </div>
-                  <div class="metric-box">
-                    <span class="metric-label">PREVENTED CONFLICTS</span>
-                    <div class="val-row">
-                      <span class="metric-value" style="color: var(--status-normal);">100</span>
-                      <span class="metric-unit">%</span>
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.25rem; border-radius: var(--radius-xs);">
+                    <span class="survey-label">PREVENTED CONFLICTS</span>
+                    <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.35rem;">
+                      <span class="font-mono" style="font-size: 2.2rem; font-weight: 800; color: var(--state-normal);">100</span>
+                      <span class="small-mono" style="color: var(--text-muted);">%</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="data-label" style="margin-bottom: 0.35rem;">SIMULATION KERNEL LOG OUTPUT:</div>
-                <pre id="sim-console-output" style="background: #07090C; border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.6; color: #93C5FD; height: 180px; overflow-y: auto;">
+                <div class="survey-label" style="margin-bottom: 0.4rem;">SIMULATION KERNEL LOG OUTPUT:</div>
+                <pre id="sim-console-output" style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--accent-amber); height: 180px; overflow-y: auto; white-space: pre-wrap;">
 [SIM-ENGINE] Testbench ready. Click "RUN SYNTHETIC SCENARIO" to execute a 24-vehicle fog convergence simulation.
                 </pre>
               </div>

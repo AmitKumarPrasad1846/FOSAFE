@@ -21,6 +21,9 @@ export class HaulRoadContinuousScene {
     this.height = 0;
     this.dpr = 1;
 
+    // Theme awareness
+    this.theme = document.documentElement.getAttribute('data-theme') || 'dark';
+
     // Scroll progress (0.0 to 1.0)
     this.scrollProgress = 0;
     this.targetScrollProgress = 0;
@@ -139,6 +142,10 @@ export class HaulRoadContinuousScene {
       this.mouse.targetX = nx * 18; // Max 18px subtle shift
       this.mouse.targetY = ny * 18;
     }, { passive: true });
+
+    window.addEventListener('fosafe:theme-change', (e) => {
+      this.theme = e.detail?.theme || 'dark';
+    });
   }
 
   handleResize() {
@@ -245,9 +252,10 @@ export class HaulRoadContinuousScene {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
+    const isLight = this.theme === 'light';
 
-    // 1. Clear with deep void graphite base
-    ctx.fillStyle = '#06080C';
+    // 1. Clear with deep void graphite or crisp drafting paper base
+    ctx.fillStyle = isLight ? '#E8EEF5' : '#06080C';
     ctx.fillRect(0, 0, w, h);
 
     ctx.save();
@@ -279,9 +287,9 @@ export class HaulRoadContinuousScene {
   }
 
   drawContours(ctx, w, h) {
-    const sp = this.scrollProgress;
+    const isLight = this.theme === 'light';
     ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.04)';
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 4]);
 
@@ -303,7 +311,7 @@ export class HaulRoadContinuousScene {
 
       // Elevation text tag
       ctx.font = '9px "JetBrains Mono", monospace';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+      ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.45)' : 'rgba(255, 255, 255, 0.18)';
       ctx.fillText(`BENCH ELEV ${c.elev}`, 24, cy - 10);
     });
 
@@ -311,8 +319,9 @@ export class HaulRoadContinuousScene {
   }
 
   drawSurveyGrid(ctx, w, h) {
+    const isLight = this.theme === 'light';
     ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255, 255, 255, 0.035)';
     ctx.lineWidth = 1;
 
     const gridSize = 120;
@@ -336,7 +345,7 @@ export class HaulRoadContinuousScene {
     }
 
     // Survey crosshairs at intersections
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.12)';
     ctx.lineWidth = 1;
     for (let c = 1; c < cols; c += 2) {
       for (let r = 1; r < rows; r += 2) {
@@ -356,6 +365,7 @@ export class HaulRoadContinuousScene {
   }
 
   drawHaulRoad(ctx, w, h) {
+    const isLight = this.theme === 'light';
     ctx.save();
     const steps = 60;
     const roadHalfWidth = 28;
@@ -372,17 +382,17 @@ export class HaulRoadContinuousScene {
       ctx.lineTo(pt.x + roadHalfWidth, pt.y);
     }
     ctx.closePath();
-    ctx.fillStyle = 'rgba(18, 23, 32, 0.65)';
+    ctx.fillStyle = isLight ? 'rgba(215, 224, 236, 0.85)' : 'rgba(18, 23, 32, 0.65)';
     ctx.fill();
 
     // Road shoulders (berm boundaries)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.12)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
     // Road Centerline with dashes
     ctx.beginPath();
-    ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+    ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.6)' : 'rgba(245, 158, 11, 0.35)';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([8, 8]);
     for (let i = 0; i <= steps; i++) {
@@ -495,6 +505,7 @@ export class HaulRoadContinuousScene {
   }
 
   drawAtmosphericFog(ctx, w, h) {
+    const isLight = this.theme === 'light';
     const fCtx = this.fogCtx;
     const fw = this.fogCanvas.width;
     const fh = this.fogCanvas.height;
@@ -513,9 +524,15 @@ export class HaulRoadContinuousScene {
       const gradR = (0.35 + i * 0.08) * Math.max(fw, fh);
 
       const radGrad = fCtx.createRadialGradient(gx, gy, 0, gx, gy, gradR);
-      radGrad.addColorStop(0, `rgba(18, 24, 34, ${0.45 * density})`);
-      radGrad.addColorStop(0.5, `rgba(14, 19, 28, ${0.28 * density})`);
-      radGrad.addColorStop(1, 'rgba(10, 14, 20, 0)');
+      if (isLight) {
+        radGrad.addColorStop(0, `rgba(195, 208, 225, ${0.48 * density})`);
+        radGrad.addColorStop(0.5, `rgba(215, 226, 240, ${0.30 * density})`);
+        radGrad.addColorStop(1, 'rgba(235, 242, 250, 0)');
+      } else {
+        radGrad.addColorStop(0, `rgba(18, 24, 34, ${0.45 * density})`);
+        radGrad.addColorStop(0.5, `rgba(14, 19, 28, ${0.28 * density})`);
+        radGrad.addColorStop(1, 'rgba(10, 14, 20, 0)');
+      }
 
       fCtx.fillStyle = radGrad;
       fCtx.fillRect(0, 0, fw, fh);
@@ -548,11 +565,12 @@ export class HaulRoadContinuousScene {
   }
 
   drawScreenInstrumentation(ctx, w, h) {
+    const isLight = this.theme === 'light';
     ctx.save();
 
     // Top Right Survey Coordinates & Compass Heading
     ctx.font = '10px "JetBrains Mono", monospace';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.32)';
+    ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.32)';
     ctx.textAlign = 'right';
     ctx.fillText('LAT 23°47\'12" N  LON 86°24\'38" E', w - 48, 80);
     ctx.fillText('PIT SECTOR: BENCH-04C // RAMP-08', w - 48, 96);
@@ -563,7 +581,7 @@ export class HaulRoadContinuousScene {
     const barY = h - 28;
 
     ctx.textAlign = 'left';
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.25)';
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(barX, barY);

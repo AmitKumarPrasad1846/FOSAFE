@@ -379,11 +379,11 @@
    SECTION 05: DRIVER SAFETY CONSOLE PREVIEW
    ========================================================================= */
 .driver-console-frame {
-  background: #0D1016;
-  border: 3px solid #28303F;
-  border-radius: var(--radius-md);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-  padding: var(--space-6);
+  background: var(--bg-panel);
+  border: 2px solid var(--line-structure);
+  border-radius: var(--radius-xs);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  padding: var(--sp-6);
   position: relative;
   max-width: 940px;
   margin: 0 auto;
@@ -393,9 +393,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 2px solid #202735;
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line-structure);
+  padding-bottom: var(--sp-3);
+  margin-bottom: var(--sp-4);
   font-family: var(--font-mono);
   font-size: 0.75rem;
 }
@@ -403,7 +403,7 @@
 .console-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-4);
+  gap: var(--sp-4);
 }
 
 @media (min-width: 768px) {
@@ -414,8 +414,8 @@
 
 .proximity-radar-dial {
   height: 280px;
-  background: #080A0E;
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-inset);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius-xs);
   position: relative;
   display: flex;
@@ -432,26 +432,26 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-4);
-  transition: all var(--trans-fast);
+  margin-top: var(--sp-4);
+  transition: all var(--dur-fast);
 }
 
 .driver-alert-banner.state-normal {
-  background: var(--status-normal-bg);
-  border: 1px solid var(--status-normal-border);
-  color: var(--status-normal);
+  background: var(--state-normal-bg);
+  border: 1px solid var(--state-normal-border);
+  color: var(--state-normal);
 }
 
 .driver-alert-banner.state-warning {
-  background: var(--status-warning-bg);
-  border: 1px solid var(--status-warning-border);
-  color: var(--status-warning);
+  background: var(--state-warning-bg);
+  border: 1px solid var(--state-warning-border);
+  color: var(--state-warning);
 }
 
 .driver-alert-banner.state-critical {
-  background: var(--status-critical-bg);
-  border: 1px solid var(--status-critical-border);
-  color: var(--status-critical);
+  background: var(--state-critical-bg);
+  border: 1px solid var(--state-critical-border);
+  color: var(--state-critical);
   animation: criticalPulse 1s infinite alternate;
 }
 
@@ -466,11 +466,11 @@
 .control-room-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-6);
-  background: var(--bg-surface);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  padding: var(--space-6);
+  gap: var(--sp-6);
+  background: var(--bg-panel);
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-xs);
+  padding: var(--sp-6);
 }
 
 @media (min-width: 1024px) {
@@ -481,8 +481,8 @@
 
 .fleet-map-canvas-container {
   height: 420px;
-  background: #07090C;
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-inset);
+  border: 1px solid var(--line-structure);
   border-radius: var(--radius-xs);
   position: relative;
   overflow: hidden;
@@ -500,24 +500,24 @@
   text-transform: uppercase;
   text-align: left;
   padding: 0.5rem 0.6rem;
-  border-bottom: 1px solid var(--border-medium);
+  border-bottom: 1px solid var(--line-structure);
 }
 
 .fleet-roster-table td {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   padding: 0.65rem 0.6rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--line-subtle);
   cursor: pointer;
 }
 
 .fleet-roster-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--capsule-pill-active);
 }
 
 .fleet-roster-table tr.is-selected td {
-  background: rgba(245, 158, 11, 0.08);
-  border-color: var(--border-accent);
+  background: var(--capsule-pill-active);
+  border-color: var(--accent-amber);
 }
 
 /* =========================================================================

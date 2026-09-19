@@ -1,10 +1,10 @@
 /* ==========================================================================
    FOSAFE v2 — Industrial Survey & Instrument Design Tokens
-   Strict palette: Graphite/Near-Black base, warm off-white, steel structure,
-   restrained amber accent, and functional-only state colors.
+   Supports Dark Mode (Industrial Graphite) & Light Mode (Technical Blueprint Drafting Paper)
    ========================================================================== */
 
-:root {
+:root,
+[data-theme="dark"] {
   /* Surface & Background Hierarchy */
   --bg-void: #050608;
   --bg-base: #080A0F;
@@ -14,7 +14,7 @@
   --bg-panel-solid: #111622;
   --bg-inset: #06080C;
 
-  /* Survey Linework & Instrument Dividers (1px crisp lines) */
+  /* Survey Linework & Instrument Dividers */
   --line-subtle: rgba(255, 255, 255, 0.06);
   --line-grid: rgba(255, 255, 255, 0.09);
   --line-structure: #1F2737;
@@ -23,7 +23,7 @@
   --crosshair-color: rgba(255, 255, 255, 0.18);
   --tick-color: rgba(255, 255, 255, 0.22);
 
-  /* Text & Readout Contrast (Warm off-white, no blue neon) */
+  /* Text & Readout Contrast */
   --text-primary: #F2F4F7;
   --text-secondary: #B4BCCB;
   --text-muted: #727E94;
@@ -60,9 +60,11 @@
   --accent-amber-deep: #B45309;
   --accent-amber-glow: rgba(245, 158, 11, 0.15);
 
-  /* Atmospheric Variables */
-  --fog-deep: #161D28;
-  --fog-haze: rgba(22, 29, 40, 0.72);
+  /* Floating Capsule Navbar */
+  --capsule-bg: rgba(14, 18, 26, 0.88);
+  --capsule-border: rgba(255, 255, 255, 0.14);
+  --capsule-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  --capsule-pill-active: rgba(245, 158, 11, 0.15);
 
   /* Provenance Indicator Tokens */
   --badge-live-bg: rgba(16, 185, 129, 0.12);
@@ -71,7 +73,79 @@
   --badge-sim-bg: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.07), rgba(245, 158, 11, 0.07) 6px, rgba(245, 158, 11, 0.14) 6px, rgba(245, 158, 11, 0.14) 12px);
   --badge-sim-border: rgba(245, 158, 11, 0.5);
   --badge-sim-text: #F59E0B;
+}
 
+/* ==========================================================================
+   LIGHT THEME: Technical Topographic Blueprint & Survey Drafting Paper
+   Crisp chalk paper base, dark steel structural lines, warm amber accent.
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-void: #E8EEF5;
+  --bg-base: #F2F5FA;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #E5ECF6;
+  --bg-panel: rgba(255, 255, 255, 0.94);
+  --bg-panel-solid: #FFFFFF;
+  --bg-inset: #E6EDF7;
+
+  --line-subtle: rgba(15, 23, 42, 0.08);
+  --line-grid: rgba(15, 23, 42, 0.06);
+  --line-structure: #CBD5E1;
+  --line-strong: #94A3B8;
+  --line-accent: rgba(217, 119, 6, 0.4);
+  --crosshair-color: rgba(15, 23, 42, 0.3);
+  --tick-color: rgba(15, 23, 42, 0.35);
+
+  --text-primary: #0A0F1D;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-dim: #94A3B8;
+  --text-inverted: #FFFFFF;
+
+  --steel-100: #0F172A;
+  --steel-300: #334155;
+  --steel-500: #64748B;
+  --steel-700: #94A3B8;
+  --steel-850: #CBD5E1;
+  --steel-950: #E2E8F0;
+
+  --state-normal: #059669;
+  --state-normal-rgb: 5, 150, 105;
+  --state-normal-bg: rgba(5, 150, 105, 0.09);
+  --state-normal-border: rgba(5, 150, 105, 0.35);
+
+  --state-warning: #D97706;
+  --state-warning-rgb: 217, 119, 6;
+  --state-warning-bg: rgba(217, 119, 6, 0.10);
+  --state-warning-border: rgba(217, 119, 6, 0.38);
+
+  --state-critical: #DC2626;
+  --state-critical-rgb: 220, 38, 38;
+  --state-critical-bg: rgba(220, 38, 38, 0.10);
+  --state-critical-border: rgba(220, 38, 38, 0.45);
+
+  --accent-amber: #D97706;
+  --accent-amber-hover: #B45309;
+  --accent-amber-deep: #92400E;
+  --accent-amber-glow: rgba(217, 119, 6, 0.15);
+
+  --capsule-bg: rgba(255, 255, 255, 0.92);
+  --capsule-border: rgba(15, 23, 42, 0.16);
+  --capsule-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  --capsule-pill-active: rgba(217, 119, 6, 0.12);
+
+  --badge-live-bg: rgba(5, 150, 105, 0.12);
+  --badge-live-border: #059669;
+  --badge-live-text: #059669;
+  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(217, 119, 6, 0.08), rgba(217, 119, 6, 0.08) 6px, rgba(217, 119, 6, 0.15) 6px, rgba(217, 119, 6, 0.15) 12px);
+  --badge-sim-border: rgba(217, 119, 6, 0.5);
+  --badge-sim-text: #D97706;
+}
+
+/* ==========================================================================
+   Structural & Typography Tokens (Shared)
+   ========================================================================== */
+:root {
   /* Typography Families */
   --font-display: 'Barlow Condensed', -apple-system, sans-serif;
   --font-body: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -93,6 +167,7 @@
   --radius-none: 0px;
   --radius-xs: 2px;
   --radius-sm: 4px;
+  --radius-capsule: 9999px;
 
   /* Layer Indexing */
   --z-canvas-pinned: 1;

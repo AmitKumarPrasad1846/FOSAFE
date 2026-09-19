@@ -262,9 +262,9 @@
 .site-footer {
   position: relative;
   z-index: var(--z-content);
-  background: #040507;
+  background: var(--bg-void);
   border-top: 1px solid var(--line-structure);
-  padding: var(--sp-12) var(--sp-6) var(--sp-8);
+  padding: var(--sp-12) 0 var(--sp-8);
 }
 
 .footer-inner {

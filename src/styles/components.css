@@ -7,152 +7,212 @@
 /* --------------------------------------------------------------------------
    Top Instrument Navigation Header
    -------------------------------------------------------------------------- */
-.inst-nav-header {
+/* --------------------------------------------------------------------------
+   Floating Right-Side Capsule Navbar (Desktop)
+   -------------------------------------------------------------------------- */
+.nav-capsule-desktop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 64px;
+  top: 1.25rem;
+  right: 1.5rem;
   z-index: var(--z-nav);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 var(--sp-6);
-  background: rgba(8, 10, 15, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line-subtle);
-  transition: transform var(--dur-base) var(--ease-reveal);
+  gap: 0.6rem;
+  padding: 0.35rem 0.65rem 0.35rem 0.85rem;
+  background: var(--capsule-bg);
+  border: 1px solid var(--capsule-border);
+  border-radius: var(--radius-capsule);
+  box-shadow: var(--capsule-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform var(--dur-base) ease, background var(--dur-base), border-color var(--dur-base);
 }
 
-.inst-nav-header.is-hidden {
-  transform: translateY(-100%);
-}
-
-.inst-nav-left {
+.capsule-brand-link {
   display: flex;
   align-items: center;
-  gap: var(--sp-4);
-}
-
-.inst-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
+  gap: 0.45rem;
   text-decoration: none;
+  padding-right: 0.25rem;
+}
+
+.capsule-brand-text {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   color: var(--text-primary);
 }
 
-.inst-wordmark {
-  font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: #FFFFFF;
-}
-
-.inst-status-tick {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 2px 8px;
-  background: var(--state-normal-bg);
-  border: 1px solid var(--state-normal-border);
-  border-radius: var(--radius-xs);
-}
-
-.live-dot {
+.capsule-status-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--state-normal);
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  box-shadow: 0 0 8px rgba(var(--state-normal-rgb), 0.7);
   animation: pulse-live 2.4s ease-in-out infinite;
 }
 
-@keyframes pulse-live {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.85); }
+.capsule-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--line-structure);
+  opacity: 0.7;
 }
 
-.tick-label {
+.capsule-links-group {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.capsule-nav-link {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--state-normal);
-}
-
-.inst-nav-right {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-4);
-}
-
-/* Tactile Instrument Access Button */
-.btn-instrument {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 1.1rem;
-  background: var(--steel-850);
-  border: 1px solid var(--steel-700);
-  border-radius: var(--radius-xs);
-  color: var(--text-primary);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  color: var(--text-secondary);
   text-decoration: none;
-  transition: transform 90ms ease, background var(--dur-fast), border-color var(--dur-fast);
-  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--radius-capsule);
+  transition: all var(--dur-fast);
 }
 
-.btn-instrument:hover {
-  background: var(--steel-700);
-  border-color: var(--accent-amber);
-  color: #FFFFFF;
+.capsule-nav-link:hover {
+  color: var(--text-primary);
+  background: var(--capsule-pill-active);
 }
 
-.btn-instrument:active {
-  transform: scale(0.96) translateY(1px);
-}
-
-.btn-instrument-icon {
+.capsule-nav-link.is-active {
   color: var(--accent-amber);
-  font-size: 0.85rem;
+  background: var(--capsule-pill-active);
 }
 
-/* Menu Trigger Button */
-.inst-menu-btn {
+.capsule-btn-icon {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.5rem 0.9rem;
+  gap: 0.4rem;
   background: transparent;
-  border: 1px solid var(--line-structure);
-  border-radius: var(--radius-xs);
+  border: 1px solid transparent;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-capsule);
   color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: border-color var(--dur-fast), color var(--dur-fast);
+  transition: all var(--dur-fast);
 }
 
-.inst-menu-btn:hover {
-  border-color: var(--text-primary);
+.capsule-btn-icon:hover {
+  border-color: var(--line-structure);
   color: var(--text-primary);
+  background: var(--steel-950);
 }
 
-.menu-btn-icon {
+.capsule-burger-lines {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 14px;
+  gap: 3px;
+  width: 12px;
 }
 
-.menu-line {
+.capsule-burger-lines span {
   height: 1.5px;
   background: currentColor;
   width: 100%;
+}
+
+.theme-toggle-btn {
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0.35rem 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.capsule-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--accent-amber);
+  color: #000;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-radius: var(--radius-capsule);
+  transition: transform 90ms ease, background var(--dur-fast);
+}
+
+.capsule-cta-btn:hover {
+  background: var(--accent-amber-hover);
+  color: #000;
+}
+
+.capsule-cta-btn:active {
+  transform: scale(0.96);
+}
+
+/* --------------------------------------------------------------------------
+   Floating Bottom Capsule Navbar (Mobile)
+   -------------------------------------------------------------------------- */
+.nav-capsule-mobile {
+  display: none;
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  max-width: 440px;
+  margin: 0 auto;
+  z-index: var(--z-nav);
+  background: var(--capsule-bg);
+  border: 1px solid var(--capsule-border);
+  border-radius: var(--radius-capsule);
+  box-shadow: var(--capsule-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0.45rem 0.85rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-capsule-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
+}
+
+.capsule-mobile-station {
+  font-size: 0.72rem;
+  color: var(--accent-amber);
+  font-weight: 700;
+}
+
+.mobile-capsule-btn {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--line-structure);
+  color: var(--text-primary);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-capsule);
+  cursor: pointer;
+}
+
+.mobile-capsule-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  background: var(--accent-amber);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border-radius: var(--radius-capsule);
 }
 
 /* --------------------------------------------------------------------------
@@ -576,11 +636,14 @@
 
 /* Responsive adjustments */
 @media (max-width: 900px) {
-  .inst-progress-rail {
-    display: none;
+  .nav-capsule-desktop {
+    display: none !important;
   }
-  .inst-mobile-bar {
-    display: flex;
+  .nav-capsule-mobile {
+    display: flex !important;
+  }
+  .inst-progress-rail {
+    display: none !important;
   }
   .overlay-nav-item {
     grid-template-columns: 32px 1fr;

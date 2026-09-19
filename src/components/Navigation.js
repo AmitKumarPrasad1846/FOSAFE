@@ -1,20 +1,23 @@
 /**
- * FOSAFE v2 Modern Instrument Navigation
- * Top-left minimal wordmark & live status tick.
- * Top-right tactile "ACCESS PLATFORM" & full-screen index overlay trigger.
- * Right-edge vertical scroll-progress rail with stations 01–10.
- * Bottom-anchored mobile thumb bar.
- * Full keyboard accessibility, focus trap, and Escape handling.
+ * FOSAFE v2 Floating Right-Side Capsule Navigation
+ * Sleek floating pill / capsule docked on the top-right (desktop)
+ * and thumb-reachable floating bottom capsule (mobile).
+ * Integrates:
+ * - Minimal wordmark + live status tick
+ * - Index overlay trigger with full keyboard support & focus trap
+ * - Light / Dark mode toggle switch
+ * - Tactile "ACCESS PLATFORM" button
+ * - Right-edge vertical scroll progress rail (stations 01-10)
  */
 
 import { scrollManager } from '../lib/scroll.js';
+import { themeManager } from '../lib/theme.js';
 
 export class Navigation {
   constructor(containerElement, currentRoute = '/') {
     this.container = containerElement;
     this.currentRoute = currentRoute;
     this.isOverlayOpen = false;
-    this.lastScrollY = 0;
     this.activeStation = 1;
     this.previouslyFocusedElement = null;
 
@@ -38,6 +41,12 @@ export class Navigation {
     this.render();
     this.bindEvents();
     this.initScrollSpy();
+    this.syncThemeIcon();
+
+    // Subscribe to external theme changes
+    themeManager.subscribe(() => {
+      this.syncThemeIcon();
+    });
   }
 
   setRoute(route) {
@@ -45,13 +54,23 @@ export class Navigation {
     this.closeOverlay();
     this.render();
     this.bindEvents();
+    this.syncThemeIcon();
+  }
+
+  syncThemeIcon() {
+    const isDark = themeManager.getTheme() === 'dark';
+    const icons = this.container.querySelectorAll('.theme-toggle-icon');
+    icons.forEach(icon => {
+      icon.textContent = isDark ? '☀️' : '🌙';
+      icon.setAttribute('title', isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+    });
   }
 
   openOverlay() {
     this.isOverlayOpen = true;
     this.previouslyFocusedElement = document.activeElement;
     const overlay = document.getElementById('inst-index-overlay');
-    const trigger = document.getElementById('inst-menu-trigger');
+    const trigger = document.getElementById('capsule-menu-trigger');
 
     if (overlay && trigger) {
       overlay.classList.add('is-open');
@@ -59,7 +78,6 @@ export class Navigation {
       trigger.setAttribute('aria-expanded', 'true');
       document.body.classList.add('menu-locked');
 
-      // Focus first interactive link
       const firstLink = overlay.querySelector('a');
       if (firstLink) firstLink.focus();
     }
@@ -68,7 +86,7 @@ export class Navigation {
   closeOverlay() {
     this.isOverlayOpen = false;
     const overlay = document.getElementById('inst-index-overlay');
-    const trigger = document.getElementById('inst-menu-trigger');
+    const trigger = document.getElementById('capsule-menu-trigger');
 
     if (overlay && trigger) {
       overlay.classList.remove('is-open');
@@ -83,7 +101,6 @@ export class Navigation {
   }
 
   initScrollSpy() {
-    // Only spy on home page where stations exist
     if (this.currentRoute !== '/') return;
 
     const observer = new IntersectionObserver((entries) => {
@@ -105,20 +122,6 @@ export class Navigation {
       const el = document.getElementById(s.id);
       if (el) observer.observe(el);
     });
-
-    // Scroll direction tracking for minimal header hide/reveal
-    window.addEventListener('scroll', () => {
-      const currentY = window.scrollY;
-      const navHeader = document.querySelector('.inst-nav-header');
-      if (!navHeader) return;
-
-      if (currentY > 80 && currentY > this.lastScrollY) {
-        navHeader.classList.add('is-hidden');
-      } else {
-        navHeader.classList.remove('is-hidden');
-      }
-      this.lastScrollY = currentY;
-    }, { passive: true });
   }
 
   updateActiveStation(num) {
@@ -135,14 +138,15 @@ export class Navigation {
       }
     });
 
-    const mobileIndicator = document.querySelector('.mobile-station-current');
-    if (mobileIndicator) {
-      mobileIndicator.textContent = String(num).padStart(2, '0');
+    const mobileStation = document.querySelector('.capsule-mobile-station');
+    if (mobileStation) {
+      mobileStation.textContent = `${String(num).padStart(2, '0')}/10`;
     }
   }
 
   bindEvents() {
-    const trigger = document.getElementById('inst-menu-trigger');
+    const trigger = document.getElementById('capsule-menu-trigger');
+    const mobileTrigger = document.getElementById('capsule-mobile-trigger');
     const closeBtn = document.getElementById('inst-overlay-close');
     const overlay = document.getElementById('inst-index-overlay');
 
@@ -153,9 +157,24 @@ export class Navigation {
       });
     }
 
+    if (mobileTrigger) {
+      mobileTrigger.addEventListener('click', () => {
+        if (this.isOverlayOpen) this.closeOverlay();
+        else this.openOverlay();
+      });
+    }
+
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.closeOverlay());
     }
+
+    // Theme toggles
+    this.container.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        themeManager.toggle();
+        this.syncThemeIcon();
+      });
+    });
 
     // Escape key closes overlay
     document.addEventListener('keydown', (e) => {
@@ -205,33 +224,74 @@ export class Navigation {
     const isHome = this.currentRoute === '/';
 
     this.container.innerHTML = `
-      <!-- Top Fixed Instrument Bar -->
-      <header class="inst-nav-header" role="banner">
-        <div class="inst-nav-left">
-          <a href="/" data-link class="inst-brand" aria-label="FOSAFE System Home">
-            <span class="inst-wordmark">FOSAFE</span>
-            <span class="inst-status-tick" title="Telemetry Uplink Active">
-              <span class="live-dot"></span>
-              <span class="tick-label">LIVE HARDWARE // 04 OBU</span>
-            </span>
-          </a>
+      <!-- FLOATING RIGHT-SIDE CAPSULE NAVBAR (DESKTOP) -->
+      <nav class="nav-capsule-desktop" role="navigation" aria-label="Main Capsule Navigation">
+        <!-- Capsule Brand & Live Beacon -->
+        <a href="/" data-link class="capsule-brand-link" aria-label="FOSAFE Home">
+          <span class="capsule-brand-text">FOSAFE</span>
+          <span class="capsule-status-dot" title="Live OBU Telemetry Active"></span>
+        </a>
+
+        <span class="capsule-sep" aria-hidden="true"></span>
+
+        <!-- Quick Nav Route Pills -->
+        <div class="capsule-links-group">
+          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}">TECH</a>
+          <a href="/how-it-works" data-link class="capsule-nav-link ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}">PHYSICS</a>
+          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}">PLATFORM</a>
+          <a href="/about" data-link class="capsule-nav-link ${this.currentRoute === '/about' ? 'is-active' : ''}">ABOUT</a>
         </div>
 
-        <div class="inst-nav-right">
-          <a href="/login" data-link class="btn-instrument" aria-label="Access Unified Platform">
-            <span class="btn-instrument-icon">⬡</span>
-            <span class="btn-instrument-text">ACCESS PLATFORM</span>
-          </a>
+        <span class="capsule-sep" aria-hidden="true"></span>
 
-          <button id="inst-menu-trigger" class="inst-menu-btn" aria-label="Open Navigation Index" aria-expanded="false" aria-haspopup="dialog">
-            <span class="menu-btn-label font-mono">INDEX</span>
-            <span class="menu-btn-icon" aria-hidden="true">
-              <span class="menu-line"></span>
-              <span class="menu-line"></span>
-            </span>
-          </button>
-        </div>
-      </header>
+        <!-- Menu / Index Overlay Trigger -->
+        <button id="capsule-menu-trigger" class="capsule-btn-icon" aria-label="Open System Index" aria-expanded="false" aria-haspopup="dialog">
+          <span class="capsule-btn-label font-mono">INDEX</span>
+          <span class="capsule-burger-lines" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        <span class="capsule-sep" aria-hidden="true"></span>
+
+        <!-- Dark / Light Theme Toggle -->
+        <button class="capsule-btn-icon theme-toggle-btn" aria-label="Toggle Light / Dark Mode" title="Toggle Light/Dark Theme">
+          <span class="theme-toggle-icon">☀️</span>
+        </button>
+
+        <span class="capsule-sep" aria-hidden="true"></span>
+
+        <!-- Access Platform Action -->
+        <a href="/login" data-link class="capsule-cta-btn" aria-label="Access Unified Platform">
+          <span>ACCESS</span>
+          <span class="cta-arrow">→</span>
+        </a>
+      </nav>
+
+      <!-- FLOATING BOTTOM CAPSULE NAVBAR (MOBILE / TABLET) -->
+      <div class="nav-capsule-mobile" role="navigation" aria-label="Mobile Navigation Bar">
+        <a href="/" data-link class="mobile-capsule-brand">
+          <span class="capsule-brand-text" style="font-size: 1.1rem;">FOSAFE</span>
+          <span class="capsule-status-dot"></span>
+        </a>
+
+        ${isHome ? `
+          <span class="capsule-mobile-station font-mono">01/10</span>
+        ` : ''}
+
+        <button class="mobile-capsule-btn theme-toggle-btn" aria-label="Toggle Light / Dark Mode">
+          <span class="theme-toggle-icon">☀️</span>
+        </button>
+
+        <button id="capsule-mobile-trigger" class="mobile-capsule-btn" aria-label="Open Menu Index">
+          <span class="font-mono" style="font-size: 0.72rem; font-weight: 700;">MENU</span>
+        </button>
+
+        <a href="/platform" data-link class="mobile-capsule-cta font-mono">
+          <span>PLATFORM</span>
+        </a>
+      </div>
 
       <!-- Right Edge Vertical Scroll Progress Rail (Home Page Only) -->
       ${isHome ? `
@@ -253,16 +313,6 @@ export class Navigation {
         </nav>
       ` : ''}
 
-      <!-- Bottom Anchored Mobile Thumb Bar -->
-      <div class="inst-mobile-bar" aria-hidden="true">
-        <div class="mobile-station-badge font-mono">
-          <span class="mobile-station-current">01</span><span class="mobile-station-total">/10</span>
-        </div>
-        <a href="/platform" data-link class="mobile-platform-btn font-mono">
-          <span>PLATFORM</span>
-        </a>
-      </div>
-
       <!-- Full-Screen Index Overlay -->
       <div id="inst-index-overlay" class="inst-index-overlay" role="dialog" aria-modal="true" aria-label="System Navigation Index" aria-hidden="true">
         <div class="overlay-backdrop"></div>
@@ -279,6 +329,12 @@ export class Navigation {
           </div>
 
           <nav class="overlay-nav-links" aria-label="Site Navigation">
+            <a href="/" data-link class="overlay-nav-item ${this.currentRoute === '/' ? 'is-active' : ''}">
+              <span class="item-num font-mono">00</span>
+              <span class="item-title">HAUL ROAD RADAR</span>
+              <span class="item-desc font-mono">CONTINUOUS 10-STATION SCENARIO JOURNEY</span>
+            </a>
+
             <a href="/technology" data-link class="overlay-nav-item ${this.currentRoute === '/technology' ? 'is-active' : ''}">
               <span class="item-num font-mono">01</span>
               <span class="item-title">TECHNOLOGY</span>
@@ -312,7 +368,7 @@ export class Navigation {
             <a href="/login" data-link class="overlay-nav-item login-item">
               <span class="item-num font-mono">06</span>
               <span class="item-title">ACCESS PLATFORM</span>
-              <span class="item-desc font-mono">DRIVER / DISPATCHER / QA AUTHENTICATION →</span>
+              <span class="item-desc font-mono">OPERATOR / DISPATCH / QA AUTHENTICATION →</span>
             </a>
           </nav>
 

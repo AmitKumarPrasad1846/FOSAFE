@@ -1,6 +1,7 @@
 /**
- * FOSAFE Industrial Specification Footer
+ * FOSAFE v2 Industrial Specification Footer
  * Technical disclosure, system architecture index, standards reference.
+ * Fully supports Dark and Light modes.
  */
 
 export class Footer {
@@ -15,8 +16,8 @@ export class Footer {
 
   render() {
     this.footer.innerHTML = `
-      <div class="container">
-        <div class="footer-top">
+      <div style="max-width: 1320px; margin: 0 auto; padding: 0 var(--sp-6);">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-8); padding-bottom: var(--sp-12); border-bottom: 1px solid var(--line-structure);">
           <!-- Col 1: System Identity -->
           <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
@@ -27,57 +28,57 @@ export class Footer {
                   <polyline points="2 12 12 17 22 12" />
                 </svg>
               </div>
-              <span style="font-family: var(--font-display); font-size: 1.1rem; font-weight: 800; color: #EDEFEF; letter-spacing: 0.06em;">
+              <span style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); letter-spacing: 0.08em;">
                 FOSAFE
               </span>
             </div>
-            <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1rem; max-width: 380px;">
+            <p style="font-size: 0.85rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 1.25rem; max-width: 360px;">
               Fog-Aware Safety &amp; Fleet Monitoring System. Real-time vehicle awareness, dynamic collision avoidance envelopes, and centralized dispatch intelligence for heavy haulage operations in low-visibility open-cast mines.
             </p>
-            <div class="footer-spec-badge">
-              <span class="pulse-dot" style="background: var(--accent-amber);"></span>
-              <span>ARCHITECTURE SPEC // v1.0.4-PROD</span>
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0.65rem; background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary);">
+              <span class="capsule-status-dot" style="background: var(--accent-amber); box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);"></span>
+              <span>SPECIFICATION // v1.0.4-PROD</span>
             </div>
           </div>
 
           <!-- Col 2: Architecture Navigation -->
           <div>
-            <div class="footer-col-title">SYSTEM PLATFORM</div>
-            <ul class="footer-links">
-              <li><a href="/technology" data-link class="footer-link">Vehicle Edge Unit &amp; Sensors</a></li>
-              <li><a href="/how-it-works" data-link class="footer-link">Risk Arbitration Matrix</a></li>
-              <li><a href="/platform" data-link class="footer-link">Driver Safety Console</a></li>
-              <li><a href="/platform" data-link class="footer-link">Mine Fleet Control Room</a></li>
-              <li><a href="/platform" data-link class="footer-link">Haul Simulation Sandbox</a></li>
+            <div class="survey-label" style="margin-bottom: 0.75rem;">SYSTEM PLATFORM</div>
+            <ul style="display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
+              <li><a href="/technology" data-link style="color: var(--text-secondary); text-decoration: none;">Vehicle Edge Unit &amp; Sensors</a></li>
+              <li><a href="/how-it-works" data-link style="color: var(--text-secondary); text-decoration: none;">Risk Arbitration Matrix</a></li>
+              <li><a href="/platform" data-link style="color: var(--text-secondary); text-decoration: none;">Driver Safety Console</a></li>
+              <li><a href="/platform" data-link style="color: var(--text-secondary); text-decoration: none;">Mine Fleet Control Room</a></li>
+              <li><a href="/platform" data-link style="color: var(--text-secondary); text-decoration: none;">Haul Simulation Sandbox</a></li>
             </ul>
           </div>
 
           <!-- Col 3: Industrial Engineering -->
           <div>
-            <div class="footer-col-title">COLLABORATION</div>
-            <ul class="footer-links">
-              <li><a href="/collaboration" data-link class="footer-link">Mining Operator Trials</a></li>
-              <li><a href="/collaboration" data-link class="footer-link">FMS &amp; CAN Bus Integration</a></li>
-              <li><a href="/collaboration" data-link class="footer-link">Field Safety Validation</a></li>
-              <li><a href="/about" data-link class="footer-link">Open-Cast Hazard Research</a></li>
-              <li><a href="/login" data-link class="footer-link">Engineering Access Terminal</a></li>
+            <div class="survey-label" style="margin-bottom: 0.75rem;">COLLABORATION</div>
+            <ul style="display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
+              <li><a href="/collaboration" data-link style="color: var(--text-secondary); text-decoration: none;">Mining Operator Trials</a></li>
+              <li><a href="/collaboration" data-link style="color: var(--text-secondary); text-decoration: none;">FMS &amp; CAN Bus Integration</a></li>
+              <li><a href="/collaboration" data-link style="color: var(--text-secondary); text-decoration: none;">Field Safety Validation</a></li>
+              <li><a href="/about" data-link style="color: var(--text-secondary); text-decoration: none;">Open-Cast Hazard Research</a></li>
+              <li><a href="/login" data-link style="color: var(--text-secondary); text-decoration: none;">Engineering Access Terminal</a></li>
             </ul>
           </div>
 
           <!-- Col 4: Technical Compliance Focus -->
           <div>
-            <div class="footer-col-title">DOMAIN ALIGNMENT</div>
-            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); display: flex; flex-direction: column; gap: 0.6rem;">
+            <div class="survey-label" style="margin-bottom: 0.75rem;">DOMAIN ALIGNMENT</div>
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.75rem;">
               <div>
-                <strong style="color: var(--steel-300); display: block;">DGMS SAFETY GUIDELINE</strong>
+                <strong style="color: var(--text-primary); display: block; margin-bottom: 2px;">DGMS SAFETY GUIDELINE</strong>
                 Collision avoidance &amp; proximity warning system alignment for HEMM operations.
               </div>
               <div>
-                <strong style="color: var(--steel-300); display: block;">ISO 21815 FRAMEWORK</strong>
+                <strong style="color: var(--text-primary); display: block; margin-bottom: 2px;">ISO 21815 FRAMEWORK</strong>
                 Collision awareness and avoidance architecture for earth-moving machinery.
               </div>
               <div>
-                <strong style="color: var(--steel-300); display: block;">HARDWARE INTEGRITY</strong>
+                <strong style="color: var(--text-primary); display: block; margin-bottom: 2px;">HARDWARE INTEGRITY</strong>
                 Dual-core ESP32 edge processing with deterministic sensor bus polling.
               </div>
             </div>
@@ -85,11 +86,11 @@ export class Footer {
         </div>
 
         <!-- Bottom Technical Bar -->
-        <div class="footer-bottom">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: var(--sp-8); font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">
           <div>
             &copy; 2026 FOSAFE Platform. Built for open-cast mine haul road safety.
           </div>
-          <div style="display: flex; gap: 1.5rem;">
+          <div style="display: flex; flex-wrap: wrap; gap: 1.25rem;">
             <span>LATENCY: &lt; 45ms LOCAL LOOP</span>
             <span>RADIO: 868MHz / LTE / ESP-NOW</span>
             <span>POWER: 24V MINE SPEC</span>
