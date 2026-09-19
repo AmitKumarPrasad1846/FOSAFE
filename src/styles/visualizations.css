@@ -1,0 +1,641 @@
+/* FOSAFE Visualizations & Interactive Systems Styling */
+
+/* =========================================================================
+   HERO RADAR & MINE HAUL ROAD CANVAS
+   ========================================================================= */
+.hero-wrapper {
+  position: relative;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: var(--space-12) 0 var(--space-16);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.hero-bg-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.hero-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-overlay-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(circle at 75% 50%, rgba(11, 13, 18, 0.4) 0%, rgba(11, 13, 18, 0.85) 65%, #0B0D12 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  max-width: 650px;
+}
+
+.hero-headline {
+  margin-bottom: var(--space-4);
+}
+
+.hero-headline .headline-lead {
+  color: var(--accent-amber);
+  display: block;
+  font-size: 0.9em;
+}
+
+.hero-support-text {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-8);
+}
+
+.hero-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-10);
+}
+
+.hero-instrument-hud {
+  background: rgba(17, 20, 27, 0.85);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xs);
+  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  backdrop-filter: blur(6px);
+  position: relative;
+}
+
+.hero-instrument-hud::before {
+  content: "PRIMARY TARGET RADAR // ACTIVE SENSING";
+  position: absolute;
+  top: -9px;
+  left: 12px;
+  background: var(--bg-void);
+  padding: 0 6px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-amber);
+}
+
+/* =========================================================================
+   SECTION 01: THE PROBLEM
+   ========================================================================= */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .problem-grid {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+.problem-visual-box {
+  background: #090B0F;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.obscured-road-preview {
+  position: relative;
+  height: 280px;
+  background: #0D1016;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fog-shroud {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%, rgba(36, 43, 54, 0.85) 0%, rgba(20, 24, 32, 0.95) 80%);
+  filter: blur(1px);
+}
+
+.hidden-obstacle {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--status-critical);
+  border: 1px dashed var(--status-critical-border);
+  padding: 0.4rem 0.6rem;
+  background: rgba(239, 68, 68, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  z-index: 2;
+}
+
+/* =========================================================================
+   SECTION 02: THE FOSAFE APPROACH (TRANSFORMATION PIPELINE)
+   ========================================================================= */
+.approach-pipeline {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .approach-pipeline {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.approach-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-6);
+  position: relative;
+  transition: all var(--trans-base);
+}
+
+.approach-card:hover {
+  border-color: var(--steel-500);
+  background: var(--bg-elevated);
+  transform: translateY(-2px);
+}
+
+.approach-step-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  margin-bottom: var(--space-2);
+}
+
+.approach-card-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.approach-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* =========================================================================
+   SECTION 03: THE VEHICLE (EXPLODED TECHNICAL DIAGRAM)
+   ========================================================================= */
+.exploded-unit-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+}
+
+@media (min-width: 960px) {
+  .exploded-unit-container {
+    grid-template-columns: 1.5fr 1fr;
+    padding: var(--space-8);
+  }
+}
+
+.exploded-svg-viewport {
+  width: 100%;
+  height: 440px;
+  background: #080A0E;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sensor-node-btn {
+  cursor: pointer;
+  transition: transform 0.2s ease, stroke 0.2s ease;
+}
+
+.sensor-node-btn:hover, .sensor-node-btn.is-active {
+  transform: scale(1.04);
+}
+
+.sensor-detail-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-6);
+}
+
+.sensor-spec-table {
+  width: 100%;
+  margin-top: var(--space-4);
+  border-collapse: collapse;
+}
+
+.sensor-spec-table td {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.sensor-spec-table td:first-child {
+  color: var(--text-muted);
+  width: 45%;
+}
+
+.sensor-spec-table td:last-child {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* =========================================================================
+   SECTION 04: LOW-VISIBILITY INTELLIGENCE
+   ========================================================================= */
+.visibility-sim-shell {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+}
+
+.visibility-stepper {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-4);
+}
+
+.vis-step-btn {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.vis-step-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--steel-500);
+}
+
+.vis-step-btn.is-active {
+  background: #19202C;
+  border-color: var(--accent-amber);
+  color: var(--text-primary);
+}
+
+.vis-step-btn .vis-tag {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.vis-step-btn.is-active .vis-tag {
+  color: var(--accent-amber);
+}
+
+.vis-display-stage {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 900px) {
+  .vis-display-stage {
+    grid-template-columns: 1.4fr 1fr;
+  }
+}
+
+.vis-camera-box {
+  height: 320px;
+  background: #090B0E;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vis-radar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* =========================================================================
+   SECTION 05: DRIVER SAFETY CONSOLE PREVIEW
+   ========================================================================= */
+.driver-console-frame {
+  background: #0D1016;
+  border: 3px solid #28303F;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  padding: var(--space-6);
+  position: relative;
+  max-width: 940px;
+  margin: 0 auto;
+}
+
+.console-bezel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #202735;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.console-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .console-grid {
+    grid-template-columns: 1.3fr 1fr;
+  }
+}
+
+.proximity-radar-dial {
+  height: 280px;
+  background: #080A0E;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.driver-alert-banner {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  transition: all var(--trans-fast);
+}
+
+.driver-alert-banner.state-normal {
+  background: var(--status-normal-bg);
+  border: 1px solid var(--status-normal-border);
+  color: var(--status-normal);
+}
+
+.driver-alert-banner.state-warning {
+  background: var(--status-warning-bg);
+  border: 1px solid var(--status-warning-border);
+  color: var(--status-warning);
+}
+
+.driver-alert-banner.state-critical {
+  background: var(--status-critical-bg);
+  border: 1px solid var(--status-critical-border);
+  color: var(--status-critical);
+  animation: criticalPulse 1s infinite alternate;
+}
+
+@keyframes criticalPulse {
+  from { background-color: rgba(239, 68, 68, 0.15); }
+  to { background-color: rgba(239, 68, 68, 0.35); }
+}
+
+/* =========================================================================
+   SECTION 06: MINE CONTROL ROOM FLEET MONITORING
+   ========================================================================= */
+.control-room-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+}
+
+@media (min-width: 1024px) {
+  .control-room-layout {
+    grid-template-columns: 1.8fr 1fr;
+  }
+}
+
+.fleet-map-canvas-container {
+  height: 420px;
+  background: #07090C;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.fleet-roster-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fleet-roster-table th {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.fleet-roster-table td {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.65rem 0.6rem;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+}
+
+.fleet-roster-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.fleet-roster-table tr.is-selected td {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: var(--border-accent);
+}
+
+/* =========================================================================
+   SECTION 07: REAL-TIME SAFETY LOGIC PIPELINE
+   ========================================================================= */
+.pipeline-flow-strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+@media (min-width: 860px) {
+  .pipeline-flow-strip {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.pipeline-node {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-4);
+  position: relative;
+  transition: all var(--trans-base);
+}
+
+.pipeline-node.active-stage {
+  border-color: var(--accent-amber);
+  background: #171E2B;
+}
+
+.pipeline-connector {
+  display: none;
+  color: var(--steel-500);
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+}
+
+@media (min-width: 860px) {
+  .pipeline-connector {
+    display: block;
+  }
+}
+
+/* =========================================================================
+   SECTION 08: PHYSICAL + DIGITAL HARDWARE LOOP
+   ========================================================================= */
+.hardware-loop-display {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  padding: var(--space-8);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .hardware-loop-display {
+    grid-template-columns: 1fr 1.4fr;
+  }
+}
+
+.button-interactive-pod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-4);
+  background: #0A0D12;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+}
+
+.circuit-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.circuit-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  transition: all var(--trans-fast);
+}
+
+.circuit-step-item.is-active {
+  border-color: var(--accent-amber);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.circuit-step-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--steel-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--steel-300);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.circuit-step-item.is-active .circuit-step-dot {
+  border-color: var(--accent-amber);
+  background: var(--accent-amber);
+  color: var(--bg-void);
+  font-weight: 700;
+}

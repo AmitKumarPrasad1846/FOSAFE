@@ -1,0 +1,99 @@
+/* FOSAFE Design Tokens - Industrial Engineering Grade */
+:root {
+  /* Surface & Background Palettes */
+  --bg-void: #07080A;
+  --bg-base: #0B0D12;
+  --bg-surface: #11141B;
+  --bg-elevated: #161A23;
+  --bg-card: #141820;
+  --bg-card-hover: #191E28;
+  --bg-inset: #090B0F;
+
+  /* Industrial Borders & Structural Dividers */
+  --border-subtle: #1F2531;
+  --border-medium: #2B3342;
+  --border-strong: #3D485C;
+  --border-accent: rgba(245, 158, 11, 0.4);
+  --border-focus: #F59E0B;
+
+  /* Text & Readout Hierarchy */
+  --text-primary: #EDEFEF;
+  --text-secondary: #C1C6D0;
+  --text-muted: #7E8899;
+  --text-dim: #4D5666;
+  --text-inverted: #0B0D12;
+
+  /* Muted Industrial Steel */
+  --steel-100: #E2E6EC;
+  --steel-300: #9AA6B8;
+  --steel-500: #627084;
+  --steel-700: #384252;
+  --steel-900: #1B212B;
+
+  /* Safety Status Semantics (strictly functional, not decorative) */
+  --status-normal: #10B981;
+  --status-normal-bg: rgba(16, 185, 129, 0.1);
+  --status-normal-border: rgba(16, 185, 129, 0.3);
+
+  --status-warning: #F59E0B;
+  --status-warning-bg: rgba(245, 158, 11, 0.12);
+  --status-warning-border: rgba(245, 158, 11, 0.4);
+
+  --status-critical: #EF4444;
+  --status-critical-bg: rgba(239, 68, 68, 0.14);
+  --status-critical-border: rgba(239, 68, 68, 0.45);
+
+  /* Primary Industrial Safety Accent */
+  --accent-amber: #F59E0B;
+  --accent-amber-dark: #D97706;
+  --accent-amber-deep: #B45309;
+  --accent-amber-glow: rgba(245, 158, 11, 0.15);
+
+  /* Atmospheric & Visibility Variables */
+  --fog-tone: #242B36;
+  --fog-overlay: rgba(26, 32, 42, 0.65);
+  --grid-line: rgba(77, 86, 102, 0.14);
+  --grid-line-strong: rgba(77, 86, 102, 0.28);
+
+  /* Typography Scale & Families */
+  --font-display: 'Chivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Chivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  /* Controlled Spacing Scale */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
+
+  /* Structural Geometry */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+
+  /* Precision Shadows (Subtle, Dark, Depth-first) */
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+  --shadow-heavy: 0 12px 36px rgba(0, 0, 0, 0.7), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-radar: 0 0 40px rgba(11, 13, 18, 0.9);
+
+  /* Layout Boundaries */
+  --container-max: 1240px;
+  --header-height: 64px;
+  --header-height-scrolled: 54px;
+
+  /* Transitions */
+  --trans-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-base: 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-smooth: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}

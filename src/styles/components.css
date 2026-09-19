@@ -1,0 +1,300 @@
+/* FOSAFE Components - Industrial UI Elements */
+
+/* Industrial Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.75rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: var(--radius-xs);
+  transition: all var(--trans-fast);
+  position: relative;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background-color: var(--accent-amber);
+  color: var(--bg-void);
+  border: 1px solid var(--accent-amber-dark);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: #FBBF24;
+  border-color: var(--accent-amber);
+  color: #000;
+}
+
+.btn-secondary {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-elevated);
+  border-color: var(--steel-500);
+  color: #fff;
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-outline:hover {
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.btn-sm {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.75rem;
+}
+
+.btn-lg {
+  padding: 0.95rem 1.8rem;
+  font-size: 0.9rem;
+}
+
+.btn-danger {
+  background: var(--status-critical-bg);
+  border: 1px solid var(--status-critical-border);
+  color: var(--status-critical);
+}
+
+.btn-danger:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* Tactile Push-Button (Used in Section 08 Physical + Digital) */
+.tactile-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #2D3545 0%, #171B24 70%, #0F1218 100%);
+  border: 4px solid #364052;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.8),
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.15),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+  position: relative;
+}
+
+.tactile-button::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  border-radius: 50%;
+  border: 2px dashed rgba(245, 158, 11, 0.3);
+  pointer-events: none;
+  animation: rotateDashed 25s linear infinite;
+}
+
+@keyframes rotateDashed {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.tactile-button:hover {
+  border-color: #4B576F;
+}
+
+.tactile-button:active, .tactile-button.is-pressed {
+  transform: scale(0.95);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.9),
+    inset 0 4px 12px rgba(0, 0, 0, 0.8);
+  border-color: var(--accent-amber);
+}
+
+.tactile-button .button-cap {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #F59E0B, #B45309);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #07080A;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.tactile-button.is-pressed .button-cap {
+  background: radial-gradient(circle at 35% 35%, #FBBF24, #D97706);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+}
+
+/* Technical Panels & Blueprint Framing */
+.tech-panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: var(--space-6);
+  position: relative;
+  box-shadow: var(--shadow-panel);
+}
+
+.tech-panel::before, .tech-panel::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--steel-500);
+  pointer-events: none;
+}
+
+.tech-panel::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--accent-amber);
+  border-left: 2px solid var(--accent-amber);
+}
+
+.tech-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid var(--steel-500);
+  border-right: 2px solid var(--steel-500);
+}
+
+.tech-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.tech-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Metric Display Unit */
+.metric-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.metric-box .val-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.metric-box .metric-value {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.metric-box .metric-unit {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.metric-box .metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Industrial Grid Cards */
+.industrial-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .industrial-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .industrial-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .industrial-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Status Indicator Dot */
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.status-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-indicator.normal .status-indicator-dot {
+  background-color: var(--status-normal);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+}
+
+.status-indicator.warning .status-indicator-dot {
+  background-color: var(--status-warning);
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+}
+
+.status-indicator.critical .status-indicator-dot {
+  background-color: var(--status-critical);
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+}
