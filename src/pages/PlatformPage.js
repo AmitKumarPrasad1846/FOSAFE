@@ -159,17 +159,14 @@ export class PlatformPage {
               <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                   <span class="provenance-tag sim">SYNTHETIC ENVIRONMENT</span>
-                  <span class="small-mono" style="color: var(--text-secondary);">Offline Monte Carlo Engine &bull; Non-live Data Watermark Active</span>
-                </div>
-                  <span style="display: inline-block; width: 10px; height: 10px; background: #60A5FA; border-radius: 50%;"></span>
                   <div>
-                    <strong style="font-family: var(--font-mono); font-size: 0.82rem; color: #93C5FD;">OFFLINE SYNTHETIC SIMULATION SANDBOX</strong>
-                    <div style="font-size: 0.75rem; color: var(--text-muted);">
+                    <strong style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent-amber);">OFFLINE SYNTHETIC SIMULATION SANDBOX</strong>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary);">
                       NOTICE: All data displayed below is synthetically modeled. It does not represent active mining hardware or physical vehicle telemetries.
                     </div>
                   </div>
                 </div>
-                <span class="telemetry-tag simulated">SYNTHETIC MODEL ONLY</span>
+                <span class="provenance-tag sim">SYNTHETIC MODEL ONLY</span>
               </div>
 
               <div class="tech-panel">
