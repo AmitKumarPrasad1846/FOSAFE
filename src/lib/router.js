@@ -26,8 +26,7 @@ export class Router {
   isStaticHost() {
     return window.location.hostname.endsWith('github.io') || 
            window.location.protocol === 'file:' || 
-           window.location.pathname.includes('/FOSAFE') ||
-           window.location.pathname.split('/').length > 2;
+           window.location.pathname.toLowerCase().includes('/fosafe');
   }
 
   getCurrentPath() {
