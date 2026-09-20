@@ -5,7 +5,6 @@
  * and seamless bilingual English / Hindi (हिन्दी) support.
  */
 
-import { HaulRoadContinuousScene } from '../visualizations/HaulRoadContinuousScene.js';
 import { ExplodedVehicleUnit } from '../visualizations/ExplodedVehicleUnit.js';
 import { VisibilitySimulator } from '../visualizations/VisibilitySimulator.js';
 import { DriverConsolePreview } from '../visualizations/DriverConsolePreview.js';
@@ -19,13 +18,11 @@ export class HomePage {
   constructor(container) {
     this.container = container;
     this.activeInstances = [];
-    this.sceneInstance = null;
     this.unsubscribeLang = null;
   }
 
   mount() {
     this.render();
-    this.initPinnedScene();
     this.initStationComponents();
     this.bindInteractions();
 
@@ -41,11 +38,6 @@ export class HomePage {
     }
 
     this.destroyStationComponents();
-
-    if (this.sceneInstance && typeof this.sceneInstance.destroy === 'function') {
-      this.sceneInstance.destroy();
-      this.sceneInstance = null;
-    }
   }
 
   destroyStationComponents() {
@@ -64,13 +56,6 @@ export class HomePage {
       stationsContainer.innerHTML = this.renderStationsHTML();
       this.initStationComponents();
       this.bindInteractions();
-    }
-  }
-
-  initPinnedScene() {
-    const canvas = this.container.querySelector('#continuous-haul-road-canvas');
-    if (canvas) {
-      this.sceneInstance = new HaulRoadContinuousScene(canvas);
     }
   }
 
@@ -125,12 +110,6 @@ export class HomePage {
 
   render() {
     this.container.innerHTML = `
-      <!-- PERSISTENT PINNED CANVAS LAYER (HIGH-TECH LIDAR & RADAR FIELD) -->
-      <div class="scene-pinned-wrapper" aria-hidden="true">
-        <canvas id="continuous-haul-road-canvas" class="scene-pinned-canvas"></canvas>
-        <div class="scene-vignette"></div>
-      </div>
-
       <!-- CONTINUOUS STORYLINE STATIONS CONTAINER -->
       <div class="storyline-container" id="storyline-stations">
         ${this.renderStationsHTML()}

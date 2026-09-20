@@ -97,7 +97,7 @@ export class LoginPage {
     const current = roles[this.selectedRole] || roles.operator;
 
     this.container.innerHTML = `
-      <div style="padding: calc(72px + var(--sp-6)) var(--sp-6) var(--sp-16); display: flex; align-items: center; justify-content: center; min-height: 80vh; width: 100%; max-width: 100vw; overflow-x: hidden;">
+      <div class="subpage-container" style="display: flex; align-items: center; justify-content: center; min-height: 85vh;">
         <div style="width: 100%; max-width: 520px; min-width: 0;">
           
           <div class="station-panel" style="min-width: 0; word-break: break-word;">

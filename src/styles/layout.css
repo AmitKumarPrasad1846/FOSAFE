@@ -2,6 +2,7 @@
    FOSAFE v2 — Single Continuous Scene Layout & Grid Architecture
    Persistent pinned canvas background with layered scroll-driven station panels.
    Asymmetric editorial compositions, organic non-boxy curvature, deliberate negative space.
+   Robust zero-overflow geometry and full multi-device responsiveness.
    ========================================================================== */
 
 /* App Container */
@@ -14,7 +15,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Persistent Pinned Canvas Layer
+   Persistent Pinned Canvas Layer (Global Google Maps Mine Road Simulation)
    -------------------------------------------------------------------------- */
 .scene-pinned-wrapper {
   position: fixed;
@@ -48,35 +49,46 @@
   position: relative;
   z-index: var(--z-content);
   width: 100%;
+  min-width: 0;
 }
 
 .station-section {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  padding: calc(72px + var(--sp-8)) var(--sp-6) var(--sp-16);
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--sp-12) clamp(1.25rem, 5vw, 4rem);
   box-sizing: border-box;
+}
+
+@media (min-width: 901px) {
+  .station-section {
+    padding-left: clamp(4.5rem, 7vw, 7.5rem);
+    padding-right: clamp(4.5rem, 7vw, 7.5rem);
+  }
 }
 
 .station-container {
   width: 100%;
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
   position: relative;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 /* Asymmetrical Compositions with zero-overflow safety */
 .station-split-left {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: var(--sp-8);
   align-items: center;
 }
 
 .station-split-right {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   gap: var(--sp-8);
   align-items: center;
 }
@@ -89,11 +101,12 @@
 
 .station-full {
   width: 100%;
+  min-width: 0;
 }
 
 /* Editorial Negative Space Spacer */
 .station-spacer {
-  min-height: 25vh;
+  min-height: 20vh;
   pointer-events: none;
 }
 
@@ -117,6 +130,7 @@
   gap: var(--sp-4);
   align-items: center;
   margin-top: var(--sp-6);
+  flex-wrap: wrap;
 }
 
 .hero-readout-strip {
@@ -133,7 +147,6 @@
   -webkit-backdrop-filter: var(--glass-blur);
   transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease;
   min-width: 0;
-  overflow: hidden;
 }
 
 .hero-readout-strip:hover {
@@ -250,13 +263,15 @@
 }
 
 /* --------------------------------------------------------------------------
-   Station 09 (Platform Tiers - 3 Pillars)
+   Station 10 (Platform Tiers - 3 Pillars - Fixed Zero-Overflow Architecture)
    -------------------------------------------------------------------------- */
 .platform-tiers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--sp-6);
-  margin-top: var(--sp-8);
+  margin-top: var(--sp-6);
+  width: 100%;
+  box-sizing: border-box;
   min-width: 0;
 }
 
@@ -264,11 +279,12 @@
   background: var(--bg-panel);
   border: 1px solid var(--line-structure);
   border-radius: var(--radius-xl);
-  padding: var(--sp-7);
+  padding: var(--sp-6);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-width: 0;
+  box-sizing: border-box;
   box-shadow: var(--panel-shadow);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -287,19 +303,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--sp-4);
-  flex-wrap: wrap;
+  margin-bottom: var(--sp-3);
   gap: 0.5rem;
 }
 
 /* --------------------------------------------------------------------------
-   Station 10 (Field Trials & Collaboration)
+   Station 10 (Field Trials & Collaboration Paths)
    -------------------------------------------------------------------------- */
 .collab-specs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--sp-4);
-  margin-top: var(--sp-8);
+  margin-top: var(--sp-6);
+  width: 100%;
+  box-sizing: border-box;
   min-width: 0;
 }
 
@@ -310,6 +327,7 @@
   padding: var(--sp-5);
   box-shadow: var(--card-shadow);
   min-width: 0;
+  box-sizing: border-box;
   word-break: break-word;
   overflow-wrap: break-word;
   transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease;
@@ -318,6 +336,25 @@
 .collab-spec-box:hover {
   transform: translateY(-2px);
   border-color: var(--line-accent);
+}
+
+/* --------------------------------------------------------------------------
+   Subpages Global Layout Wrapper
+   -------------------------------------------------------------------------- */
+.subpage-container {
+  padding: var(--sp-12) clamp(1.25rem, 5vw, 4rem) var(--sp-16);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+@media (min-width: 901px) {
+  .subpage-container {
+    padding-left: clamp(4.5rem, 7vw, 7.5rem);
+    padding-right: clamp(4.5rem, 7vw, 7.5rem);
+  }
 }
 
 /* Global Footer */
@@ -331,7 +368,7 @@
 }
 
 .footer-inner {
-  max-width: 1320px;
+  max-width: 1240px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -348,20 +385,61 @@
   min-width: 160px;
 }
 
-/* Responsive Overrides */
+/* ==========================================================================
+   Comprehensive Device-Friendly Breakpoints (Mobile & Tablet)
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .platform-tiers-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .collab-specs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 960px) {
   .station-split-left,
   .station-split-right {
     grid-template-columns: 1fr;
+    gap: var(--sp-6);
+  }
+  .hero-readout-strip {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
+  .station-section {
+    min-height: auto;
+    padding: 3rem 1.25rem 6.5rem;
+  }
+  .subpage-container {
+    padding: 2.5rem 1.25rem 6.5rem;
+    min-height: auto;
+  }
+  .site-footer {
+    padding-bottom: 5.5rem; /* Clearance for floating mobile dock */
+  }
+}
+
+@media (max-width: 700px) {
+  .platform-tiers-grid {
+    grid-template-columns: 1fr;
+  }
+  .collab-specs-grid {
+    grid-template-columns: 1fr;
+  }
   .problem-comparison-box {
     grid-template-columns: 1fr;
   }
   .hero-actions-row {
     flex-direction: column;
     align-items: stretch;
+  }
+  .hero-readout-strip {
+    grid-template-columns: 1fr;
+  }
+  .footer-inner {
+    flex-direction: column;
   }
 }

@@ -11,11 +11,13 @@ export const DICTIONARY = {
   en: {
     // Nav & Shell
     'nav.brand': 'FOSAFE',
-    'nav.tech': 'TECH',
+    'nav.home': 'HOME',
+    'nav.tech': 'TECHNOLOGY',
     'nav.physics': 'HOW IT WORKS',
     'nav.platform': 'PLATFORM',
+    'nav.collab': 'COLLABORATION',
     'nav.about': 'ABOUT',
-    'nav.access': 'ACCESS',
+    'nav.access': 'OPERATOR TERMINAL',
     'nav.login': 'LOGIN',
     'nav.theme_toggle': 'Toggle Theme',
     'nav.lang_toggle': 'Language',
@@ -204,11 +206,13 @@ export const DICTIONARY = {
   hi: {
     // Nav & Shell
     'nav.brand': 'FOSAFE',
+    'nav.home': 'होम',
     'nav.tech': 'तकनीक',
-    'nav.physics': 'यह कैसे काम करता है',
+    'nav.physics': 'कार्यप्रणाली',
     'nav.platform': 'प्लेटफ़ॉर्म',
-    'nav.about': 'हमारे बारे में',
-    'nav.access': 'प्रवेश',
+    'nav.collab': 'सहयोग व पायलट',
+    'nav.about': 'परिचय',
+    'nav.access': 'ऑपरेटर टर्मिनल',
     'nav.login': 'लॉगिन',
     'nav.theme_toggle': 'थीम बदलें',
     'nav.lang_toggle': 'भाषा',

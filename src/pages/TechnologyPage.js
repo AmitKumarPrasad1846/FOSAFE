@@ -28,8 +28,8 @@ export class TechnologyPage {
 
   render() {
     this.container.innerHTML = `
-      <div style="padding: calc(72px + var(--sp-6)) var(--sp-6) var(--sp-16); width: 100%; max-width: 100vw; overflow-x: hidden;">
-        <div style="max-width: 1320px; margin: 0 auto; min-width: 0;">
+      <div class="subpage-container">
+        <div class="station-container">
           
           <!-- Page Header -->
           <div style="margin-bottom: var(--sp-8); max-width: 820px; min-width: 0;">

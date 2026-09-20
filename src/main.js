@@ -23,20 +23,29 @@ import { CollaborationPage } from './pages/CollaborationPage.js';
 import { AboutPage } from './pages/AboutPage.js';
 import { LoginPage } from './pages/LoginPage.js';
 
+import { HaulRoadContinuousScene } from './visualizations/HaulRoadContinuousScene.js';
+
 class App {
   constructor() {
     this.appElement = document.getElementById('app');
     this.currentPageInstance = null;
     this.navInstance = null;
     this.router = null;
+    this.globalScene = null;
 
     this.initShell();
+    this.initGlobalScene();
     this.initScrollEngine();
     this.initRouter();
   }
 
   initShell() {
     this.appElement.innerHTML = `
+      <!-- GLOBAL PERSISTENT GOOGLE MAPS MINE ROAD NETWORK CANVAS -->
+      <div class="scene-pinned-wrapper" aria-hidden="true">
+        <canvas id="continuous-haul-road-canvas" class="scene-pinned-canvas"></canvas>
+        <div class="scene-vignette"></div>
+      </div>
       <div id="site-nav-container"></div>
       <main id="page-content" role="main"></main>
       <footer id="site-footer" class="site-footer"></footer>
@@ -47,6 +56,13 @@ class App {
 
     this.navInstance = new Navigation(navContainer, '/');
     new Footer(footerEl);
+  }
+
+  initGlobalScene() {
+    const canvas = document.getElementById('continuous-haul-road-canvas');
+    if (canvas) {
+      this.globalScene = new HaulRoadContinuousScene(canvas);
+    }
   }
 
   initScrollEngine() {

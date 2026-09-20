@@ -1,8 +1,15 @@
 /**
- * FOSAFE v2 Floating Right-Side Capsule Navigation
- * Ultra-compact floating pill docked on top-right (desktop)
- * and thumb-reachable floating bottom capsule (mobile).
- * Direct, sleek, and uncluttered with bilingual EN/हिन्दी toggle.
+ * FOSAFE v2 Right-Side Vertical Icon Navigation Dock & Left-Side Scroll Rail
+ *
+ * Architecture:
+ * 1. Desktop Right Dock: Sleek vertical capsule docked on right edge with modern
+ *    vector icons for all pages (Home, Tech, How It Works, Platform, Collaboration, About, Login).
+ *    Hovering over any icon reveals a smooth glassmorphic tooltip pill sliding out to the left.
+ *    Includes instant Language (EN/हिन्दी) and Theme (☀️/🌙) toggles.
+ * 2. Left-Side 10-Station Story Rail: Placed on the left edge for the Home page.
+ *    Tracks real-time scroll position via bounding-rect viewport geometry so the active
+ *    amber glowing indicator follows the user smoothly and jumping by clicking works instantly.
+ * 3. Mobile Floating Bottom Dock: Thumb-reachable bottom capsule for screens <= 900px.
  */
 
 import { scrollManager } from '../lib/scroll.js';
@@ -14,6 +21,7 @@ export class Navigation {
     this.container = containerElement;
     this.currentRoute = currentRoute;
     this.activeStation = 1;
+    this.scrollListener = null;
 
     this.stationKeys = [
       { id: 'station-01', num: '01', key: 'rail.s01' },
@@ -37,14 +45,15 @@ export class Navigation {
     this.initScrollSpy();
     this.syncThemeIcon();
 
-    themeManager.subscribe(() => {
+    this.unsubscribeTheme = themeManager.subscribe(() => {
       this.syncThemeIcon();
     });
 
-    i18n.subscribe(() => {
+    this.unsubscribeLang = i18n.subscribe(() => {
       this.render();
       this.bindEvents();
       this.syncThemeIcon();
+      this.initScrollSpy();
       this.updateActiveStation(this.activeStation);
     });
   }
@@ -67,27 +76,53 @@ export class Navigation {
   }
 
   initScrollSpy() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+      this.scrollListener = null;
+    }
+
     if (this.currentRoute !== '/') return;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const stationId = entry.target.id;
-          const found = this.stationKeys.find(s => s.id === stationId);
-          if (found) {
-            this.updateActiveStation(parseInt(found.num, 10));
-          }
-        }
-      });
-    }, {
-      rootMargin: '-30% 0px -40% 0px',
-      threshold: 0.1
-    });
+    let ticking = false;
+    this.scrollListener = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          this.checkActiveStation();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-    this.stationKeys.forEach(s => {
+    window.addEventListener('scroll', this.scrollListener, { passive: true });
+
+    // Initial check after short mount delay
+    setTimeout(() => {
+      this.checkActiveStation();
+      this.bindRailClicks();
+    }, 150);
+  }
+
+  checkActiveStation() {
+    if (this.currentRoute !== '/') return;
+
+    const threshold = window.innerHeight * 0.40;
+    let currentStation = 1;
+
+    for (let i = 0; i < this.stationKeys.length; i++) {
+      const s = this.stationKeys[i];
       const el = document.getElementById(s.id);
-      if (el) observer.observe(el);
-    });
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= threshold) {
+          currentStation = parseInt(s.num, 10);
+        }
+      }
+    }
+
+    if (currentStation !== this.activeStation) {
+      this.updateActiveStation(currentStation);
+    }
   }
 
   updateActiveStation(num) {
@@ -104,39 +139,45 @@ export class Navigation {
       }
     });
 
-    const mobileStation = document.querySelector('.capsule-mobile-station');
+    const mobileStation = document.querySelector('.mobile-station-badge');
     if (mobileStation) {
       mobileStation.textContent = `${String(num).padStart(2, '0')}/10`;
     }
   }
 
-  bindEvents() {
-    // Theme toggles
-    this.container.querySelectorAll('.theme-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        themeManager.toggle();
-        this.syncThemeIcon();
-      });
-    });
-
-    // Language toggle
-    this.container.querySelectorAll('.lang-toggle-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        i18n.toggle();
-      });
-    });
-
-    // Click rail markers to smooth scroll
+  bindRailClicks() {
     document.querySelectorAll('.rail-marker').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.onclick = (e) => {
+        e.preventDefault();
         const targetId = btn.getAttribute('data-target-id');
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
-          scrollManager.scrollTo(targetEl, { offset: -30 });
+          scrollManager.scrollTo(targetEl, { offset: -25 });
         }
-      });
+      };
     });
+  }
+
+  bindEvents() {
+    // Theme toggles
+    this.container.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        themeManager.toggle();
+        this.syncThemeIcon();
+      };
+    });
+
+    // Language toggles
+    this.container.querySelectorAll('.lang-toggle-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        i18n.toggle();
+      };
+    });
+
+    // Rail click delegation
+    this.bindRailClicks();
   }
 
   render() {
@@ -144,76 +185,116 @@ export class Navigation {
     const lang = i18n.getLang();
 
     this.container.innerHTML = `
-      <!-- FLOATING RIGHT-SIDE CAPSULE NAVBAR (DESKTOP) -->
-      <nav class="nav-capsule-desktop" role="navigation" aria-label="Main Capsule Navigation">
-        <!-- Capsule Brand & Live Beacon -->
-        <a href="/" data-link class="capsule-brand-link" aria-label="FOSAFE Home">
-          <span class="capsule-brand-text">FOSAFE</span>
-          <span class="capsule-status-dot" title="Live OBU Telemetry Active"></span>
+      <!-- ===================================================================
+           1. RIGHT-SIDE VERTICAL ICON DOCK (DESKTOP)
+           =================================================================== -->
+      <nav class="nav-dock-desktop" role="navigation" aria-label="Main Icon Navigation">
+        <!-- Brand Glyph -->
+        <a href="/" data-link class="dock-brand-link" aria-label="FOSAFE Home" title="FOSAFE Home">
+          <span class="dock-brand-mark">FO</span>
+          <span class="dock-status-dot" title="Live LiDAR & Collision Avoidance Active"></span>
         </a>
 
-        <span class="capsule-sep" aria-hidden="true"></span>
+        <div class="dock-divider" aria-hidden="true"></div>
 
-        <!-- Quick Nav Route Pills -->
-        <div class="capsule-links-group">
-          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}">${i18n.t('nav.tech')}</a>
-          <a href="/how-it-works" data-link class="capsule-nav-link ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}">${i18n.t('nav.physics')}</a>
-          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}">${i18n.t('nav.platform')}</a>
-          <a href="/about" data-link class="capsule-nav-link ${this.currentRoute === '/about' ? 'is-active' : ''}">${i18n.t('nav.about')}</a>
+        <!-- Navigation Icon Buttons with Hover Tooltips sliding to the Left -->
+        <div class="dock-items-list">
+          <!-- Home -->
+          <a href="/" data-link class="dock-btn ${this.currentRoute === '/' ? 'is-active' : ''}" aria-label="${i18n.t('nav.home')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5z"/>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.home')}</span>
+          </a>
+
+          <!-- Technology -->
+          <a href="/technology" data-link class="dock-btn ${this.currentRoute === '/technology' ? 'is-active' : ''}" aria-label="${i18n.t('nav.tech')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+              <rect x="9" y="9" width="6" height="6"></rect>
+              <line x1="9" y1="1" x2="9" y2="4"></line>
+              <line x1="15" y1="1" x2="15" y2="4"></line>
+              <line x1="9" y1="20" x2="9" y2="23"></line>
+              <line x1="15" y1="20" x2="15" y2="23"></line>
+              <line x1="20" y1="9" x2="23" y2="9"></line>
+              <line x1="20" y1="14" x2="23" y2="14"></line>
+              <line x1="1" y1="9" x2="4" y2="9"></line>
+              <line x1="1" y1="14" x2="4" y2="14"></line>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.tech')}</span>
+          </a>
+
+          <!-- How It Works / Physics -->
+          <a href="/how-it-works" data-link class="dock-btn ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}" aria-label="${i18n.t('nav.physics')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+              <path d="M2 12h20"></path>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.physics')}</span>
+          </a>
+
+          <!-- Platform & Simulator -->
+          <a href="/platform" data-link class="dock-btn ${this.currentRoute === '/platform' ? 'is-active' : ''}" aria-label="${i18n.t('nav.platform')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.platform')}</span>
+          </a>
+
+          <!-- Collaboration & Pilots -->
+          <a href="/collaboration" data-link class="dock-btn ${this.currentRoute === '/collaboration' ? 'is-active' : ''}" aria-label="${i18n.t('nav.collab')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.collab')}</span>
+          </a>
+
+          <!-- About System -->
+          <a href="/about" data-link class="dock-btn ${this.currentRoute === '/about' ? 'is-active' : ''}" aria-label="${i18n.t('nav.about')}">
+            <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span class="dock-tooltip font-mono">${i18n.t('nav.about')}</span>
+          </a>
         </div>
 
-        <span class="capsule-sep" aria-hidden="true"></span>
+        <div class="dock-divider" aria-hidden="true"></div>
 
-        <!-- Language Switcher Pill (EN / हिन्दी) -->
-        <button class="capsule-lang-btn lang-toggle-btn" aria-label="Switch between English and Hindi" title="Change Language / भाषा बदलें">
-          <span class="lang-opt ${lang === 'en' ? 'is-active' : ''}">EN</span>
-          <span class="lang-slash">/</span>
-          <span class="lang-opt ${lang === 'hi' ? 'is-active' : ''}">हिन्दी</span>
-        </button>
-
-        <!-- Dark / Light Theme Toggle -->
-        <button class="capsule-btn-icon theme-toggle-btn" aria-label="Toggle Light / Dark Mode" title="Toggle Light/Dark Theme">
-          <span class="theme-toggle-icon">☀️</span>
-        </button>
-
-        <span class="capsule-sep" aria-hidden="true"></span>
-
-        <!-- Access Platform Action -->
-        <a href="/login" data-link class="capsule-cta-btn" aria-label="Access Unified Platform">
-          <span>${i18n.t('nav.access')}</span>
-          <span class="cta-arrow">→</span>
+        <!-- Access / Demo Portal CTA -->
+        <a href="/login" data-link class="dock-btn dock-btn-cta ${this.currentRoute === '/login' ? 'is-active' : ''}" aria-label="${i18n.t('nav.access')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+          </svg>
+          <span class="dock-tooltip font-mono">${i18n.t('nav.access')}</span>
         </a>
+
+        <div class="dock-divider" aria-hidden="true"></div>
+
+        <!-- Utility Controls: Language & Dark/Light Theme -->
+        <div class="dock-utils-list">
+          <button class="dock-btn lang-toggle-btn" aria-label="Toggle English and Hindi" title="Change Language / भाषा">
+            <span class="dock-lang-pill font-mono">${lang === 'en' ? 'HI' : 'EN'}</span>
+            <span class="dock-tooltip font-mono">${lang === 'en' ? 'हिन्दी में बदलें' : 'Switch to English'}</span>
+          </button>
+
+          <button class="dock-btn theme-toggle-btn" aria-label="Toggle Light and Dark Mode" title="Theme">
+            <span class="theme-toggle-icon">☀️</span>
+            <span class="dock-tooltip font-mono">${lang === 'hi' ? 'थीम बदलें' : 'Toggle Theme'}</span>
+          </button>
+        </div>
       </nav>
 
-      <!-- FLOATING BOTTOM CAPSULE NAVBAR (MOBILE / TABLET) -->
-      <div class="nav-capsule-mobile" role="navigation" aria-label="Mobile Navigation Bar">
-        <a href="/" data-link class="mobile-capsule-brand">
-          <span class="capsule-brand-text" style="font-size: 1.05rem;">FOSAFE</span>
-          <span class="capsule-status-dot"></span>
-        </a>
-
-        <div style="display: flex; align-items: center; gap: 0.2rem;">
-          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">${i18n.t('nav.tech')}</a>
-          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">${i18n.t('nav.platform')}</a>
-        </div>
-
-        <!-- Mobile Language Toggle -->
-        <button class="capsule-lang-btn lang-toggle-btn" style="padding: 0.25rem 0.5rem; font-size: 0.65rem;" title="Change Language">
-          <span class="lang-opt ${lang === 'en' ? 'is-active' : ''}">EN</span>
-          <span class="lang-slash">/</span>
-          <span class="lang-opt ${lang === 'hi' ? 'is-active' : ''}">हिं</span>
-        </button>
-
-        <button class="mobile-capsule-btn theme-toggle-btn" aria-label="Toggle Light / Dark Mode" style="padding: 0.25rem 0.5rem;">
-          <span class="theme-toggle-icon">☀️</span>
-        </button>
-
-        <a href="/login" data-link class="mobile-capsule-cta font-mono" style="padding: 0.3rem 0.75rem; font-size: 0.72rem;">
-          <span>${i18n.t('nav.login')}</span>
-        </a>
-      </div>
-
-      <!-- Right Edge Vertical Scroll Progress Rail (Home Page Only) -->
+      <!-- ===================================================================
+           2. LEFT-SIDE 10-STATION STORY RAIL (DESKTOP - HOME ONLY)
+           =================================================================== -->
       ${isHome ? `
         <nav class="inst-progress-rail" aria-label="Haul Road Station Progression">
           <div class="rail-spine"></div>
@@ -232,6 +313,70 @@ export class Navigation {
           </div>
         </nav>
       ` : ''}
+
+      <!-- ===================================================================
+           3. MOBILE / TABLET FLOATING BOTTOM CAPSULE DOCK (<= 900PX)
+           =================================================================== -->
+      <nav class="nav-dock-mobile" role="navigation" aria-label="Mobile Navigation">
+        <!-- Home -->
+        <a href="/" data-link class="mobile-dock-btn ${this.currentRoute === '/' ? 'is-active' : ''}" title="${i18n.t('nav.home')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V9.5z"/>
+          </svg>
+        </a>
+
+        <!-- Tech -->
+        <a href="/technology" data-link class="mobile-dock-btn ${this.currentRoute === '/technology' ? 'is-active' : ''}" title="${i18n.t('nav.tech')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+            <rect x="9" y="9" width="6" height="6"></rect>
+          </svg>
+        </a>
+
+        <!-- How It Works -->
+        <a href="/how-it-works" data-link class="mobile-dock-btn ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}" title="${i18n.t('nav.physics')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+          </svg>
+        </a>
+
+        <!-- Platform -->
+        <a href="/platform" data-link class="mobile-dock-btn ${this.currentRoute === '/platform' ? 'is-active' : ''}" title="${i18n.t('nav.platform')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+          </svg>
+        </a>
+
+        <!-- Terminal Login -->
+        <a href="/login" data-link class="mobile-dock-btn mobile-dock-cta ${this.currentRoute === '/login' ? 'is-active' : ''}" title="${i18n.t('nav.access')}">
+          <svg class="dock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777z"></path>
+          </svg>
+        </a>
+
+        <!-- Mobile Lang Toggle -->
+        <button class="mobile-dock-btn lang-toggle-btn font-mono" title="Language">
+          ${lang === 'en' ? 'HI' : 'EN'}
+        </button>
+
+        <!-- Mobile Theme Toggle -->
+        <button class="mobile-dock-btn theme-toggle-btn" title="Theme">
+          <span class="theme-toggle-icon">☀️</span>
+        </button>
+
+        ${isHome ? `<span class="mobile-station-badge font-mono">01/10</span>` : ''}
+      </nav>
     `;
+  }
+
+  destroy() {
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+      this.scrollListener = null;
+    }
+    if (this.unsubscribeTheme) this.unsubscribeTheme();
+    if (this.unsubscribeLang) this.unsubscribeLang();
   }
 }
