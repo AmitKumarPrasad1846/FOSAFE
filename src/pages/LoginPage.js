@@ -1,23 +1,36 @@
 /**
  * FOSAFE v2 LoginPage
- * Industrial Access Terminal for In-Cab Operator, Dispatcher Ops,
- * and Simulation Engineers with instant demonstration mode.
- * Fully supports Dark and Light modes.
+ * Industrial Access Terminal: Simple role selector (Driver, Mine Dispatcher, Engineer)
+ * with instant one-click demonstration access to the platform.
+ * Full bilingual EN/HI support and theme adaptability.
  */
+
+import { i18n } from '../lib/i18n.js';
 
 export class LoginPage {
   constructor(container, router) {
     this.container = container;
     this.router = router;
     this.selectedRole = 'operator';
+    this.unsubscribeLang = null;
   }
 
   mount() {
     this.render();
     this.bindEvents();
+
+    this.unsubscribeLang = i18n.subscribe(() => {
+      this.render();
+      this.bindEvents();
+    });
   }
 
-  unmount() {}
+  unmount() {
+    if (this.unsubscribeLang) {
+      this.unsubscribeLang();
+      this.unsubscribeLang = null;
+    }
+  }
 
   selectRole(role) {
     this.selectedRole = role;
@@ -39,7 +52,7 @@ export class LoginPage {
         e.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
-          submitBtn.textContent = 'AUTHENTICATING...';
+          submitBtn.textContent = 'CONNECTING...';
           submitBtn.style.opacity = '0.7';
           submitBtn.disabled = true;
         }
@@ -48,7 +61,7 @@ export class LoginPage {
           if (this.router) {
             this.router.navigate('/platform');
           }
-        }, 500);
+        }, 350);
       });
     }
   }
@@ -57,101 +70,87 @@ export class LoginPage {
     const roles = {
       operator: {
         id: 'operator',
-        badge: 'VEHICLE CAB // ROLE 01',
-        title: 'Haul Truck Driver Console',
-        unitDefault: 'UNIT D-07 [CAT 797F]',
-        zoneDefault: 'RAMP 04 BENCH B',
-        color: 'var(--accent-amber)',
-        desc: 'In-cab 360° radar HUD, forward obstacle readouts, and Fog Assist controls.'
+        badge: 'ROLE 01 // IN-CAB',
+        title: 'Truck Driver Screen',
+        unitDefault: 'HAUL TRUCK D-07 [400t]',
+        zoneDefault: 'RAMP 04 (HAIRPIN CURVE)',
+        desc: 'In-cab 360° radar screen, proximity warnings, and Fog Assist button.'
       },
       dispatch: {
         id: 'dispatch',
-        badge: 'DISPATCH OPS // ROLE 02',
-        title: 'Mine Fleet Operations Center',
-        unitDefault: 'CENTRAL DISPATCH CONSOLE 01',
-        zoneDefault: 'ALL PIT SECTORS (01–06)',
-        color: 'var(--state-normal)',
-        desc: 'Pit-wide topographical radar, active hazard alerts, and fleet risk indices.'
+        badge: 'ROLE 02 // CONTROL ROOM',
+        title: 'Mine Dispatcher Ops',
+        unitDefault: 'CENTRAL DISPATCH RADAR 01',
+        zoneDefault: 'ALL MINE SECTORS',
+        desc: 'Pit-wide live radar map, blind curve hazard alerts, and emergency radio.'
       },
       qa: {
         id: 'qa',
-        badge: 'ENGINEERING // ROLE 03',
-        title: 'Simulation & Telematics Sandbox',
-        unitDefault: 'OFFLINE QA TESTBENCH',
-        zoneDefault: 'SYNTHETIC CONVERGENCE KERNEL',
-        color: '#60A5FA',
-        desc: 'Monte Carlo traffic runs and stress tests in synthetic dense fog.'
+        badge: 'ROLE 03 // SAFETY ENGINEER',
+        title: 'Safety Testing Simulator',
+        unitDefault: 'OFFLINE TESTBENCH',
+        zoneDefault: 'VIRTUAL DENSE FOG TRIAL',
+        desc: 'Simulate virtual truck braking across 5,000 dense fog runs.'
       }
     };
 
-    const current = roles[this.selectedRole];
+    const current = roles[this.selectedRole] || roles.operator;
 
     this.container.innerHTML = `
-      <div style="padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-20); display: flex; align-items: center; justify-content: center; min-height: 80vh;">
-        <div style="width: 100%; max-width: 540px;">
-          <!-- Gateway Box -->
-          <div class="station-panel">
+      <div style="padding: calc(72px + var(--sp-6)) var(--sp-6) var(--sp-16); display: flex; align-items: center; justify-content: center; min-height: 80vh; width: 100%; max-width: 100vw; overflow-x: hidden;">
+        <div style="width: 100%; max-width: 520px; min-width: 0;">
+          
+          <div class="station-panel" style="min-width: 0; word-break: break-word;">
             <!-- Gateway Header -->
             <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1.25rem;">
               <div>
-                <span class="survey-label">SECURITY PROTOCOL</span>
-                <h3 style="font-size: 1.35rem; color: var(--text-primary); margin-top: 0.2rem;">Industrial Access Terminal</h3>
+                <span class="survey-label">${i18n.t('login.marker')}</span>
+                <h2 style="font-size: 1.35rem; color: var(--text-primary); margin-top: 0.2rem;">${i18n.t('login.title')}</h2>
               </div>
-              <span class="telemetry-tag normal"><span class="pulse-dot"></span>SECURED</span>
+              <span class="telemetry-tag normal"><span class="pulse-dot"></span>READY</span>
             </div>
 
-            <!-- Role Selector Tabs -->
-            <div style="display: flex; gap: 0.35rem; margin-bottom: 1.25rem;">
-              <button class="capsule-nav-link ${this.selectedRole === 'operator' ? 'is-active' : ''}" data-role="operator" style="flex: 1; text-align: center; padding: 0.45rem; font-size: 0.75rem; border: 1px solid ${this.selectedRole === 'operator' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.selectedRole === 'operator' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
-                OPERATOR
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.25rem;">
+              ${i18n.t('login.lead')}
+            </p>
+
+            <!-- Role Pills -->
+            <div style="display: flex; gap: 0.4rem; margin-bottom: 1.25rem; flex-wrap: wrap;">
+              <button data-role="operator" class="capsule-nav-link ${this.selectedRole === 'operator' ? 'is-active' : ''}" style="flex: 1; min-width: 120px; text-align: center; padding: 0.5rem 0.6rem; cursor: pointer; border: 1px solid var(--line-structure);">
+                ${i18n.t('login.role_operator')}
               </button>
-              <button class="capsule-nav-link ${this.selectedRole === 'dispatch' ? 'is-active' : ''}" data-role="dispatch" style="flex: 1; text-align: center; padding: 0.45rem; font-size: 0.75rem; border: 1px solid ${this.selectedRole === 'dispatch' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.selectedRole === 'dispatch' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
-                DISPATCHER
+              <button data-role="dispatch" class="capsule-nav-link ${this.selectedRole === 'dispatch' ? 'is-active' : ''}" style="flex: 1; min-width: 120px; text-align: center; padding: 0.5rem 0.6rem; cursor: pointer; border: 1px solid var(--line-structure);">
+                ${i18n.t('login.role_dispatch')}
               </button>
-              <button class="capsule-nav-link ${this.selectedRole === 'qa' ? 'is-active' : ''}" data-role="qa" style="flex: 1; text-align: center; padding: 0.45rem; font-size: 0.75rem; border: 1px solid ${this.selectedRole === 'qa' ? 'var(--accent-amber)' : 'var(--line-structure)'}; background: ${this.selectedRole === 'qa' ? 'var(--capsule-pill-active)' : 'var(--bg-inset)'}; cursor: pointer;">
-                SIMULATION
+              <button data-role="qa" class="capsule-nav-link ${this.selectedRole === 'qa' ? 'is-active' : ''}" style="flex: 1; min-width: 120px; text-align: center; padding: 0.5rem 0.6rem; cursor: pointer; border: 1px solid var(--line-structure);">
+                ${i18n.t('login.role_qa')}
               </button>
             </div>
 
-            <!-- Profile Overview Banner -->
-            <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-left: 3px solid ${current.color}; padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; box-shadow: var(--card-shadow);">
-              <div class="survey-label" style="color: ${current.color}; margin-bottom: 0.2rem;">${current.badge}</div>
-              <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.2rem;">${current.title}</h4>
-              <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">${current.desc}</p>
+            <!-- Role Details Box -->
+            <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <span class="survey-label" style="color: var(--accent-amber);">${current.badge}</span>
+                <span class="capsule-status-dot"></span>
+              </div>
+              <h4 style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 0.35rem;">${current.title}</h4>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem;">
+                ${current.desc}
+              </p>
+              <div class="small-mono" style="display: flex; justify-content: space-between; border-top: 1px solid var(--line-subtle); padding-top: 0.5rem; color: var(--text-muted); font-size: 0.72rem;">
+                <span>TARGET: ${current.unitDefault}</span>
+                <span>ZONE: ${current.zoneDefault}</span>
+              </div>
             </div>
 
-            <!-- Authentication Form -->
-            <form id="portal-auth-form" style="display: flex; flex-direction: column; gap: 1rem;">
-              <div>
-                <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">HARDWARE UNIT / NODE ID</label>
-                <input type="text" value="${current.unitDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-md); cursor: not-allowed;" />
-              </div>
-
-              <div>
-                <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">ASSIGNED SECTOR</label>
-                <input type="text" value="${current.zoneDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-md); cursor: not-allowed;" />
-              </div>
-
-              <div>
-                <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">OPERATOR PIN / RFID TOKEN</label>
-                <input type="password" value="882049" required style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md); letter-spacing: 0.2em;" />
-              </div>
-
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.15rem;">
-                <span class="small-mono" style="color: var(--text-muted);">CRYPTO CHIP: ATECC608A</span>
-                <span class="small-mono" style="color: var(--state-normal);">KEY VALID</span>
-              </div>
-
-              <button type="submit" class="btn-action-primary" style="width: 100%; justify-content: center; padding: 0.75rem; margin-top: 0.4rem;">
-                ENTER ${this.selectedRole.toUpperCase()} CONSOLE →
+            <!-- Fast Launch Form -->
+            <form id="portal-auth-form" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <button type="submit" class="btn-action-primary" style="width: 100%; justify-content: center; padding: 0.85rem;">
+                <span>${i18n.t('login.submit_btn')}</span>
               </button>
             </form>
-
-            <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--line-structure); display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">
-              <a href="/" data-link style="color: var(--text-secondary); text-decoration: none;">← Return to Overview</a>
-              <span>FOSAFE v1.0.4</span>
-            </div>
           </div>
+
         </div>
       </div>
     `;

@@ -1,146 +1,144 @@
 /**
  * FOSAFE v2 TechnologyPage
- * Deep dive into embedded hardware, dual-core task architecture,
- * sensor bus topologies, and mining-grade electrical conditioning.
- * Fully supports Dark Mode and Light Mode with responsive survey styling.
+ * Plain, human-friendly hardware and sensor guide with full bilingual EN/HI support.
+ * Fully responsive with zero overflow and seamless Dark/Light modes.
  */
+
+import { i18n } from '../lib/i18n.js';
 
 export class TechnologyPage {
   constructor(container) {
     this.container = container;
+    this.unsubscribeLang = null;
   }
 
   mount() {
     this.render();
+    this.unsubscribeLang = i18n.subscribe(() => {
+      this.render();
+    });
   }
 
-  unmount() {}
+  unmount() {
+    if (this.unsubscribeLang) {
+      this.unsubscribeLang();
+      this.unsubscribeLang = null;
+    }
+  }
 
   render() {
     this.container.innerHTML = `
-      <div style="padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-20);">
-        <div style="max-width: 1320px; margin: 0 auto;">
+      <div style="padding: calc(72px + var(--sp-6)) var(--sp-6) var(--sp-16); width: 100%; max-width: 100vw; overflow-x: hidden;">
+        <div style="max-width: 1320px; margin: 0 auto; min-width: 0;">
+          
           <!-- Page Header -->
-          <div style="margin-bottom: var(--sp-8); max-width: 820px;">
+          <div style="margin-bottom: var(--sp-8); max-width: 820px; min-width: 0;">
             <div class="station-marker font-mono">
-              <span>HARDWARE ARCHITECTURE // SPECS</span>
+              <span>${i18n.t('tech.marker')}</span>
             </div>
-            <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 4.5vw, 3.8rem); font-weight: 700; color: var(--text-primary);">
-              Vehicle Unit Technology
+            <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 700; color: var(--text-primary); word-break: break-word;">
+              ${i18n.t('tech.title')}
             </h1>
-            <p class="lead-text" style="margin-top: 0.5rem;">
-              Engineering specifications for the FOSAFE in-cab edge computing unit. Operates deterministically on local sensor buses, independent of cloud connectivity or mine radio network latency.
+            <p class="lead-text" style="margin-top: 0.5rem; word-break: break-word;">
+              ${i18n.t('tech.lead')}
             </p>
           </div>
 
           <!-- Dual-Core Processing Architecture Panel -->
-          <div class="station-panel" style="margin-bottom: var(--sp-8);">
+          <div class="station-panel" style="margin-bottom: var(--sp-8); min-width: 0;">
             <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
               <div>
-                <span class="survey-label">PROCESSING CORE</span>
-                <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-top: 0.2rem;">ESP32-S3 Dual-Core Xtensa 32-Bit LX7</h3>
+                <span class="survey-label">${i18n.t('tech.core_header')}</span>
+                <h3 style="font-size: 1.35rem; color: var(--text-primary); margin-top: 0.2rem;">ESP32-S3 High-Speed Safety Core</h3>
               </div>
-              <span class="provenance-tag live">240 MHz Hardware Clock</span>
+              <span class="provenance-tag live">240 MHz Ultra-Fast Clock</span>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--sp-6);">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-6); min-width: 0;">
               <!-- Core 0 -->
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                  <strong style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-amber);">CORE 0: TELEMATICS &amp; COMMS</strong>
-                  <span class="survey-label" style="font-size: 0.65rem;">FREERTOS TASK</span>
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow); min-width: 0; word-break: break-word;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <strong style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--accent-amber);">${i18n.t('tech.core0_title')}</strong>
+                  <span class="survey-label" style="font-size: 0.65rem;">${i18n.t('tech.core0_badge')}</span>
                 </div>
-                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem;">
-                  Dedicated to network stack management, MQTT/TLS cloud ingestion, and peer-to-peer mesh broadcasting without interrupting vehicle safety ISRs.
+                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem; color: var(--text-secondary);">
+                  ${i18n.t('tech.core0_desc')}
                 </p>
-                <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
-                  <span>• MQTT 3.1.1 client with TLS</span>
-                  <span>• ESP-NOW peer-to-peer mesh broadcast</span>
-                  <span>• GNSS NMEA sentence parsing (10Hz)</span>
-                  <span>• WiFi / LTE-M fallback gateway</span>
+                <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
+                  <span>• Long-range radio mesh link</span>
+                  <span>• Live satellite GPS tracking</span>
+                  <span>• Emergency warning broadcasts</span>
                 </div>
               </div>
 
               <!-- Core 1 -->
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                  <strong style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--state-normal);">CORE 1: REAL-TIME SAFETY ENGINE</strong>
-                  <span class="provenance-tag live" style="font-size: 0.65rem;">PRIORITY ISR</span>
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow); min-width: 0; word-break: break-word;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <strong style="font-family: var(--font-mono); font-size: 0.88rem; color: var(--state-normal);">${i18n.t('tech.core1_title')}</strong>
+                  <span class="provenance-tag live" style="font-size: 0.65rem;">${i18n.t('tech.core1_badge')}</span>
                 </div>
-                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem;">
-                  Executes the deterministic collision avoidance loop. Samples proximity sensors, computes IMU quaternion filtering, and commands in-cab drivers in under 15ms.
+                <p style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 1rem; color: var(--text-secondary);">
+                  ${i18n.t('tech.core1_desc')}
                 </p>
-                <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
-                  <span>• Ultrasonic 40kHz pulse timing ISR</span>
-                  <span>• I2C Fast-Mode MPU6050 6-axis polling (100Hz)</span>
-                  <span>• Hardware timer PWM audio alarms</span>
-                  <span>• Fog Assist GPIO interrupt debounce</span>
+                <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
+                  <span>• Distance ultrasound & radar scanning</span>
+                  <span>• Motion & road tilt angle detection</span>
+                  <span>• Instant loud audio buzzer alarm</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Sensor Bus Electrical Topology Table -->
-          <div class="station-panel">
+          <!-- Sensor Table Panel -->
+          <div class="station-panel" style="min-width: 0;">
             <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
               <div>
-                <span class="survey-label">BUS TIMING &amp; PROTOCOLS</span>
-                <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-top: 0.2rem;">Deterministic Sensor Interface Bus</h3>
+                <span class="survey-label">ONBOARD SENSORS</span>
+                <h3 style="font-size: 1.35rem; color: var(--text-primary); margin-top: 0.2rem;">${i18n.t('tech.table_title')}</h3>
               </div>
-              <span class="provenance-tag live">HARDWARE CONTROLLED</span>
+              <span class="provenance-tag live">INDUSTRIAL GRADE</span>
             </div>
 
-            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-              <table style="width: 100%; border-collapse: collapse; min-width: 680px; font-size: 0.85rem;">
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+              <table style="width: 100%; border-collapse: collapse; min-width: 580px; font-size: 0.85rem;">
                 <thead>
                   <tr style="border-bottom: 1px solid var(--line-strong); text-align: left;">
-                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">SUBSYSTEM</th>
-                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">BUS PROTOCOL</th>
-                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">SAMPLE RATE</th>
-                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">INTERRUPT LEVEL</th>
-                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">FAIL-SAFE BEHAVIOR</th>
+                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">SENSOR</th>
+                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">ROLE</th>
+                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">SPEED</th>
+                    <th style="padding: 0.75rem 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">BACKUP SAFETY</th>
                   </tr>
                 </thead>
                 <tbody class="font-mono">
                   <tr style="border-bottom: 1px solid var(--line-subtle);">
-                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">HC-SR04 / JSN-SR04T</strong></td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">GPIO Pulse Timing</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">25 Hz</td>
-                    <td style="padding: 0.85rem 0.5rem;">Level 3 (Hardware Timer)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Hold range + radar warning</td>
+                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">Ultrasonic Distance Sonar</strong></td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">Detects obstacles in heavy fog</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">25x / sec</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Auto-holds safe buffer</td>
                   </tr>
                   <tr style="border-bottom: 1px solid var(--line-subtle);">
-                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">MPU6050 6-Axis IMU</strong></td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">I2C Fast Mode (400 kHz)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">100 Hz</td>
-                    <td style="padding: 0.85rem 0.5rem;">Level 2 (I2C DMA)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Default flat-grade assumption (0%)</td>
+                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">6-Axis Motion & Tilt IMU</strong></td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">Measures downhill slope angle</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">100x / sec</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Assumes safe default grade</td>
                   </tr>
                   <tr style="border-bottom: 1px solid var(--line-subtle);">
-                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">u-blox NEO-6M GNSS</strong></td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">UART Serial (115200 Baud)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">10 Hz</td>
-                    <td style="padding: 0.85rem 0.5rem;">Level 1 (Ring Buffer)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Dead reckoning via IMU</td>
-                  </tr>
-                  <tr style="border-bottom: 1px solid var(--line-subtle);">
-                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">Optical IR Berm Array</strong></td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">GPIO Digital Comparator</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">400 Hz</td>
-                    <td style="padding: 0.85rem 0.5rem;">Level 3 (Edge Change ISR)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Warning on open circuit</td>
+                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">High-Precision GPS</strong></td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">Truck coordinates on mine map</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">10x / sec</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Dead reckoning via motion sensor</td>
                   </tr>
                   <tr>
-                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">DHT11 Environmental</strong></td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">Single-Bus 1-Wire Digital</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">1 Hz</td>
-                    <td style="padding: 0.85rem 0.5rem;">Level 1 (Periodic Task)</td>
-                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Retains ambient baseline</td>
+                    <td style="padding: 0.85rem 0.5rem;"><strong style="color: var(--text-primary);">Humidity & Temperature</strong></td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-secondary);">Monitors morning condensation</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--accent-amber);">1x / sec</td>
+                    <td style="padding: 0.85rem 0.5rem; color: var(--text-muted);">Manual Fog Assist Button backup</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+
         </div>
       </div>
     `;

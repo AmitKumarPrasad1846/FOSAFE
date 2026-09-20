@@ -139,7 +139,66 @@ export const DICTIONARY = {
     'rail.s07': '07 · CONTROL',
     'rail.s08': '08 · FAST SPEED',
     'rail.s09': '09 · FOG BUTTON',
-    'rail.s10': '10 · FIELD READY'
+    'rail.s10': '10 · FIELD READY',
+
+    // Technology Page
+    'tech.marker': 'HARDWARE SPECS // ON-VEHICLE COMPUTER',
+    'tech.title': 'Vehicle Safety Unit Technology',
+    'tech.lead': 'A rugged dustproof computer installed in each truck cabin. Operates 100% locally on distance sensors — saving lives even if the mine radio or mobile network drops.',
+    'tech.core_header': 'SMART DUAL-CORE PROCESSOR',
+    'tech.core0_title': 'CORE 0: RADIO & DISPATCH TRACKING',
+    'tech.core0_badge': 'COMMUNICATIONS',
+    'tech.core0_desc': 'Broadcasts GPS coordinates, fog status, and emergency alerts to the central control room without delaying safety alerts.',
+    'tech.core1_title': 'CORE 1: INSTANT CRASH PREVENTION',
+    'tech.core1_badge': 'HIGH PRIORITY',
+    'tech.core1_desc': 'Runs the emergency collision loop. Scans distance sensors 100 times per second and triggers the loud cab alarm in under 0.015 seconds.',
+    'tech.table_title': 'Connected Sensors & Fail-Safes',
+
+    // How It Works Page
+    'how.marker': 'PHYSICS & BRAKING DYNAMICS',
+    'how.title': 'How Heavy Mining Trucks Stop',
+    'how.lead': 'A loaded 400-ton mining truck cannot stop like an ordinary car. Use the live calculator below to see how vehicle speed and steep downhill slopes affect stopping distance.',
+    'how.calc_title': 'TRUCK BRAKING DISTANCE CALCULATOR',
+    'how.calc_subtitle': 'Live physics calculation for ultra-class haul trucks',
+    'how.speed_label': 'TRUCK SPEED',
+    'how.grade_label': 'ROAD SLOPE (DOWNHILL GRADE)',
+    'how.total_stopping': 'TOTAL STOPPING DISTANCE',
+    'how.brake_dist': 'Actual Braking Distance',
+    'how.reaction_dist': 'Driver Reaction Distance',
+    'how.summary_alert': 'In thick fog (15m sightline), any truck moving faster than 20 km/h downhill cannot stop in time without FOSAFE alerts.',
+
+    // Platform Page
+    'platform.marker': '3 OPERATIONAL TIERS',
+    'platform.title': 'Unified Mine Safety Platform',
+    'platform.lead': 'Experience all three components of FOSAFE: the Driver Cab Screen, the Central Mine Control Room, and the Testing Simulator.',
+    'platform.tab_driver': 'DRIVER CAB SCREEN',
+    'platform.tab_control': 'MINE CONTROL ROOM',
+    'platform.tab_simulator': 'TEST SIMULATOR',
+
+    // Collaboration Page
+    'collab.marker': 'FIELD TRIALS & DEPLOYMENT',
+    'collab.title': 'Collaboration & Mine Trials',
+    'collab.lead': 'Designed for straightforward 24V installation on existing haul trucks and utility pickups. Fully compliant with DGMS proximity safety guidelines.',
+    'collab.form_title': 'Request a Demonstration or Mine Pilot',
+    'collab.form_name': 'Mine Name / Location',
+    'collab.form_fleet': 'Number of Trucks',
+    'collab.form_submit': 'REQUEST TRIAL INFORMATION →',
+
+    // About Page
+    'about.marker': 'WHY FOSAFE WAS BUILT',
+    'about.title': 'The Reality of Open-Cast Mines',
+    'about.lead': 'Why drivers 5.5 meters off the ground cannot see small vehicles, and why cold winter morning fog is the leading safety hazard in coal mines.',
+    'about.blind_title': 'Blind Spots of Massive Haul Trucks',
+    'about.blind_desc': 'In trucks like the Cat 797F, the driver sits nearly two stories in the air. The front blind spot extends 14 meters forward — an entire pickup truck can be completely hidden right in front of the bumper.',
+
+    // Login Page
+    'login.marker': 'INSTANT ACCESS PORTAL',
+    'login.title': 'Try FOSAFE Live Demo',
+    'login.lead': 'Select a role below to explore the interface as a Truck Driver, Mine Dispatcher, or Safety Engineer.',
+    'login.role_operator': 'Truck Driver',
+    'login.role_dispatch': 'Mine Dispatcher',
+    'login.role_qa': 'Safety Engineer',
+    'login.submit_btn': 'ENTER PLATFORM DEMO →'
   },
 
   hi: {
@@ -273,7 +332,66 @@ export const DICTIONARY = {
     'rail.s07': '07 · कंट्रोल रूम',
     'rail.s08': '08 · तेज़ स्पीड',
     'rail.s09': '09 · फॉग बटन',
-    'rail.s10': '10 · तैयार सिस्टम'
+    'rail.s10': '10 · तैयार सिस्टम',
+
+    // Technology Page
+    'tech.marker': 'हार्डवेयर विवरण // ट्रक का सुरक्षा कंप्यूटर',
+    'tech.title': 'वाहन सुरक्षा यूनिट तकनीक',
+    'tech.lead': 'हर ट्रक के केबिन में लगा एक बेहद मजबूत, धूल-रोधी कंप्यूटर। यह खदान के इंटरनेट या वॉकी-टॉकी सिग्नल के बिना भी 100% स्वतंत्र रूप से काम करता है।',
+    'tech.core_header': 'स्मार्ट डुअल-कोर प्रोसेसर',
+    'tech.core0_title': 'कोर 0: रेडियो व कंट्रोल रूम संपर्क',
+    'tech.core0_badge': 'संचार व्यवस्था',
+    'tech.core0_desc': 'GPS लोकेशन, कोहरे का स्तर और आपातकालीन अलर्ट सीधे कंट्रोल रूम को भेजता है, जिससे ब्रेक अलार्म में कोई रुकावट नहीं आती।',
+    'tech.core1_title': 'कोर 1: तुरंत दुर्घटना रोकथाम',
+    'tech.core1_badge': 'उच्च प्राथमिकता',
+    'tech.core1_desc': 'इमरजेंसी टक्कर रोकने वाला मुख्य दिमाग। यह सेंसर को सेकंड में 100 बार पढ़ता है और 0.015 सेकंड से भी कम में बज़र बजा देता है।',
+    'tech.table_title': 'जुड़े हुए सेंसर और सुरक्षा नियम',
+
+    // How It Works Page
+    'how.marker': 'भौतिक विज्ञान और ब्रेक का हिसाब',
+    'how.title': 'भारी खदान डंपर कैसे रुकते हैं',
+    'how.lead': '400 टन भरा हुआ डंपर सामान्य गाड़ी की तरह तुरंत नहीं रुक सकता। नीचे दिए गए लाइव कैलकुलेटर से देखें कि गति और ढलान से रुकने की दूरी कैसे बदलती है।',
+    'how.calc_title': 'डंपर ब्रेकिंग दूरी कैलकुलेटर',
+    'how.calc_subtitle': 'भारी खदान ट्रकों के लिए लाइव गति और दूरी गणना',
+    'how.speed_label': 'ट्रक की गति',
+    'how.grade_label': 'सड़क का ढलान (% ग्रेड)',
+    'how.total_stopping': 'रुकने की कुल दूरी',
+    'how.brake_dist': 'ब्रेक लगाने पर चली दूरी',
+    'how.reaction_dist': 'ड्राइवर की प्रतिक्रिया दूरी',
+    'how.summary_alert': 'घने कोहरे (15 मीटर दृश्यता) में 20 किमी/घंटा से तेज़ चलने वाला कोई भी ट्रक बिना FOSAFE चेतावनी के समय पर नहीं रुक सकता।',
+
+    // Platform Page
+    'platform.marker': '3 कार्य स्तर',
+    'platform.title': 'एकीकृत खदान सुरक्षा प्लेटफ़ॉर्म',
+    'platform.lead': 'FOSAFE के तीनों हिस्सों का अनुभव लें: केबिन स्क्रीन, खदान का मुख्य कंट्रोल रूम और टेस्टिंग सिम्युलेटर।',
+    'platform.tab_driver': 'केबिन ड्राइवर स्क्रीन',
+    'platform.tab_control': 'माइन कंट्रोल रूम',
+    'platform.tab_simulator': 'सुरक्षा सिम्युलेटर',
+
+    // Collaboration Page
+    'collab.marker': 'खदान ट्रायल व उपयोग',
+    'collab.title': 'साझेदारी और खदान परीक्षण',
+    'collab.lead': 'मौजूदा डंपर और इंस्पेक्शन जीपों पर आसान 24V इंस्टॉलेशन। सरकारी DGMS सुरक्षा मानकों के पूरी तरह अनुकूल।',
+    'collab.form_title': 'डेमो या खदान पायलट के लिए अनुरोध करें',
+    'collab.form_name': 'खदान का नाम व स्थान',
+    'collab.form_fleet': 'ट्रकों की कुल संख्या',
+    'collab.form_submit': 'ट्रायल की जानकारी भेजें →',
+
+    // About Page
+    'about.marker': 'FOSAFE क्यों बनाया गया',
+    'about.title': 'खुली खदानों की ज़मीनी हकीकत',
+    'about.lead': '5.5 मीटर ऊंचे केबिन से नीचे की गाड़ियां क्यों नहीं दिखतीं, और सर्दियों का कोहरा खदानों के लिए सबसे बड़ा खतरा क्यों है।',
+    'about.blind_title': 'विशाल डंपर के खतरनाक ब्लाइंड स्पॉट',
+    'about.blind_desc': 'कैटरपिलर 797F जैसे ट्रकों में ड्राइवर दो मंजिला मकान की ऊंचाई पर बैठता है। बम्पर के आगे 14 मीटर तक ड्राइवर को कुछ नहीं दिखता — पूरी जीप छिप सकती है।',
+
+    // Login Page
+    'login.marker': 'तुरंत डेमो एक्सेस पोर्टल',
+    'login.title': 'FOSAFE लाइव चलाकर देखें',
+    'login.lead': 'ड्राइवर, कंट्रोल रूम अधिकारी या इंजीनियर के रूप में सिस्टम चलाने के लिए अपनी भूमिका चुनें।',
+    'login.role_operator': 'ट्रक ड्राइवर',
+    'login.role_dispatch': 'कंट्रोल रूम ऑपरेटर',
+    'login.role_qa': 'सुरक्षा इंजीनियर',
+    'login.submit_btn': 'प्लेटफ़ॉर्म में प्रवेश करें →'
   }
 };
 

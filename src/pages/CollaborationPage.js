@@ -1,21 +1,33 @@
 /**
  * FOSAFE v2 CollaborationPage
- * Technical engagement framework for mining operators, safety regulators,
- * and telematics engineering partners. Factual, restrained, and engineering-first.
- * Fully supports Dark and Light modes.
+ * Plain-language guide for mine operators and safety regulators.
+ * Interactive trial inquiry form with bilingual EN/HI support and zero overflow.
  */
+
+import { i18n } from '../lib/i18n.js';
 
 export class CollaborationPage {
   constructor(container) {
     this.container = container;
+    this.unsubscribeLang = null;
   }
 
   mount() {
     this.render();
     this.bindEvents();
+
+    this.unsubscribeLang = i18n.subscribe(() => {
+      this.render();
+      this.bindEvents();
+    });
   }
 
-  unmount() {}
+  unmount() {
+    if (this.unsubscribeLang) {
+      this.unsubscribeLang();
+      this.unsubscribeLang = null;
+    }
+  }
 
   bindEvents() {
     const form = this.container.querySelector('#trial-inquiry-form');
@@ -30,9 +42,9 @@ export class CollaborationPage {
         if (feedbackBox) {
           feedbackBox.style.display = 'block';
           feedbackBox.innerHTML = `
-            <div class="telemetry-tag normal" style="margin-bottom: 0.4rem;"><span class="pulse-dot"></span>PROPOSAL LOGGED</div>
-            <p style="font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-primary); line-height: 1.5; margin: 0;">
-              Field trial protocol generated for <strong>${mineName || 'Mine Operator'}</strong> (${fleetSize} target units). Engineering group will review pit geometry and RF constraints.
+            <div class="telemetry-tag normal" style="margin-bottom: 0.4rem;"><span class="pulse-dot"></span>REQUEST CONFIRMED</div>
+            <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; margin: 0;">
+              Thank you! A trial plan has been generated for <strong>${mineName || 'Mine Site'}</strong> with <strong>${fleetSize || '10+'} trucks</strong>. Our field engineers will reach out with the demonstration protocol.
             </p>
           `;
           form.reset();
@@ -43,146 +55,117 @@ export class CollaborationPage {
 
   render() {
     this.container.innerHTML = `
-      <div style="padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-20);">
-        <div style="max-width: 1320px; margin: 0 auto;">
+      <div style="padding: calc(72px + var(--sp-6)) var(--sp-6) var(--sp-16); width: 100%; max-width: 100vw; overflow-x: hidden;">
+        <div style="max-width: 1320px; margin: 0 auto; min-width: 0;">
+          
           <!-- Page Header -->
-          <div style="margin-bottom: var(--sp-8); max-width: 820px;">
+          <div style="margin-bottom: var(--sp-8); max-width: 820px; min-width: 0;">
             <div class="station-marker font-mono">
-              <span>ENGAGEMENT FRAMEWORK // FIELD TRIALS</span>
+              <span>${i18n.t('collab.marker')}</span>
             </div>
-            <h1 style="font-family: var(--font-display); font-size: clamp(2.2rem, 4.5vw, 3.8rem); font-weight: 700; color: var(--text-primary);">
-              Collaboration &amp; Field Trials
+            <h1 style="font-family: var(--font-display); font-size: clamp(2rem, 4.2vw, 3.4rem); font-weight: 700; color: var(--text-primary); word-break: break-word;">
+              ${i18n.t('collab.title')}
             </h1>
-            <p class="lead-text" style="margin-top: 0.5rem;">
-              Open, modular IoT safety architecture for mine operators, safety inspectors, and telematics equipment manufacturers.
+            <p class="lead-text" style="margin-top: 0.5rem; word-break: break-word;">
+              ${i18n.t('collab.lead')}
             </p>
           </div>
 
-          <!-- Collaboration Pillars -->
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--sp-6); margin-bottom: var(--sp-8);">
-            <!-- Pillar 01 -->
-            <div class="station-panel">
+          <!-- Collaboration Pillars Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--sp-6); margin-bottom: var(--sp-8); min-width: 0;">
+            
+            <div class="station-panel" style="min-width: 0; word-break: break-word;">
               <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1rem;">
-                <span class="survey-label">01 // OPERATORS</span>
-                <span class="telemetry-tag normal">FIELD RETROFIT</span>
+                <span class="survey-label">01 // MINE OPERATORS</span>
+                <span class="telemetry-tag normal">EASY INSTALLATION</span>
               </div>
-              <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">
-                Haul Road Pilots
+              <h3 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+                Fits Existing Mining Trucks
               </h3>
               <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
-                Non-invasive retrofits for ultra-class haulers (Cat, Komatsu, BEML) and light inspection pickups. Focuses on buffer expansion in winter inversion fog.
+                Installs on standard 24V haul trucks (Caterpillar, Komatsu, BEML) and inspection pickups without touching the hydraulic braking circuits.
               </p>
-              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
-                <span>• IP67 exterior bracket mounting</span>
-                <span>• Zero hydraulic circuit interference</span>
-                <span>• Isolated 24V DC auxiliary power</span>
+              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
+                <span>• Waterproof IP67 brackets</span>
+                <span>• Connects to 24V truck battery</span>
+                <span>• Quick 2-hour installation per truck</span>
               </div>
             </div>
 
-            <!-- Pillar 02 -->
-            <div class="station-panel">
+            <div class="station-panel" style="min-width: 0; word-break: break-word;">
               <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1rem;">
-                <span class="survey-label">02 // REGULATORS</span>
-                <span class="telemetry-tag warning">DGMS COMPLIANCE</span>
+                <span class="survey-label">02 // SAFETY INSPECTORS</span>
+                <span class="telemetry-tag warning">SAFETY COMPLIANT</span>
               </div>
-              <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">
-                Safety Mandates
+              <h3 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+                Compliant with Mine Guidelines
               </h3>
               <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
-                Aligned with DGMS safety circulars for proximity warning devices (PWD) on Heavy Earth Moving Machinery (HEMM) in open-cast workings.
+                Directly aligns with Directorate General of Mines Safety (DGMS) circulars requiring Proximity Warning Devices on Heavy Machinery in open-cast mines.
               </p>
-              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
-                <span>• ISO 21815 collision awareness</span>
-                <span>• Deterministic cab audible warnings</span>
-                <span>• Tamper-evident incident telemetry</span>
+              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
+                <span>• Loud in-cab buzzer alarms</span>
+                <span>• Tamper-proof safety memory</span>
+                <span>• Clear blind spot visual indicators</span>
               </div>
             </div>
 
-            <!-- Pillar 03 -->
-            <div class="station-panel">
+            <div class="station-panel" style="min-width: 0; word-break: break-word;">
               <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1rem;">
-                <span class="survey-label">03 // FMS INTEGRATORS</span>
-                <span class="telemetry-tag simulated">CAN &amp; TELEMATICS</span>
+                <span class="survey-label">03 // DISPATCH INTEGRATION</span>
+                <span class="telemetry-tag normal">RADIO &amp; GPS</span>
               </div>
-              <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--text-primary); margin-bottom: 0.5rem;">
-                Fleet Management Uplink
+              <h3 style="font-size: 1.3rem; color: var(--text-primary); margin-bottom: 0.5rem;">
+                Connects to Control Rooms
               </h3>
               <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1rem;">
-                Co-exists with existing mine dispatch networks (Modular, Wenco, Hexagon). Telemetry ingested through MQTT brokers or CAN SAE J1939 gateways.
+                Streams truck speed, position, and active fog alerts to existing mine dispatch software via radio mesh or LTE.
               </p>
-              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-secondary); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
-                <span>• JSON / Protobuf telemetry schema</span>
-                <span>• Low-bandwidth 868MHz mesh</span>
-                <span>• RESTful fleet status query endpoints</span>
+              <div class="small-mono" style="display: flex; flex-direction: column; gap: 0.35rem; color: var(--text-muted); border-top: 1px solid var(--line-subtle); padding-top: 0.75rem;">
+                <span>• Live web dashboard for supervisors</span>
+                <span>• Automated incident logs</span>
+                <span>• Radio emergency broadcasts</span>
               </div>
             </div>
+
           </div>
 
-          <!-- Field Evaluation Request Terminal -->
-          <div class="station-panel">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
-              <div>
-                <span class="survey-label">FIELD TRIAL REGISTRATION</span>
-                <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-top: 0.2rem;">Technical Pilot Proposal Form</h3>
-              </div>
-              <span class="provenance-tag live">INTAKE ACTIVE</span>
+          <!-- Interactive Request Form -->
+          <div class="station-panel" style="max-width: 780px; margin: 0 auto; min-width: 0;">
+            <div style="border-bottom: 1px solid var(--line-structure); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+              <span class="survey-label" style="color: var(--accent-amber);">PILOT PROGRAM</span>
+              <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-top: 0.2rem;">
+                ${i18n.t('collab.form_title')}
+              </h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                Leave your mine details below to receive hardware specifications and a demonstration schedule.
+              </p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--sp-8); align-items: start;">
-              <div>
-                <h4 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem;">
-                  Request Field Trial Architecture
-                </h4>
-                <p style="font-size: 0.88rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                  Submit mine specifications for engineering review of pit depth, fog severity, fleet composition, and radio constraints.
-                </p>
-
-                <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.25rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
-                  <div class="survey-label" style="margin-bottom: 0.4rem;">VERIFICATION CRITERIA</div>
-                  <div class="small-mono" style="color: var(--text-secondary); line-height: 1.6;">
-                    ✓ Open-cast coal, iron-ore, limestone operations<br/>
-                    ✓ Low-visibility conditions (&lt;50m during shift)<br/>
-                    ✓ Active haulage fleet of &ge; 4 heavy vehicles<br/>
-                    ✓ Willingness to evaluate non-invasive retrofits
-                  </div>
+            <form id="trial-inquiry-form" style="display: flex; flex-direction: column; gap: 1.25rem;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+                <div>
+                  <label for="input-mine-name" class="survey-label" style="display: block; margin-bottom: 0.4rem;">
+                    ${i18n.t('collab.form_name')}
+                  </label>
+                  <input id="input-mine-name" type="text" required placeholder="e.g., Jharia Coal Pit No. 4" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;" />
+                </div>
+                <div>
+                  <label for="input-fleet-size" class="survey-label" style="display: block; margin-bottom: 0.4rem;">
+                    ${i18n.t('collab.form_fleet')}
+                  </label>
+                  <input id="input-fleet-size" type="number" min="1" max="500" value="12" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-md); color: var(--text-primary); font-family: inherit; font-size: 0.9rem;" />
                 </div>
               </div>
 
-              <!-- Interactive Form -->
-              <form id="trial-inquiry-form" style="display: flex; flex-direction: column; gap: 1rem;">
-                <div>
-                  <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">MINE SITE OR OPERATOR NAME</label>
-                  <input type="text" id="input-mine-name" required placeholder="e.g. Western Pit Operations / Jharia Coalfield" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
-                </div>
+              <div id="trial-form-feedback" style="display: none; padding: 1rem; background: var(--state-normal-bg); border: 1px solid var(--state-normal-border); border-radius: var(--radius-md);"></div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                  <div>
-                    <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">TARGET FLEET SIZE</label>
-                    <select id="input-fleet-size" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);">
-                      <option value="4-10 Trucks">4 – 10 Trucks (Pilot)</option>
-                      <option value="11-30 Trucks">11 – 30 Trucks</option>
-                      <option value="30+ Trucks">30+ Trucks (Pit Wide)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">PRIMARY MINERAL</label>
-                    <input type="text" placeholder="e.g. Coal, Iron Ore" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
-                  </div>
-                </div>
-
-                <div>
-                  <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">ENGINEERING CONTACT</label>
-                  <input type="text" required placeholder="Name, Role, Email" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
-                </div>
-
-                <button type="submit" class="btn-action-primary" style="margin-top: 0.25rem; justify-content: center;">
-                  SUBMIT SPECIFICATION
-                </button>
-
-                <div id="trial-form-feedback" style="display: none; background: var(--state-normal-bg); border: 1px solid var(--state-normal-border); padding: 1rem; border-radius: var(--radius-md); margin-top: 0.5rem;"></div>
-              </form>
-            </div>
+              <button type="submit" class="btn-action-primary" style="align-self: flex-start; padding: 0.8rem 1.8rem;">
+                <span>${i18n.t('collab.form_submit')}</span>
+              </button>
+            </form>
           </div>
+
         </div>
       </div>
     `;
