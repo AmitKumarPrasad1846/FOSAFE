@@ -149,8 +149,8 @@ export class VisibilitySimulator {
             <!-- FOSAFE PENETRATION HUD OVERLAY -->
             <div class="vis-penetration-hud" style="position: absolute; inset: 12px; border: 1px solid ${active.hudColor}; border-radius: var(--radius-xs); pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 0.75rem;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="telemetry-tag" style="background: rgba(11, 13, 18, 0.85); font-size: 0.68rem;">CAB HUD // SENSOR FUSION ACTIVE</span>
-                <span class="mono-readout" style="font-size: 0.7rem; color: #fff; background: rgba(11, 13, 18, 0.85); padding: 2px 6px;">RADAR: PULSING 40kHz</span>
+                <span class="telemetry-tag" style="background: var(--bg-panel); color: var(--text-primary); border: 1px solid var(--line-structure); font-size: 0.68rem;">CAB HUD // SENSORS ACTIVE</span>
+                <span class="mono-readout" style="font-size: 0.7rem; color: var(--text-primary); background: var(--bg-panel); border: 1px solid var(--line-structure); padding: 2px 6px;">RADAR: SCANNING</span>
               </div>
 
               <!-- Reticle locking on forward truck through fog -->
@@ -158,17 +158,17 @@ export class VisibilitySimulator {
                 <div style="width: 70px; height: 50px; border: 2px dashed ${active.hudColor}; border-radius: 2px; display: flex; align-items: center; justify-content: center; background: rgba(245, 158, 11, 0.06);">
                   <div style="width: 6px; height: 6px; background: ${active.hudColor};"></div>
                 </div>
-                <div style="background: rgba(11, 13, 18, 0.9); padding: 2px 8px; border: 1px solid ${active.hudColor}; font-family: var(--font-mono); font-size: 0.68rem; color: #EDEFEF;">
+                <div style="background: var(--bg-panel); padding: 2px 8px; border: 1px solid ${active.hudColor}; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-primary);">
                   TARGET TRUCK // 08.4 m
                 </div>
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); background: rgba(11, 13, 18, 0.85); padding: 2px 6px;">
-                  SIGHTLINE STATUS: <strong style="color: #fff;">${this.currentMode}</strong>
+                <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-secondary); background: var(--bg-panel); border: 1px solid var(--line-structure); padding: 2px 6px;">
+                  VISIBILITY: <strong style="color: var(--text-primary);">${this.currentMode}</strong>
                 </div>
-                <div style="font-family: var(--font-mono); font-size: 0.65rem; color: ${active.hudColor}; background: rgba(11, 13, 18, 0.85); padding: 2px 6px;">
-                  ACOUSTIC SONAR: PENETRATING
+                <div style="font-family: var(--font-mono); font-size: 0.65rem; color: ${active.hudColor}; background: var(--bg-panel); border: 1px solid var(--line-structure); padding: 2px 6px;">
+                  RADAR PENETRATING FOG
                 </div>
               </div>
             </div>
@@ -177,45 +177,42 @@ export class VisibilitySimulator {
           <!-- Technical Safety Buffer Metrics -->
           <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;">
             <div class="metric-box" style="border-left: 3px solid ${active.hudColor};">
-              <span class="metric-label">DYNAMIC SAFETY PERIMETER BUFFER</span>
+              <span class="metric-label">DYNAMIC SAFETY BUFFER</span>
               <div class="val-row">
                 <span id="vis-safety-radius-val" class="metric-value" style="color: ${active.hudColor};">${active.safetyRadius}</span>
               </div>
               <span class="body-small" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
-                Expands automatically as visual reference drops below critical threshold.
+                Automatically increases warning distance as fog thickens.
               </span>
             </div>
 
             <div class="metric-box">
-              <span class="metric-label">ESTIMATED DRIVER SIGHTLINE</span>
+              <span class="metric-label">DRIVER SIGHTLINE (WHAT EYES CAN SEE)</span>
               <div class="val-row">
                 <span id="vis-sightline-val" class="metric-value" style="font-size: 1.3rem;">${active.visibilityRange}</span>
               </div>
               <span class="body-small" style="font-size: 0.75rem; color: var(--text-dim);">
-                Standard human visual line-of-sight in active pit bench.
+                Clear view distance without radar assistance.
               </span>
             </div>
 
             <div class="metric-box">
-              <span class="metric-label">FLEET SPEED ADVISORY LIMIT</span>
+              <span class="metric-label">RECOMMENDED SAFE SPEED</span>
               <div class="val-row">
                 <span id="vis-speed-advisory-val" class="metric-value" style="font-size: 1.3rem;">${active.speedAdvisory}</span>
               </div>
             </div>
 
             <!-- Engineering Disclosure Note -->
-            <div style="background: #090B0F; border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: var(--radius-xs);">
-              <div class="data-label" style="color: var(--steel-300); margin-bottom: 0.25rem;">TECHNICAL ARCHITECTURE NOTE</div>
-              <p id="vis-mode-desc" style="font-size: 0.78rem; line-height: 1.45; color: var(--text-secondary);">
+            <div style="background: var(--bg-surface); border: 1px solid var(--line-structure); padding: 0.85rem; border-radius: var(--radius-md);">
+              <div class="data-label" style="color: var(--accent-amber); margin-bottom: 0.25rem;">SAFETY ADVISORY</div>
+              <p id="vis-mode-desc" style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0;">
                 ${active.description}
               </p>
-              <div style="margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim);">
-                DHT11 provides ambient relative humidity / condensation baseline. Operational modes enforce deterministic stopping envelopes.
-              </div>
             </div>
 
-            <div class="sensor-honesty-note font-mono" style="grid-column: 1 / -1; margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(245, 158, 11, 0.06); border: 1px dashed rgba(245, 158, 11, 0.3); font-size: 0.72rem; color: var(--text-secondary);">
-              <strong style="color: var(--accent-amber);">HONESTY DISCLOSURE:</strong> The prototype uses a configurable visibility mode selector. The onboard DHT11 sensor provides ambient temperature and relative humidity context only, and does not directly measure optical attenuation.
+            <div class="sensor-honesty-note font-mono" style="grid-column: 1 / -1; margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: var(--state-warning-bg); border: 1px dashed var(--state-warning-border); font-size: 0.72rem; color: var(--text-secondary); border-radius: var(--radius-sm);">
+              <strong style="color: var(--accent-amber);">SENSOR NOTE:</strong> Interactive simulator demonstrates how FOSAFE adapts safe truck spacing dynamically as visibility changes.
             </div>
           </div>
         </div>

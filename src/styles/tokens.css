@@ -87,7 +87,9 @@
    LIGHT THEME: Architectural Studio & Clean Technical Drafting Paper
    Pure slate-50 base, clean slate-200 lines, high-contrast obsidian text.
    ========================================================================== */
-[data-theme="light"] {
+:root[data-theme="light"],
+[data-theme="light"],
+html[data-theme="light"] {
   --bg-void: #F1F5F9;
   --bg-base: #F8FAFC;
   --bg-surface: #FFFFFF;

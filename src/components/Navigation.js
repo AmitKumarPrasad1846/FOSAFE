@@ -2,11 +2,12 @@
  * FOSAFE v2 Floating Right-Side Capsule Navigation
  * Ultra-compact floating pill docked on top-right (desktop)
  * and thumb-reachable floating bottom capsule (mobile).
- * Direct, sleek, and uncluttered.
+ * Direct, sleek, and uncluttered with bilingual EN/हिन्दी toggle.
  */
 
 import { scrollManager } from '../lib/scroll.js';
 import { themeManager } from '../lib/theme.js';
+import { i18n } from '../lib/i18n.js';
 
 export class Navigation {
   constructor(containerElement, currentRoute = '/') {
@@ -14,17 +15,17 @@ export class Navigation {
     this.currentRoute = currentRoute;
     this.activeStation = 1;
 
-    this.stations = [
-      { id: 'station-01', num: '01', title: 'RADAR // CLEAR', label: 'THE PIT' },
-      { id: 'station-02', num: '02', title: 'FOG COLLAPSE', label: 'HAZARD' },
-      { id: 'station-03', num: '03', title: '4-TIER MODEL', label: 'APPROACH' },
-      { id: 'station-04', num: '04', title: 'VEHICLE OBU', label: 'HARDWARE' },
-      { id: 'station-05', num: '05', title: 'FOG INTEL', label: 'ADAPTIVE' },
-      { id: 'station-06', num: '06', title: 'DRIVER HUD', label: 'COCKPIT' },
-      { id: 'station-07', num: '07', title: 'MINE CONTROL', label: 'DISPATCH' },
-      { id: 'station-08', num: '08', title: 'SAFETY LOGIC', label: 'ARBITRATION' },
-      { id: 'station-09', num: '09', title: 'HARDWARE LOOP', label: 'PHYSICAL' },
-      { id: 'station-10', num: '10', title: 'FIELD TRIALS', label: 'COLLAB' }
+    this.stationKeys = [
+      { id: 'station-01', num: '01', key: 'rail.s01' },
+      { id: 'station-02', num: '02', key: 'rail.s02' },
+      { id: 'station-03', num: '03', key: 'rail.s03' },
+      { id: 'station-04', num: '04', key: 'rail.s04' },
+      { id: 'station-05', num: '05', key: 'rail.s05' },
+      { id: 'station-06', num: '06', key: 'rail.s06' },
+      { id: 'station-07', num: '07', key: 'rail.s07' },
+      { id: 'station-08', num: '08', key: 'rail.s08' },
+      { id: 'station-09', num: '09', key: 'rail.s09' },
+      { id: 'station-10', num: '10', key: 'rail.s10' }
     ];
 
     this.init();
@@ -39,6 +40,13 @@ export class Navigation {
     themeManager.subscribe(() => {
       this.syncThemeIcon();
     });
+
+    i18n.subscribe(() => {
+      this.render();
+      this.bindEvents();
+      this.syncThemeIcon();
+      this.updateActiveStation(this.activeStation);
+    });
   }
 
   setRoute(route) {
@@ -46,6 +54,7 @@ export class Navigation {
     this.render();
     this.bindEvents();
     this.syncThemeIcon();
+    this.initScrollSpy();
   }
 
   syncThemeIcon() {
@@ -64,7 +73,7 @@ export class Navigation {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const stationId = entry.target.id;
-          const found = this.stations.find(s => s.id === stationId);
+          const found = this.stationKeys.find(s => s.id === stationId);
           if (found) {
             this.updateActiveStation(parseInt(found.num, 10));
           }
@@ -75,7 +84,7 @@ export class Navigation {
       threshold: 0.1
     });
 
-    this.stations.forEach(s => {
+    this.stationKeys.forEach(s => {
       const el = document.getElementById(s.id);
       if (el) observer.observe(el);
     });
@@ -110,6 +119,14 @@ export class Navigation {
       });
     });
 
+    // Language toggle
+    this.container.querySelectorAll('.lang-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        i18n.toggle();
+      });
+    });
+
     // Click rail markers to smooth scroll
     document.querySelectorAll('.rail-marker').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -124,6 +141,7 @@ export class Navigation {
 
   render() {
     const isHome = this.currentRoute === '/';
+    const lang = i18n.getLang();
 
     this.container.innerHTML = `
       <!-- FLOATING RIGHT-SIDE CAPSULE NAVBAR (DESKTOP) -->
@@ -138,13 +156,20 @@ export class Navigation {
 
         <!-- Quick Nav Route Pills -->
         <div class="capsule-links-group">
-          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}">TECH</a>
-          <a href="/how-it-works" data-link class="capsule-nav-link ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}">PHYSICS</a>
-          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}">PLATFORM</a>
-          <a href="/about" data-link class="capsule-nav-link ${this.currentRoute === '/about' ? 'is-active' : ''}">ABOUT</a>
+          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}">${i18n.t('nav.tech')}</a>
+          <a href="/how-it-works" data-link class="capsule-nav-link ${this.currentRoute === '/how-it-works' ? 'is-active' : ''}">${i18n.t('nav.physics')}</a>
+          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}">${i18n.t('nav.platform')}</a>
+          <a href="/about" data-link class="capsule-nav-link ${this.currentRoute === '/about' ? 'is-active' : ''}">${i18n.t('nav.about')}</a>
         </div>
 
         <span class="capsule-sep" aria-hidden="true"></span>
+
+        <!-- Language Switcher Pill (EN / हिन्दी) -->
+        <button class="capsule-lang-btn lang-toggle-btn" aria-label="Switch between English and Hindi" title="Change Language / भाषा बदलें">
+          <span class="lang-opt ${lang === 'en' ? 'is-active' : ''}">EN</span>
+          <span class="lang-slash">/</span>
+          <span class="lang-opt ${lang === 'hi' ? 'is-active' : ''}">हिन्दी</span>
+        </button>
 
         <!-- Dark / Light Theme Toggle -->
         <button class="capsule-btn-icon theme-toggle-btn" aria-label="Toggle Light / Dark Mode" title="Toggle Light/Dark Theme">
@@ -155,7 +180,7 @@ export class Navigation {
 
         <!-- Access Platform Action -->
         <a href="/login" data-link class="capsule-cta-btn" aria-label="Access Unified Platform">
-          <span>ACCESS</span>
+          <span>${i18n.t('nav.access')}</span>
           <span class="cta-arrow">→</span>
         </a>
       </nav>
@@ -168,16 +193,23 @@ export class Navigation {
         </a>
 
         <div style="display: flex; align-items: center; gap: 0.2rem;">
-          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">TECH</a>
-          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">PLATFORM</a>
+          <a href="/technology" data-link class="capsule-nav-link ${this.currentRoute === '/technology' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">${i18n.t('nav.tech')}</a>
+          <a href="/platform" data-link class="capsule-nav-link ${this.currentRoute === '/platform' ? 'is-active' : ''}" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">${i18n.t('nav.platform')}</a>
         </div>
+
+        <!-- Mobile Language Toggle -->
+        <button class="capsule-lang-btn lang-toggle-btn" style="padding: 0.25rem 0.5rem; font-size: 0.65rem;" title="Change Language">
+          <span class="lang-opt ${lang === 'en' ? 'is-active' : ''}">EN</span>
+          <span class="lang-slash">/</span>
+          <span class="lang-opt ${lang === 'hi' ? 'is-active' : ''}">हिं</span>
+        </button>
 
         <button class="mobile-capsule-btn theme-toggle-btn" aria-label="Toggle Light / Dark Mode" style="padding: 0.25rem 0.5rem;">
           <span class="theme-toggle-icon">☀️</span>
         </button>
 
         <a href="/login" data-link class="mobile-capsule-cta font-mono" style="padding: 0.3rem 0.75rem; font-size: 0.72rem;">
-          <span>LOGIN</span>
+          <span>${i18n.t('nav.login')}</span>
         </a>
       </div>
 
@@ -186,15 +218,15 @@ export class Navigation {
         <nav class="inst-progress-rail" aria-label="Haul Road Station Progression">
           <div class="rail-spine"></div>
           <div class="rail-markers-list">
-            ${this.stations.map((s, idx) => `
+            ${this.stationKeys.map((s, idx) => `
               <button 
                 class="rail-marker ${idx === 0 ? 'is-active' : ''}" 
                 data-station-num="${s.num}" 
                 data-target-id="${s.id}"
-                aria-label="Jump to Station ${s.num}: ${s.title}"
+                aria-label="Jump to Station ${s.num}"
               >
                 <span class="rail-pip"></span>
-                <span class="rail-label font-mono">${s.num} · ${s.title}</span>
+                <span class="rail-label font-mono">${i18n.t(s.key)}</span>
               </button>
             `).join('')}
           </div>

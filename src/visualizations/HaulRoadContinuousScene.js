@@ -1,17 +1,20 @@
 /**
- * FOSAFE v2 Persistent Haul-Road Continuous Scene
- * One continuous, scroll-driven visual journey through an open-cast mine haul road.
- * Transforms across 10 scroll stations: Clear -> Fog Collapse -> Sensor Fusion ->
- * Adaptive Envelopes -> Pit Dispatch Overview.
+ * FOSAFE Smart Safety Radar & LiDAR Proximity Field
+ * Replaces the confusing curvy road and fog blobs with a clean,
+ * modern, high-tech fleet proximity radar and collision detection mesh.
  *
- * Performance:
- * - Uses shared MasterTicker (no private rAF loops)
- * - Layered procedural fog noise on downscaled offscreen buffer
- * - Capped DPR (1.0–1.5x)
- * - Batched 2D canvas drawing with crisp 1px survey linework
+ * Highlights:
+ * - Concentric LiDAR distance rings (50m, 100m, 150m, 200m)
+ * - Luminous 360° radar sweep beam with trailing phosphorescent glow
+ * - Dynamic mine fleet nodes with pulsing safety halos and ping responses
+ * - Real-time proximity safety vector showing closing distance between vehicles
+ * - Seamless Light Mode (Drafting Blueprint) & Dark Mode (Deep Titanium) support
+ * - Scroll-driven camera scaling & smooth mouse parallax
+ * - Capped DPR and 60fps performance via master ticker
  */
 
 import { ticker } from '../lib/ticker.js';
+import { themeManager } from '../lib/theme.js';
 
 export class HaulRoadContinuousScene {
   constructor(canvasElement) {
@@ -21,588 +24,460 @@ export class HaulRoadContinuousScene {
     this.height = 0;
     this.dpr = 1;
 
-    // Theme awareness
-    this.theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    // Theme state
+    this.theme = themeManager.getTheme() || 'dark';
 
-    // Scroll progress (0.0 to 1.0)
+    // Animation time & radar sweep angle
+    this.time = 0;
+    this.radarAngle = 0;
+
+    // Scroll progress (0.0 at top, 1.0 at bottom)
     this.scrollProgress = 0;
     this.targetScrollProgress = 0;
 
-    // Pointer parallax (lerped)
+    // Pointer parallax
     this.mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
-    this.hasPointerMoved = false;
 
-    // Offscreen fog buffer (rendered at 0.5x resolution for 60fps)
-    this.fogCanvas = document.createElement('canvas');
-    this.fogCtx = this.fogCanvas.getContext('2d');
-    this.fogTime = 0;
-    this.fogDensity = 0.18; // Controlled dynamically by scroll or manual scrubber
-
-    // Haul Road Spline points (normalized 0..1)
-    this.roadSpline = [
-      { x: 0.15, y: -0.1 },
-      { x: 0.32, y: 0.22 },
-      { x: 0.52, y: 0.48 },
-      { x: 0.45, y: 0.75 },
-      { x: 0.70, y: 1.15 }
-    ];
-
-    // Vehicles with haulage kinematics
+    // Fleet Vehicle Nodes on Radar
     this.vehicles = [
       {
         id: 'D-07',
-        name: 'CAT 797F // D-07',
-        type: 'HAUL TRUCK (400t)',
-        progress: 0.42,
-        speed: 0.0006,
+        name: 'HAUL TRUCK D-07',
+        baseAngle: 0.85,
+        baseDist: 110,
+        speed: 0.0008,
         state: 'warning',
-        color: '#F59E0B',
-        baseRadius: 42,
-        isPrimary: true,
-        distToObstacle: 8.4,
-        relativeSpeed: '+4.2 km/h'
-      },
-      {
-        id: 'D-12',
-        name: 'KOMATSU 930E // D-12',
-        type: 'HAUL TRUCK (360t)',
-        progress: 0.78,
-        speed: 0.00045,
-        state: 'normal',
-        color: '#10B981',
-        baseRadius: 36,
-        isPrimary: false,
-        distToObstacle: 54.0,
-        relativeSpeed: '+0.0 km/h'
+        type: 'CAT 797F (400t)',
+        lastPing: 0
       },
       {
         id: 'S-01',
-        name: 'SURVEY JEEP // S-01',
-        type: 'LIGHT VEHICLE',
-        progress: 0.28,
-        speed: 0.0011,
-        state: 'critical',
-        color: '#EF4444',
-        baseRadius: 26,
-        isPrimary: false,
-        distToObstacle: 6.8,
-        relativeSpeed: '-12.4 km/h'
+        name: 'SCOUT UNIT S-01',
+        baseAngle: 1.15,
+        baseDist: 145,
+        speed: -0.0006,
+        state: 'warning',
+        type: 'LIGHT PICKUP',
+        lastPing: 0
+      },
+      {
+        id: 'D-12',
+        name: 'HAUL TRUCK D-12',
+        baseAngle: 2.7,
+        baseDist: 210,
+        speed: 0.0004,
+        state: 'normal',
+        type: 'CAT 797F (400t)',
+        lastPing: 0
       },
       {
         id: 'L-04',
-        name: 'EXCAVATOR // L-04',
-        type: 'ELECTRIC SHOVEL',
-        progress: 0.12,
-        speed: 0.0,
+        name: 'PIT SHOVEL L-04',
+        baseAngle: 4.2,
+        baseDist: 260,
+        speed: 0.0001,
         state: 'normal',
-        color: '#10B981',
-        baseRadius: 30,
-        isPrimary: false,
-        distToObstacle: 95.0,
-        relativeSpeed: 'STATIONARY'
+        type: 'ELECTRIC SHOVEL',
+        lastPing: 0
+      },
+      {
+        id: 'W-02',
+        name: 'WATER TANKER W-02',
+        baseAngle: 5.4,
+        baseDist: 180,
+        speed: -0.0003,
+        state: 'normal',
+        type: 'DUST SUPPRESSION',
+        lastPing: 0
       }
     ];
-
-    // Obstacle ahead of D-07
-    this.obstacle = {
-      label: 'UNSEEN OBSTACLE // ROCKFALL & BERM BREACH',
-      progress: 0.49,
-      distance: 8.4
-    };
-
-    // Sensor pulse waves
-    this.sensorPulse = 0;
 
     this.init();
   }
 
   init() {
-    this.handleResize();
-    this.bindEvents();
+    this.handleResize = this.resize.bind(this);
+    this.handleMouseMove = this.onMouseMove.bind(this);
+    this.handleScroll = this.onScroll.bind(this);
 
-    // Register with unified MasterTicker
-    ticker.add('haul_road_continuous_scene', (delta, elapsed, currentTime) => {
-      this.update(delta, elapsed, currentTime);
-      this.render();
+    window.addEventListener('resize', this.handleResize, { passive: true });
+    window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
+    window.addEventListener('scroll', this.handleScroll, { passive: true });
+
+    this.unsubscribeTheme = themeManager.subscribe((theme) => {
+      this.theme = theme;
+    });
+
+    this.resize();
+
+    // Register with master ticker loop
+    ticker.add('haul_road_radar_scene', (delta) => {
+      this.update(delta);
+      this.draw();
     });
   }
 
-  bindEvents() {
-    window.addEventListener('resize', () => this.handleResize(), { passive: true });
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    this.width = rect.width || window.innerWidth;
+    this.height = rect.height || window.innerHeight;
 
-    window.addEventListener('scroll', () => {
-      const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      this.targetScrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-    }, { passive: true });
-
-    window.addEventListener('pointermove', (e) => {
-      this.hasPointerMoved = true;
-      const nx = (e.clientX / window.innerWidth) * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      this.mouse.targetX = nx * 18; // Max 18px subtle shift
-      this.mouse.targetY = ny * 18;
-    }, { passive: true });
-
-    window.addEventListener('fosafe:theme-change', (e) => {
-      this.theme = e.detail?.theme || 'dark';
-    });
-  }
-
-  handleResize() {
-    this.dpr = Math.min(window.devicePixelRatio || 1, ticker.maxDpr);
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
-
+    this.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
-    this.canvas.style.width = `${this.width}px`;
-    this.canvas.style.height = `${this.height}px`;
 
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.scale(this.dpr, this.dpr);
-
-    // Fog buffer at 0.5x resolution for locked 60FPS
-    const fogScale = 0.5;
-    this.fogCanvas.width = Math.max(64, Math.floor(this.width * fogScale));
-    this.fogCanvas.height = Math.max(64, Math.floor(this.height * fogScale));
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
   }
 
-  setManualFogDensity(density) {
-    // Allows Section 04 visibility simulator to scrub the scene's fog
-    this.fogDensity = Math.max(0.05, Math.min(1.0, density));
+  onMouseMove(e) {
+    const nx = (e.clientX / window.innerWidth) * 2 - 1;
+    const ny = (e.clientY / window.innerHeight) * 2 - 1;
+    this.mouse.targetX = nx * 24;
+    this.mouse.targetY = ny * 24;
   }
 
-  update(delta, elapsed) {
-    // Smooth scroll interpolation (lerp)
+  onScroll() {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    if (docHeight > 0) {
+      this.targetScrollProgress = Math.max(0, Math.min(1, window.scrollY / docHeight));
+    }
+  }
+
+  update(delta) {
+    this.time += delta;
+
+    // Smooth lerp mouse parallax
+    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.06;
+    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.06;
+
+    // Smooth lerp scroll progress
     this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * 0.08;
 
-    // Pointer smoothing
-    if (!this.hasPointerMoved) {
-      // Gentle auto drift if no mouse (touch devices / initial load)
-      this.mouse.targetX = Math.sin(elapsed * 0.0008) * 10;
-      this.mouse.targetY = Math.cos(elapsed * 0.0006) * 10;
-    }
-    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
-    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
+    // Rotate radar sweep beam (~3.5 seconds per full 360° turn)
+    this.radarAngle = (this.radarAngle + 0.016 * delta) % (Math.PI * 2);
 
-    // Move vehicles along spline
+    // Update vehicle positions and check radar sweep hit
     this.vehicles.forEach(v => {
-      v.progress = (v.progress + v.speed * (delta / 16.6)) % 1.0;
+      v.baseAngle = (v.baseAngle + v.speed * delta) % (Math.PI * 2);
+      if (v.baseAngle < 0) v.baseAngle += Math.PI * 2;
+
+      // Check if radar sweep just crossed vehicle angle
+      let angleDiff = Math.abs(this.radarAngle - v.baseAngle);
+      if (angleDiff > Math.PI) angleDiff = Math.PI * 2 - angleDiff;
+      if (angleDiff < 0.08) {
+        v.lastPing = this.time;
+      }
     });
-
-    // Sensor pulse wave
-    this.sensorPulse = (this.sensorPulse + 0.02 * (delta / 16.6)) % 1.0;
-
-    // Dynamic fog density calculation based on scroll progress
-    // Station 01 (0.0-0.15): ~0.15 (clear)
-    // Station 02 (0.15-0.30): spikes to ~0.88 (dense fog collapse)
-    // Station 04 (0.40-0.55): controlled by scrubber or scroll
-    // Station 06+ (0.60-1.0): settles to ~0.35 (aerial survey overview)
-    const sp = this.scrollProgress;
-    if (sp < 0.15) {
-      this.fogDensity = 0.15 + (sp / 0.15) * 0.15;
-    } else if (sp >= 0.15 && sp < 0.35) {
-      const t = (sp - 0.15) / 0.2;
-      this.fogDensity = 0.30 + t * 0.58; // Climbs to 0.88
-    } else if (sp >= 0.35 && sp < 0.60) {
-      const t = (sp - 0.35) / 0.25;
-      this.fogDensity = 0.88 - t * 0.40; // Adapts to 0.48
-    } else {
-      this.fogDensity = 0.48 - (sp - 0.60) * 0.25; // 0.38 overview
-    }
-
-    this.fogTime += delta * 0.0004;
   }
 
-  // Catmull-Rom or cubic evaluation along road spline
-  getSplinePoint(t) {
-    const pts = this.roadSpline;
-    const n = pts.length - 1;
-    const clampedT = Math.max(0, Math.min(0.999, t));
-    const p = clampedT * n;
-    const i = Math.floor(p);
-    const u = p - i;
-
-    const p0 = pts[Math.max(0, i - 1)];
-    const p1 = pts[i];
-    const p2 = pts[Math.min(n, i + 1)];
-    const p3 = pts[Math.min(n, i + 2)];
-
-    // Catmull-Rom calculation
-    const u2 = u * u;
-    const u3 = u2 * u;
-
-    const x = 0.5 * ((2 * p1.x) +
-      (-p0.x + p2.x) * u +
-      (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * u2 +
-      (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * u3);
-
-    const y = 0.5 * ((2 * p1.y) +
-      (-p0.y + p2.y) * u +
-      (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * u2 +
-      (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * u3);
-
-    return {
-      x: x * this.width,
-      y: y * this.height
-    };
-  }
-
-  render() {
+  draw() {
     const ctx = this.ctx;
     const w = this.width;
     const h = this.height;
+    if (!ctx || w === 0 || h === 0) return;
+
     const isLight = this.theme === 'light';
 
-    // 1. Clear with deep void graphite or crisp drafting paper base
+    // Clear canvas
+    ctx.clearRect(0, 0, w, h);
+
+    // Background base fill
     ctx.fillStyle = isLight ? '#F1F5F9' : '#07090D';
     ctx.fillRect(0, 0, w, h);
 
+    // Subtle technical grid pattern
+    this.drawBackgroundGrid(ctx, w, h, isLight);
+
+    // Dynamic radar origin: centered right-of-center on desktop, center on mobile
+    const isMobile = w < 768;
+    const originX = isMobile ? (w * 0.5 + this.mouse.x) : (w * 0.62 + this.mouse.x);
+    const originY = h * 0.52 + this.mouse.y;
+
+    // Zoom factor based on scroll progress (brings vehicles closer during collision stations)
+    const zoom = 1.0 + Math.sin(this.scrollProgress * Math.PI) * 0.25;
+
     ctx.save();
-    // Apply camera parallax
-    ctx.translate(this.mouse.x, this.mouse.y);
+    ctx.translate(originX, originY);
+    ctx.scale(zoom, zoom);
 
-    // 2. Draw Topographic Benches & Contour Lines
-    this.drawContours(ctx, w, h);
+    // 1. Concentric Range Rings (50m, 100m, 150m, 200m, 280m)
+    this.drawRangeRings(ctx, isLight);
 
-    // 3. Draw Survey Coordinate Grid & Registration Marks
-    this.drawSurveyGrid(ctx, w, h);
+    // 2. Compass Crosshairs and Degree Ticks
+    this.drawCrosshairs(ctx, isLight);
 
-    // 4. Draw Haul Road Centerline and Shoulders
-    this.drawHaulRoad(ctx, w, h);
+    // 3. Luminous 360° Radar Sweep Beam
+    this.drawRadarSweep(ctx, isLight);
 
-    // 5. Draw Active Vehicles, Envelopes & Collision Vectors
-    this.drawFleetNodes(ctx, w, h);
-
-    // 6. Draw Layered Atmospheric Fog Noise
-    this.drawAtmosphericFog(ctx, w, h);
-
-    // 7. Draw Station-Specific Overlays (Camera Zoom / Sensor Pulses)
-    this.drawStationContextOverlays(ctx, w, h);
+    // 4. Vehicle Nodes & Proximity Beams
+    this.drawFleetNodes(ctx, isLight);
 
     ctx.restore();
 
-    // 8. Un-transformed Screen-Space Survey Instrumentation
-    this.drawScreenInstrumentation(ctx, w, h);
+    // 5. Ambient HUD Status Overlay in Corners
+    this.drawHudOverlay(ctx, w, h, isLight);
   }
 
-  drawContours(ctx, w, h) {
-    const isLight = this.theme === 'light';
+  drawBackgroundGrid(ctx, w, h, isLight) {
     ctx.save();
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.04)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([4, 4]);
-
-    // Topographic bench contours
-    const contours = [
-      { y: 0.18, elev: '+260m' },
-      { y: 0.38, elev: '+240m' },
-      { y: 0.58, elev: '+220m' },
-      { y: 0.78, elev: '+200m' },
-      { y: 0.94, elev: '+180m' }
-    ];
-
-    contours.forEach(c => {
-      const cy = c.y * h;
-      ctx.beginPath();
-      ctx.moveTo(0, cy - 20);
-      ctx.bezierCurveTo(w * 0.35, cy + 40, w * 0.65, cy - 50, w, cy + 15);
-      ctx.stroke();
-
-      // Elevation text tag
-      ctx.font = '9px "JetBrains Mono", monospace';
-      ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.45)' : 'rgba(255, 255, 255, 0.18)';
-      ctx.fillText(`BENCH ELEV ${c.elev}`, 24, cy - 10);
-    });
-
-    ctx.restore();
-  }
-
-  drawSurveyGrid(ctx, w, h) {
-    const isLight = this.theme === 'light';
-    ctx.save();
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.05)' : 'rgba(255, 255, 255, 0.035)';
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.035)' : 'rgba(255, 255, 255, 0.03)';
     ctx.lineWidth = 1;
 
-    const gridSize = 120;
-    const cols = Math.ceil(w / gridSize);
-    const rows = Math.ceil(h / gridSize);
-
-    // Grid lines
-    for (let c = 0; c <= cols; c++) {
-      const x = c * gridSize;
-      ctx.beginPath();
+    const gridSize = 48;
+    ctx.beginPath();
+    for (let x = 0; x < w; x += gridSize) {
       ctx.moveTo(x, 0);
       ctx.lineTo(x, h);
-      ctx.stroke();
     }
-    for (let r = 0; r <= rows; r++) {
-      const y = r * gridSize;
-      ctx.beginPath();
+    for (let y = 0; y < h; y += gridSize) {
       ctx.moveTo(0, y);
       ctx.lineTo(w, y);
-      ctx.stroke();
     }
+    ctx.stroke();
+    ctx.restore();
+  }
 
-    // Survey crosshairs at intersections
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.12)';
-    ctx.lineWidth = 1;
-    for (let c = 1; c < cols; c += 2) {
-      for (let r = 1; r < rows; r += 2) {
-        const x = c * gridSize;
-        const y = r * gridSize;
-        const s = 4;
-        ctx.beginPath();
-        ctx.moveTo(x - s, y);
-        ctx.lineTo(x + s, y);
-        ctx.moveTo(x, y - s);
-        ctx.lineTo(x, y + s);
-        ctx.stroke();
+  drawRangeRings(ctx, isLight) {
+    const rings = [
+      { radius: 60, label: '50m' },
+      { radius: 120, label: '100m' },
+      { radius: 180, label: '150m' },
+      { radius: 240, label: '200m' },
+      { radius: 310, label: '250m' }
+    ];
+
+    ctx.save();
+    ctx.font = '9px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    rings.forEach((r, idx) => {
+      // Circle stroke
+      ctx.beginPath();
+      ctx.arc(0, 0, r.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = isLight 
+        ? (idx === 1 ? 'rgba(217, 119, 6, 0.25)' : 'rgba(15, 23, 42, 0.08)')
+        : (idx === 1 ? 'rgba(245, 158, 11, 0.28)' : 'rgba(255, 255, 255, 0.07)');
+      ctx.lineWidth = idx === 1 ? 1.5 : 1;
+      if (idx === 1) {
+        ctx.setLineDash([4, 4]);
+      } else {
+        ctx.setLineDash([]);
       }
-    }
+      ctx.stroke();
+
+      // Range Label on cardinal axis
+      ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.65)' : 'rgba(148, 163, 184, 0.55)';
+      ctx.fillText(r.label, 0, -r.radius - 6);
+    });
 
     ctx.restore();
   }
 
-  drawHaulRoad(ctx, w, h) {
-    const isLight = this.theme === 'light';
+  drawCrosshairs(ctx, isLight) {
     ctx.save();
-    const steps = 60;
-    const roadHalfWidth = 28;
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.07)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 4]);
 
-    // Road fill surface
+    const maxDist = 340;
+    // North-South line
     ctx.beginPath();
-    for (let i = 0; i <= steps; i++) {
-      const pt = this.getSplinePoint(i / steps);
-      if (i === 0) ctx.moveTo(pt.x - roadHalfWidth, pt.y);
-      else ctx.lineTo(pt.x - roadHalfWidth, pt.y);
-    }
-    for (let i = steps; i >= 0; i--) {
-      const pt = this.getSplinePoint(i / steps);
-      ctx.lineTo(pt.x + roadHalfWidth, pt.y);
-    }
-    ctx.closePath();
-    ctx.fillStyle = isLight ? 'rgba(215, 224, 236, 0.85)' : 'rgba(18, 23, 32, 0.65)';
+    ctx.moveTo(0, -maxDist);
+    ctx.lineTo(0, maxDist);
+    // East-West line
+    ctx.moveTo(-maxDist, 0);
+    ctx.lineTo(maxDist, 0);
+    ctx.stroke();
+
+    // Center Origin Dot
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fillStyle = isLight ? '#D97706' : '#F59E0B';
     ctx.fill();
 
-    // Road shoulders (berm boundaries)
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.22)' : 'rgba(255, 255, 255, 0.12)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.restore();
+  }
 
-    // Road Centerline with dashes
-    ctx.beginPath();
-    ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.6)' : 'rgba(245, 158, 11, 0.35)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([8, 8]);
-    for (let i = 0; i <= steps; i++) {
-      const pt = this.getSplinePoint(i / steps);
-      if (i === 0) ctx.moveTo(pt.x, pt.y);
-      else ctx.lineTo(pt.x, pt.y);
+  drawRadarSweep(ctx, isLight) {
+    const sweepRadius = 320;
+    const sweepAngle = this.radarAngle;
+    const beamSpread = 0.55; // Spread in radians (~30 degrees)
+
+    ctx.save();
+
+    // Trailing Sweep Arc with Canvas Gradient
+    const sweepGrad = ctx.createRadialGradient(0, 0, 20, 0, 0, sweepRadius);
+    if (isLight) {
+      sweepGrad.addColorStop(0, 'rgba(217, 119, 6, 0.12)');
+      sweepGrad.addColorStop(0.7, 'rgba(217, 119, 6, 0.04)');
+      sweepGrad.addColorStop(1, 'rgba(217, 119, 6, 0.0)');
+    } else {
+      sweepGrad.addColorStop(0, 'rgba(245, 158, 11, 0.18)');
+      sweepGrad.addColorStop(0.7, 'rgba(245, 158, 11, 0.05)');
+      sweepGrad.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
     }
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, sweepRadius, sweepAngle - beamSpread, sweepAngle, false);
+    ctx.closePath();
+    ctx.fillStyle = sweepGrad;
+    ctx.fill();
+
+    // Sharp Leading Edge Beam
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(sweepAngle) * sweepRadius, Math.sin(sweepAngle) * sweepRadius);
+    ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.45)' : 'rgba(245, 158, 11, 0.65)';
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
     ctx.restore();
   }
 
-  drawFleetNodes(ctx, w, h) {
-    const sp = this.scrollProgress;
+  drawFleetNodes(ctx, isLight) {
+    const coords = [];
 
-    // Dynamic safety radius scale factor (increases in fog stations)
-    const bufferScale = (sp > 0.15 && sp < 0.6) ? 1.45 : 1.0;
-
+    // Calculate node Cartesian positions
     this.vehicles.forEach(v => {
-      const pos = this.getSplinePoint(v.progress);
-      const radius = v.baseRadius * bufferScale;
+      const x = Math.cos(v.baseAngle) * v.baseDist;
+      const y = Math.sin(v.baseAngle) * v.baseDist;
+      coords.push({ v, x, y });
+    });
 
+    // 1. Draw Proximity Collision Vectors between nearby units (D-07 and S-01)
+    for (let i = 0; i < coords.length; i++) {
+      for (let j = i + 1; j < coords.length; j++) {
+        const p1 = coords[i];
+        const p2 = coords[j];
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // If within 90m proximity envelope
+        if (dist < 90) {
+          ctx.save();
+          ctx.strokeStyle = isLight ? 'rgba(220, 38, 38, 0.6)' : 'rgba(239, 68, 68, 0.75)';
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 3]);
+
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+
+          // Midpoint Distance Pill
+          const midX = (p1.x + p2.x) * 0.5;
+          const midY = (p1.y + p2.y) * 0.5;
+
+          ctx.fillStyle = isLight ? '#FFFFFF' : '#111622';
+          ctx.strokeStyle = isLight ? 'rgba(220, 38, 38, 0.5)' : 'rgba(239, 68, 68, 0.6)';
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.roundRect(midX - 28, midY - 9, 56, 18, 4);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = isLight ? '#DC2626' : '#EF4444';
+          ctx.font = '700 8.5px "JetBrains Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('08.4m ALERT', midX, midY);
+
+          ctx.restore();
+        }
+      }
+    }
+
+    // 2. Draw each Vehicle Blip
+    coords.forEach(({ v, x, y }) => {
       ctx.save();
-      ctx.translate(pos.x, pos.y);
 
-      // 1. Safety perimeter ring
+      const timeSincePing = this.time - v.lastPing;
+      const isPinged = timeSincePing < 0.6;
+      const pingAlpha = Math.max(0, 1 - timeSincePing / 0.6);
+
+      // Safe vs Caution colors
+      const isCaution = v.state === 'warning';
+      const nodeColor = isCaution
+        ? (isLight ? '#D97706' : '#F59E0B')
+        : (isLight ? '#059669' : '#10B981');
+
+      // Glowing Ping Wave when radar beam hits node
+      if (isPinged) {
+        ctx.beginPath();
+        ctx.arc(x, y, 12 + pingAlpha * 18, 0, Math.PI * 2);
+        ctx.strokeStyle = isCaution
+          ? `rgba(245, 158, 11, ${pingAlpha * 0.5})`
+          : `rgba(16, 185, 129, ${pingAlpha * 0.5})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Safety Halo Buffer (Dashed Circle)
       ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = v.state === 'critical' ? 'rgba(239, 68, 68, 0.45)' :
-                        v.state === 'warning' ? 'rgba(245, 158, 11, 0.38)' :
-                        'rgba(16, 185, 129, 0.25)';
+      ctx.arc(x, y, isCaution ? 22 : 16, 0, Math.PI * 2);
+      ctx.strokeStyle = isCaution
+        ? (isLight ? 'rgba(217, 119, 6, 0.4)' : 'rgba(245, 158, 11, 0.35)')
+        : (isLight ? 'rgba(5, 150, 105, 0.3)' : 'rgba(16, 185, 129, 0.25)');
       ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.setLineDash([2, 3]);
       ctx.stroke();
 
-      // 2. Pulse wave on primary vehicle (D-07)
-      if (v.isPrimary) {
-        ctx.beginPath();
-        const pulseR = radius + this.sensorPulse * 24;
-        ctx.arc(0, 0, pulseR, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(245, 158, 11, ${0.4 * (1 - this.sensorPulse)})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-      }
-
-      // 3. Vehicle icon marker (Industrial lozenge / rectangle)
-      ctx.fillStyle = v.color;
+      // Solid Node Core
+      ctx.setLineDash([]);
       ctx.beginPath();
-      ctx.rect(-7, -12, 14, 24);
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = nodeColor;
       ctx.fill();
 
-      // Heading arrow indicator
-      ctx.fillStyle = '#080A0F';
+      // Heading Vector Tip
       ctx.beginPath();
-      ctx.moveTo(0, 8);
-      ctx.lineTo(-4, 0);
-      ctx.lineTo(4, 0);
-      ctx.closePath();
-      ctx.fill();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + Math.cos(v.baseAngle + Math.PI * 0.5) * 12, y + Math.sin(v.baseAngle + Math.PI * 0.5) * 12);
+      ctx.strokeStyle = nodeColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-      // 4. Instrument Tag Annotation
-      const isLight = this.theme === 'light';
-      ctx.font = '600 10px "JetBrains Mono", monospace';
+      // Monospace Vehicle Label
+      ctx.font = '600 8.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
       ctx.fillStyle = isLight ? '#0F172A' : '#F8FAFC';
-      ctx.fillText(v.id, 16, -4);
+      ctx.fillText(v.id, x + 8, y - 6);
 
-      ctx.font = '500 8px "JetBrains Mono", monospace';
-      ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.65)';
-      ctx.fillText(`${v.type.split(' ')[0]} · ${v.state.toUpperCase()}`, 16, 8);
-
-      // 5. Distance vector line from D-07 to Obstacle
-      if (v.isPrimary) {
-        const obsPos = this.getSplinePoint(this.obstacle.progress);
-        const dx = obsPos.x - pos.x;
-        const dy = obsPos.y - pos.y;
-
-        ctx.restore(); // Exit vehicle local transform
-        ctx.save();
-
-        // Vector line
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-        ctx.lineTo(obsPos.x, obsPos.y);
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([4, 4]);
-        ctx.stroke();
-
-        // Obstacle marker
-        ctx.beginPath();
-        ctx.arc(obsPos.x, obsPos.y, 6, 0, Math.PI * 2);
-        ctx.fillStyle = '#EF4444';
-        ctx.fill();
-        ctx.strokeStyle = isLight ? '#0F172A' : '#F8FAFC';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Obstacle HUD tag
-        ctx.font = '600 9px "JetBrains Mono", monospace';
-        ctx.fillStyle = '#EF4444';
-        ctx.fillText(`OBSTACLE: ${v.distToObstacle}m AHEAD`, obsPos.x + 10, obsPos.y - 6);
-        ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.75)' : 'rgba(255, 255, 255, 0.75)';
-        ctx.fillText(`CLOSING: ${v.relativeSpeed}`, obsPos.x + 10, obsPos.y + 6);
-
-        ctx.restore();
-        return;
-      }
+      ctx.font = '400 7.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = isLight ? '#64748B' : '#94A3B8';
+      ctx.fillText(v.state === 'warning' ? 'PROX CAUTION' : 'PERIMETER SAFE', x + 8, y + 5);
 
       ctx.restore();
     });
   }
 
-  drawAtmosphericFog(ctx, w, h) {
-    const isLight = this.theme === 'light';
-    const fCtx = this.fogCtx;
-    const fw = this.fogCanvas.width;
-    const fh = this.fogCanvas.height;
-
-    // Render low-res procedural fog on offscreen buffer
-    fCtx.clearRect(0, 0, fw, fh);
-
-    const t = this.fogTime;
-    const density = this.fogDensity;
-
-    // Value noise gradient blobs
-    fCtx.save();
-    for (let i = 0; i < 7; i++) {
-      const gx = (Math.sin(t * 0.7 + i * 1.8) * 0.4 + 0.5) * fw;
-      const gy = (Math.cos(t * 0.5 + i * 1.3) * 0.4 + 0.5) * fh;
-      const gradR = (0.35 + i * 0.08) * Math.max(fw, fh);
-
-      const radGrad = fCtx.createRadialGradient(gx, gy, 0, gx, gy, gradR);
-      if (isLight) {
-        radGrad.addColorStop(0, `rgba(195, 208, 225, ${0.48 * density})`);
-        radGrad.addColorStop(0.5, `rgba(215, 226, 240, ${0.30 * density})`);
-        radGrad.addColorStop(1, 'rgba(235, 242, 250, 0)');
-      } else {
-        radGrad.addColorStop(0, `rgba(18, 24, 34, ${0.45 * density})`);
-        radGrad.addColorStop(0.5, `rgba(14, 19, 28, ${0.28 * density})`);
-        radGrad.addColorStop(1, 'rgba(10, 14, 20, 0)');
-      }
-
-      fCtx.fillStyle = radGrad;
-      fCtx.fillRect(0, 0, fw, fh);
-    }
-    fCtx.restore();
-
-    // Composite scaled fog buffer onto main canvas
+  drawHudOverlay(ctx, w, h, isLight) {
     ctx.save();
-    ctx.globalAlpha = Math.min(1.0, density * 1.2);
-    ctx.drawImage(this.fogCanvas, 0, 0, fw, fh, 0, 0, w, h);
-    ctx.restore();
-  }
+    ctx.font = '600 9px "JetBrains Mono", monospace';
+    ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.45)' : 'rgba(148, 163, 184, 0.35)';
 
-  drawStationContextOverlays(ctx, w, h) {
-    const sp = this.scrollProgress;
-
-    // Station 02: Fog collapse sightline indicator
-    if (sp >= 0.12 && sp <= 0.32) {
-      const alpha = Math.sin(((sp - 0.12) / 0.2) * Math.PI);
-      ctx.save();
-      ctx.fillStyle = `rgba(239, 68, 68, ${0.08 * alpha})`;
-      ctx.fillRect(0, 0, w, h);
-
-      // Warning text across bottom
-      ctx.font = '11px "JetBrains Mono", monospace';
-      ctx.fillStyle = `rgba(239, 68, 68, ${0.85 * alpha})`;
-      ctx.fillText('CRITICAL VISIBILITY COLLAPSE // SIGHTLINE < 15.0m // BRAKING ENVELOPE: 62.4m', 32, h - 40);
-      ctx.restore();
-    }
-  }
-
-  drawScreenInstrumentation(ctx, w, h) {
-    const isLight = this.theme === 'light';
-    ctx.save();
-
-    // Top Left Survey Coordinates & Compass Heading
-    ctx.font = '10px "JetBrains Mono", monospace';
-    ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.35)';
+    // Top-Left Telemetry Tag
     ctx.textAlign = 'left';
-    ctx.fillText('LAT 23°47\'12" N  LON 86°24\'38" E', 36, 36);
-    ctx.fillText('PIT SECTOR: BENCH-04C // RAMP-08', 36, 52);
+    ctx.fillText('RADAR 360° // 40kHz SENSOR FUSION ACTIVE', 24, h - 24);
 
-    // Bottom Left Technical Scale Bar
-    const barW = 100;
-    const barX = 32;
-    const barY = h - 28;
-
-    ctx.textAlign = 'left';
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(barX, barY);
-    ctx.lineTo(barX + barW, barY);
-    ctx.moveTo(barX, barY - 4);
-    ctx.lineTo(barX, barY + 4);
-    ctx.moveTo(barX + barW / 2, barY - 2);
-    ctx.lineTo(barX + barW / 2, barY + 2);
-    ctx.moveTo(barX + barW, barY - 4);
-    ctx.lineTo(barX + barW, barY + 4);
-    ctx.stroke();
-
-    ctx.fillText('0', barX - 2, barY - 8);
-    ctx.fillText('25m', barX + barW / 2 - 8, barY - 8);
-    ctx.fillText('50m SCALE', barX + barW - 12, barY - 8);
+    // Top-Right Pit Sector Tag
+    ctx.textAlign = 'right';
+    ctx.fillText('PIT SECTOR 04 // LATENCY <45ms', w - 24, h - 24);
 
     ctx.restore();
   }
 
   destroy() {
-    ticker.remove('haul_road_continuous_scene');
+    ticker.remove('haul_road_radar_scene');
+    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('scroll', this.handleScroll);
+    if (this.unsubscribeTheme) this.unsubscribeTheme();
   }
 }

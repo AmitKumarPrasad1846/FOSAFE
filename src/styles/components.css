@@ -132,6 +132,45 @@
   transform: rotate(15deg) scale(1.1);
 }
 
+/* Language Switcher Pill (EN / हिन्दी) */
+.capsule-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line-structure);
+  border-radius: var(--radius-capsule);
+  padding: 0.32rem 0.65rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--dur-fast) ease;
+}
+
+.capsule-lang-btn:hover {
+  border-color: var(--accent-amber);
+  color: var(--text-primary);
+}
+
+.capsule-lang-btn .lang-opt {
+  opacity: 0.55;
+  transition: all var(--dur-fast) ease;
+}
+
+.capsule-lang-btn .lang-opt.is-active {
+  color: var(--accent-amber);
+  font-weight: 800;
+  opacity: 1;
+}
+
+.capsule-lang-btn .lang-slash {
+  color: var(--text-dim);
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+
 .capsule-cta-btn {
   display: inline-flex;
   align-items: center;
