@@ -51,12 +51,16 @@ class ScrollManager {
       this.lenis.scrollTo(target, {
         offset: options.offset || 0,
         duration: options.duration || 1.2,
-        immediate: ticker.prefersReducedMotion
+        immediate: options.immediate ?? ticker.prefersReducedMotion
       });
     } else {
-      const el = typeof target === 'string' ? document.querySelector(target) : target;
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
+      if (typeof target === 'number') {
+        window.scrollTo({ top: target, behavior: options.immediate ? 'instant' : 'smooth' });
+      } else {
+        const el = typeof target === 'string' ? document.querySelector(target) : target;
+        if (el) {
+          el.scrollIntoView({ behavior: options.immediate ? 'instant' : 'smooth' });
+        }
       }
     }
   }

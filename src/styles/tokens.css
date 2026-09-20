@@ -191,8 +191,8 @@ html[data-theme="light"] {
   --radius-capsule: 9999px;
 
   /* Layer Indexing */
-  --z-canvas-pinned: 1;
-  --z-grid-overlay: 2;
+  --z-canvas-pinned: 0;
+  --z-grid-overlay: 1;
   --z-content: 10;
   --z-rail: 90;
   --z-nav: 100;
