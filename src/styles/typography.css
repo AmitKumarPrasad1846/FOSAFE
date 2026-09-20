@@ -1,6 +1,6 @@
 /* ==========================================================================
-   FOSAFE v2 — Industrial Instrument Typography
-   Display: Barlow Condensed | Body: Barlow | Readouts: JetBrains Mono
+   FOSAFE v2 — Modern High-Tech Precision Typography
+   Display: Space Grotesk | Body: Plus Jakarta Sans | Readouts: JetBrains Mono
    Tabular digits, slashed zeros, and fixed-width instrument metrics.
    ========================================================================== */
 
@@ -8,40 +8,41 @@
 html {
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-void);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Headings: Condensed Industrial Grotesque */
+/* Headings: Modern Technical Proportional Display */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin: 0;
 }
 
 h1 {
-  font-size: clamp(2.8rem, 7vw, 6.2rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
 h2 {
-  font-size: clamp(2rem, 4.5vw, 3.8rem);
-  letter-spacing: -0.015em;
+  font-size: clamp(1.8rem, 3.8vw, 3.2rem);
+  letter-spacing: -0.02em;
 }
 
 h3 {
-  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+  font-size: clamp(1.3rem, 2.2vw, 1.85rem);
+  letter-spacing: -0.015em;
 }
 
 h4 {
-  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-size: clamp(1.05rem, 1.6vw, 1.35rem);
 }
 
 /* Monospace & Tabular Readouts */
@@ -83,7 +84,7 @@ pre,
 }
 
 .instrument-val {
-  font-size: clamp(1.5rem, 3.2vw, 2.75rem);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 700;
   line-height: 1;
   color: var(--text-primary);
@@ -93,7 +94,6 @@ pre,
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--text-muted);
-  text-transform: lowercase;
 }
 
 /* Section Station Headers */
@@ -101,7 +101,7 @@ pre,
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   color: var(--accent-amber);
   margin-bottom: 0.75rem;
   display: flex;
@@ -115,6 +115,7 @@ pre,
   width: 6px;
   height: 6px;
   background: var(--accent-amber);
+  border-radius: 1px;
 }
 
 /* Body Copy */
@@ -122,11 +123,12 @@ p {
   color: var(--text-secondary);
   margin: 0 0 1rem 0;
   font-weight: 400;
+  line-height: 1.65;
 }
 
 .lead-text {
-  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-  line-height: 1.55;
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
   color: var(--text-primary);
   font-weight: 400;
 }

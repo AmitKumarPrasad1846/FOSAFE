@@ -66,21 +66,21 @@ export class ExplodedVehicleUnit {
 
     inspector.innerHTML = `
       <div class="inspector-header">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
           <div>
             <span class="telemetry-tag warning" style="margin-bottom: 0.35rem;">SUBSYSTEM // ${data.id}</span>
-            <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: #fff;">${data.name}</h3>
+            <h3 style="font-family: var(--font-display); font-size: 1.25rem; color: var(--text-primary);">${data.name}</h3>
           </div>
-          <span class="mono-readout" style="font-size: 0.75rem; color: var(--accent-amber);">${data.interface}</span>
+          <span class="font-mono" style="font-size: 0.75rem; color: var(--accent-amber); font-weight: 700;">${data.interface}</span>
         </div>
-        <div class="mono-readout" style="font-size: 0.78rem; color: var(--steel-300); margin-bottom: 1rem;">
-          CHIPSET: <strong style="color: #EDEFEF;">${data.chipset}</strong>
+        <div class="font-mono" style="font-size: 0.78rem; color: var(--steel-300); margin-bottom: 1rem;">
+          CHIPSET: <strong style="color: var(--text-primary);">${data.chipset}</strong>
         </div>
       </div>
 
-      <div style="background: #080A0E; border: 1px solid var(--border-subtle); padding: 0.85rem; border-radius: var(--radius-xs); margin-bottom: 1rem;">
-        <div class="data-label" style="margin-bottom: 0.35rem; color: var(--accent-amber);">OPERATIONAL ROLE</div>
-        <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary);">${data.purpose}</p>
+      <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.85rem; border-radius: var(--radius-xs); margin-bottom: 1rem;">
+        <div class="survey-label" style="margin-bottom: 0.35rem; color: var(--accent-amber);">OPERATIONAL ROLE</div>
+        <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 0;">${data.purpose}</p>
       </div>
 
       <table class="sensor-spec-table">

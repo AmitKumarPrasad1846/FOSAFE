@@ -120,22 +120,22 @@ export class SafetyLogicPipeline {
     const detailBox = this.container.querySelector('#pipeline-step-detail');
     if (detailBox) {
       detailBox.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
           <div>
             <span class="telemetry-tag warning" style="font-size: 0.68rem; margin-bottom: 0.25rem;">
               STAGE 0${current.id} OF 07 // ${current.short}
             </span>
-            <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: #EDEFEF;">${current.title}</h4>
+            <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--text-primary);">${current.title}</h4>
           </div>
-          <span class="mono-readout" style="font-size: 0.82rem; color: var(--accent-amber); font-weight: 700;">
+          <span class="font-mono" style="font-size: 0.82rem; color: var(--accent-amber); font-weight: 700;">
             TOTAL DELAY: ${current.latency}
           </span>
         </div>
         <p style="font-size: 0.85rem; line-height: 1.55; color: var(--text-secondary); margin-bottom: 0.6rem;">
           ${current.detail}
         </p>
-        <div style="background: #080A0E; padding: 0.5rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.75rem; color: var(--steel-300);">
-          COMPUTATION ARTIFACT: <strong style="color: #EDEFEF;">${current.spec}</strong>
+        <div style="background: var(--bg-inset); padding: 0.5rem 0.75rem; border: 1px solid var(--line-structure); border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-secondary);">
+          COMPUTATION ARTIFACT: <strong style="color: var(--text-primary);">${current.spec}</strong>
         </div>
       `;
     }
@@ -154,21 +154,21 @@ export class SafetyLogicPipeline {
 
   render() {
     this.container.innerHTML = `
-      <div style="background: var(--bg-surface); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: var(--space-6);">
+      <div style="background: var(--bg-panel); border: 1px solid var(--line-structure); border-radius: var(--radius-xs); padding: var(--sp-6);">
         <!-- Top bar with trigger button & latency total -->
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 1rem;">
           <div>
-            <span class="section-eyebrow">DETERMINISTIC EMBEDDED PIPELINE</span>
-            <div style="font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #EDEFEF;">
+            <span class="survey-label">DETERMINISTIC EMBEDDED PIPELINE</span>
+            <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">
               SENSOR-TO-ALERT ARBITRATION CHAIN
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div class="mono-readout" style="font-size: 0.75rem; color: var(--text-muted);">
-              DETERMINISTIC LATENCY: <strong style="color: var(--status-normal);">&lt; 45ms</strong>
+            <div class="font-mono" style="font-size: 0.75rem; color: var(--text-muted);">
+              LATENCY: <strong style="color: var(--state-normal);">&lt; 45ms</strong>
             </div>
-            <button id="run-pipeline-btn" class="btn btn-primary btn-sm">
-              ▶ SIMULATE DATA CYCLE
+            <button id="run-pipeline-btn" class="btn-action-primary" style="font-size: 0.72rem; padding: 0.45rem 0.95rem;">
+              ▶ SIMULATE CYCLE
             </button>
           </div>
         </div>
@@ -180,7 +180,7 @@ export class SafetyLogicPipeline {
               <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--accent-amber); margin-bottom: 2px;">
                 0${s.id}
               </div>
-              <div style="font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: #EDEFEF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              <div style="font-family: var(--font-display); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                 ${s.short}
               </div>
               <div style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); margin-top: 2px;">

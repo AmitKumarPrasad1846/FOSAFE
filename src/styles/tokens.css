@@ -1,103 +1,104 @@
 /* ==========================================================================
-   FOSAFE v2 — Industrial Survey & Instrument Design Tokens
-   Supports Dark Mode (Industrial Graphite) & Light Mode (Technical Blueprint Drafting Paper)
+   FOSAFE v2 — Industrial Instrument & Architectural Design Tokens
+   Elevated Modern Precision Typography & Curated Color Systems
+   Supports Dark Mode (OLED Deep Titanium) & Light Mode (Architectural Studio)
    ========================================================================== */
 
 :root,
 [data-theme="dark"] {
   /* Surface & Background Hierarchy */
-  --bg-void: #050608;
-  --bg-base: #080A0F;
-  --bg-surface: #0E121A;
-  --bg-elevated: #141A24;
-  --bg-panel: rgba(14, 18, 26, 0.88);
+  --bg-void: #07090D;
+  --bg-base: #0B0E14;
+  --bg-surface: #111622;
+  --bg-elevated: #161D2C;
+  --bg-panel: rgba(13, 17, 26, 0.86);
   --bg-panel-solid: #111622;
-  --bg-inset: #06080C;
+  --bg-inset: #090C12;
 
   /* Survey Linework & Instrument Dividers */
-  --line-subtle: rgba(255, 255, 255, 0.06);
-  --line-grid: rgba(255, 255, 255, 0.09);
-  --line-structure: #1F2737;
-  --line-strong: #333F56;
-  --line-accent: rgba(245, 158, 11, 0.4);
-  --crosshair-color: rgba(255, 255, 255, 0.18);
-  --tick-color: rgba(255, 255, 255, 0.22);
+  --line-subtle: rgba(255, 255, 255, 0.05);
+  --line-grid: rgba(255, 255, 255, 0.07);
+  --line-structure: #1E2738;
+  --line-strong: #2D3A52;
+  --line-accent: rgba(245, 158, 11, 0.45);
+  --crosshair-color: rgba(255, 255, 255, 0.22);
+  --tick-color: rgba(255, 255, 255, 0.25);
 
   /* Text & Readout Contrast */
-  --text-primary: #F2F4F7;
-  --text-secondary: #B4BCCB;
-  --text-muted: #727E94;
-  --text-dim: #444E61;
-  --text-inverted: #080A0F;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-dim: #475569;
+  --text-inverted: #0B0E14;
 
   /* Muted Industrial Steel */
-  --steel-100: #E6EAF0;
-  --steel-300: #A2AEC2;
-  --steel-500: #5D6C84;
-  --steel-700: #303A4C;
-  --steel-850: #1B222E;
-  --steel-950: #0D1219;
+  --steel-100: #F1F5F9;
+  --steel-300: #CBD5E1;
+  --steel-500: #64748B;
+  --steel-700: #334155;
+  --steel-850: #1E293B;
+  --steel-950: #0F172A;
 
   /* System States (Functional only: Normal / Warning / Critical) */
   --state-normal: #10B981;
   --state-normal-rgb: 16, 185, 129;
-  --state-normal-bg: rgba(16, 185, 129, 0.08);
-  --state-normal-border: rgba(16, 185, 129, 0.28);
+  --state-normal-bg: rgba(16, 185, 129, 0.10);
+  --state-normal-border: rgba(16, 185, 129, 0.32);
 
   --state-warning: #F59E0B;
   --state-warning-rgb: 245, 158, 11;
-  --state-warning-bg: rgba(245, 158, 11, 0.10);
-  --state-warning-border: rgba(245, 158, 11, 0.35);
+  --state-warning-bg: rgba(245, 158, 11, 0.12);
+  --state-warning-border: rgba(245, 158, 11, 0.38);
 
   --state-critical: #EF4444;
   --state-critical-rgb: 239, 68, 68;
-  --state-critical-bg: rgba(239, 68, 68, 0.12);
-  --state-critical-border: rgba(239, 68, 68, 0.42);
+  --state-critical-bg: rgba(239, 68, 68, 0.14);
+  --state-critical-border: rgba(239, 68, 68, 0.45);
 
-  /* Single Brand Accent: Restrained Safety Amber */
+  /* Vibrant Safety Amber Brand Accent */
   --accent-amber: #F59E0B;
-  --accent-amber-hover: #D97706;
-  --accent-amber-deep: #B45309;
-  --accent-amber-glow: rgba(245, 158, 11, 0.15);
+  --accent-amber-hover: #FBBF24;
+  --accent-amber-deep: #D97706;
+  --accent-amber-glow: rgba(245, 158, 11, 0.20);
 
   /* Floating Capsule Navbar */
-  --capsule-bg: rgba(14, 18, 26, 0.88);
-  --capsule-border: rgba(255, 255, 255, 0.14);
-  --capsule-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.05) inset;
-  --capsule-pill-active: rgba(245, 158, 11, 0.15);
+  --capsule-bg: rgba(13, 17, 26, 0.88);
+  --capsule-border: rgba(255, 255, 255, 0.12);
+  --capsule-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+  --capsule-pill-active: rgba(245, 158, 11, 0.16);
 
   /* Provenance Indicator Tokens */
   --badge-live-bg: rgba(16, 185, 129, 0.12);
   --badge-live-border: #10B981;
   --badge-live-text: #10B981;
-  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.07), rgba(245, 158, 11, 0.07) 6px, rgba(245, 158, 11, 0.14) 6px, rgba(245, 158, 11, 0.14) 12px);
-  --badge-sim-border: rgba(245, 158, 11, 0.5);
+  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.08) 6px, rgba(245, 158, 11, 0.16) 6px, rgba(245, 158, 11, 0.16) 12px);
+  --badge-sim-border: rgba(245, 158, 11, 0.55);
   --badge-sim-text: #F59E0B;
 }
 
 /* ==========================================================================
-   LIGHT THEME: Technical Topographic Blueprint & Survey Drafting Paper
-   Crisp chalk paper base, dark steel structural lines, warm amber accent.
+   LIGHT THEME: Architectural Studio & Clean Technical Drafting Paper
+   Pure slate-50 base, clean slate-200 lines, high-contrast obsidian text.
    ========================================================================== */
 [data-theme="light"] {
-  --bg-void: #E8EEF5;
-  --bg-base: #F2F5FA;
+  --bg-void: #F1F5F9;
+  --bg-base: #F8FAFC;
   --bg-surface: #FFFFFF;
-  --bg-elevated: #E5ECF6;
-  --bg-panel: rgba(255, 255, 255, 0.94);
+  --bg-elevated: #F1F5F9;
+  --bg-panel: rgba(255, 255, 255, 0.92);
   --bg-panel-solid: #FFFFFF;
-  --bg-inset: #E6EDF7;
+  --bg-inset: #F1F5F9;
 
-  --line-subtle: rgba(15, 23, 42, 0.08);
-  --line-grid: rgba(15, 23, 42, 0.06);
-  --line-structure: #CBD5E1;
-  --line-strong: #94A3B8;
-  --line-accent: rgba(217, 119, 6, 0.4);
-  --crosshair-color: rgba(15, 23, 42, 0.3);
-  --tick-color: rgba(15, 23, 42, 0.35);
+  --line-subtle: rgba(15, 23, 42, 0.06);
+  --line-grid: rgba(15, 23, 42, 0.05);
+  --line-structure: #E2E8F0;
+  --line-strong: #CBD5E1;
+  --line-accent: rgba(217, 119, 6, 0.45);
+  --crosshair-color: rgba(15, 23, 42, 0.25);
+  --tick-color: rgba(15, 23, 42, 0.30);
 
-  --text-primary: #0A0F1D;
-  --text-secondary: #334155;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
   --text-muted: #64748B;
   --text-dim: #94A3B8;
   --text-inverted: #FFFFFF;
@@ -111,13 +112,13 @@
 
   --state-normal: #059669;
   --state-normal-rgb: 5, 150, 105;
-  --state-normal-bg: rgba(5, 150, 105, 0.09);
+  --state-normal-bg: rgba(5, 150, 105, 0.10);
   --state-normal-border: rgba(5, 150, 105, 0.35);
 
   --state-warning: #D97706;
   --state-warning-rgb: 217, 119, 6;
-  --state-warning-bg: rgba(217, 119, 6, 0.10);
-  --state-warning-border: rgba(217, 119, 6, 0.38);
+  --state-warning-bg: rgba(217, 119, 6, 0.12);
+  --state-warning-border: rgba(217, 119, 6, 0.40);
 
   --state-critical: #DC2626;
   --state-critical-rgb: 220, 38, 38;
@@ -127,18 +128,18 @@
   --accent-amber: #D97706;
   --accent-amber-hover: #B45309;
   --accent-amber-deep: #92400E;
-  --accent-amber-glow: rgba(217, 119, 6, 0.15);
+  --accent-amber-glow: rgba(217, 119, 6, 0.18);
 
-  --capsule-bg: rgba(255, 255, 255, 0.92);
-  --capsule-border: rgba(15, 23, 42, 0.16);
-  --capsule-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  --capsule-bg: rgba(255, 255, 255, 0.90);
+  --capsule-border: rgba(15, 23, 42, 0.12);
+  --capsule-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.85) inset;
   --capsule-pill-active: rgba(217, 119, 6, 0.12);
 
   --badge-live-bg: rgba(5, 150, 105, 0.12);
   --badge-live-border: #059669;
   --badge-live-text: #059669;
-  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(217, 119, 6, 0.08), rgba(217, 119, 6, 0.08) 6px, rgba(217, 119, 6, 0.15) 6px, rgba(217, 119, 6, 0.15) 12px);
-  --badge-sim-border: rgba(217, 119, 6, 0.5);
+  --badge-sim-bg: repeating-linear-gradient(45deg, rgba(217, 119, 6, 0.08), rgba(217, 119, 6, 0.08) 6px, rgba(217, 119, 6, 0.16) 6px, rgba(217, 119, 6, 0.16) 12px);
+  --badge-sim-border: rgba(217, 119, 6, 0.55);
   --badge-sim-text: #D97706;
 }
 
@@ -146,9 +147,9 @@
    Structural & Typography Tokens (Shared)
    ========================================================================== */
 :root {
-  /* Typography Families */
-  --font-display: 'Barlow Condensed', -apple-system, sans-serif;
-  --font-body: 'Barlow', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* High-Tech Precision Font Pairing */
+  --font-display: 'Space Grotesk', -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   /* Spacing Rhythm */
@@ -165,8 +166,9 @@
 
   /* Precise Technical Geometry */
   --radius-none: 0px;
-  --radius-xs: 2px;
-  --radius-sm: 4px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
   --radius-capsule: 9999px;
 
   /* Layer Indexing */

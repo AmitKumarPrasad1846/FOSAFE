@@ -91,20 +91,20 @@ export class PhysicalDigitalLoop {
           </button>
 
           <!-- ESP32 Board Mockup with Status LED -->
-          <div style="display: flex; align-items: center; gap: 0.75rem; background: #121620; border: 1px solid var(--border-subtle); padding: 0.5rem 0.85rem; border-radius: var(--radius-xs); margin-top: 0.5rem;">
-            <div id="esp32-status-led" style="width: 12px; height: 12px; border-radius: 50%; background: #2B3342; transition: all 0.2s ease; border: 1px solid #414E66;"></div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.5rem 0.85rem; border-radius: var(--radius-xs); margin-top: 0.5rem;">
+            <div id="esp32-status-led" style="width: 12px; height: 12px; border-radius: 50%; background: #2B3342; transition: all 0.2s ease; border: 1px solid var(--line-strong);"></div>
             <div style="display: flex; flex-direction: column;">
-              <span class="mono-readout" style="font-size: 0.72rem; color: #EDEFEF; font-weight: 700;">GPIO 18 / STATUS LED</span>
-              <span class="mono-readout" style="font-size: 0.65rem; color: var(--text-muted);">ESP32 ON-BOARD INTERRUPT</span>
+              <span class="font-mono" style="font-size: 0.72rem; color: var(--text-primary); font-weight: 700;">GPIO 18 / STATUS LED</span>
+              <span class="small-mono" style="font-size: 0.65rem; color: var(--text-muted);">ESP32 ON-BOARD INTERRUPT</span>
             </div>
           </div>
         </div>
 
         <!-- Right: Real-time Propagation Chain -->
         <div>
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
-            <span class="data-label" style="color: var(--accent-amber);">PHYSICAL-TO-DIGITAL BRIDGE</span>
-            <span id="hardware-loop-status-text" class="mono-readout" style="font-size: 0.72rem; color: #EDEFEF;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 0.5rem;">
+            <span class="survey-label" style="color: var(--accent-amber);">PHYSICAL-TO-DIGITAL BRIDGE</span>
+            <span id="hardware-loop-status-text" class="font-mono" style="font-size: 0.72rem; color: var(--text-primary);">
               ${state.hardwareLoopStatus}
             </span>
           </div>
@@ -113,7 +113,7 @@ export class PhysicalDigitalLoop {
             <div class="circuit-step-item ${state.circuitStep >= 1 ? 'is-active' : ''}" data-step="1">
               <div class="circuit-step-dot">1</div>
               <div>
-                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: #EDEFEF;">Driver presses physical FOG ASSIST button</strong>
+                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: var(--text-primary);">Driver presses physical FOG ASSIST button</strong>
                 <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
                   Cab momentary push-button completes circuit; drops GPIO 18 to GND with hardware RC debouncing.
                 </p>
@@ -123,7 +123,7 @@ export class PhysicalDigitalLoop {
             <div class="circuit-step-item ${state.circuitStep >= 2 ? 'is-active' : ''}" data-step="2">
               <div class="circuit-step-dot">2</div>
               <div>
-                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: #EDEFEF;">ESP32 Interrupt ISR &amp; Hardware Status LED</strong>
+                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: var(--text-primary);">ESP32 Interrupt ISR &amp; Hardware Status LED</strong>
                 <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
                   Core 1 triggers interrupt in &lt;4µs, illuminating amber feedback LED and firing external beacon strobe relay.
                 </p>
@@ -133,7 +133,7 @@ export class PhysicalDigitalLoop {
             <div class="circuit-step-item ${state.circuitStep >= 3 ? 'is-active' : ''}" data-step="3">
               <div class="circuit-step-dot">3</div>
               <div>
-                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: #EDEFEF;">Telemetry Packet Dispatched via MQTT</strong>
+                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: var(--text-primary);">Telemetry Packet Dispatched via MQTT</strong>
                 <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
                   Edge unit transmits payload (vehicle ID, GNSS coordinates, relative humidity, hazard flag) over 868MHz / LTE.
                 </p>
@@ -143,7 +143,7 @@ export class PhysicalDigitalLoop {
             <div class="circuit-step-item ${state.circuitStep >= 4 ? 'is-active' : ''}" data-step="4">
               <div class="circuit-step-dot">4</div>
               <div>
-                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: #EDEFEF;">In-Cab Driver Safety Dashboard Updates</strong>
+                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: var(--text-primary);">In-Cab Driver Safety Dashboard Updates</strong>
                 <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
                   Driver interface transitions into dense fog radar mode; radar radius expands and audio alerts activate.
                 </p>
@@ -153,7 +153,7 @@ export class PhysicalDigitalLoop {
             <div class="circuit-step-item ${state.circuitStep >= 5 ? 'is-active' : ''}" data-step="5">
               <div class="circuit-step-dot">5</div>
               <div>
-                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: #EDEFEF;">Mine Control Room Dispatch Alert Logs</strong>
+                <strong style="font-family: var(--font-display); font-size: 0.88rem; color: var(--text-primary);">Mine Control Room Dispatch Alert Logs</strong>
                 <p style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
                   Central dispatcher tactical map flags Unit D-07 and broadcasts visibility advisory to approaching haulers.
                 </p>
