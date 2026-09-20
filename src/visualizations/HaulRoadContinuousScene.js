@@ -1,17 +1,17 @@
 /**
- * FOSAFE v2 Optimized 3D Mine Haul Road Continuous Scene
- * A 3D perspective journey down into an open-cast pit haul road.
+ * FOSAFE Mine Road Network Map & Autonomous Fleet Simulation
+ * Google Maps / Dispatch Map aesthetic with interconnected mine haul roads,
+ * autonomous dumpers/haulers moving along routes, simulating acceleration/deceleration,
+ * and automatic collision avoidance alerts in the background.
  *
- * Visual System:
- * - Genuine 3D perspective projection with camera depth and pitch
- * - Terraced pit elevation benches with depth contours
- * - 3D winding haul road with perspective width and dashed centerlines
- * - 3D 400-ton Haul Truck (CAT 797F // D-07) with dump body, cab, and forward headlights
- * - Forward LiDAR/radar sensor cone piercing into the fog
- * - Obstacle (Scout S-01) ahead with real-time 3D collision vector (08.4m ALERT)
- * - Dynamic 3D depth fog responsive to scroll progress & simulator scrubber
- * - High-performance single-pass rendering (no heavy offscreen canvas gradient loops)
- * - Seamless Dark Mode & Light Mode support
+ * Features:
+ * - Google Maps Night / Light aesthetic with distinct haul routes, ramps, and spurs
+ * - Mine topography: elevation benches, pit sectors, crusher stations, and hazard zones
+ * - Autonomous dumpers with realistic kinematic acceleration/deceleration
+ * - Intelligent proximity detection: automatic slowing, distance warning vectors,
+ *   and safety envelopes changing green -> amber -> red
+ * - Scroll-driven camera navigation focusing on blind curves during hazard stations
+ * - Lightweight, silky-smooth 60fps performance via MasterTicker
  */
 
 import { ticker } from '../lib/ticker.js';
@@ -25,43 +25,177 @@ export class HaulRoadContinuousScene {
     this.height = 0;
     this.dpr = 1;
 
-    // Theme
+    // Theme state
     this.theme = themeManager.getTheme() || 'dark';
 
-    // Scroll & parallax
-    this.scrollProgress = 0;
-    this.targetScrollProgress = 0;
+    // Camera view offset & zoom
+    this.camera = { x: 0, y: 0, targetX: 0, targetY: 0, zoom: 1.0, targetZoom: 1.0 };
     this.mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     this.hasPointerMoved = false;
 
-    // Fog state
+    // Scroll & Fog
+    this.scrollProgress = 0;
+    this.targetScrollProgress = 0;
     this.fogDensity = 0.20;
     this.manualFogOverride = null;
-    this.fogTime = 0;
 
-    // Primary Vehicle Telemetry (CAT 797F D-07)
-    this.truckProgress = 0.45; // Position along 3D road (0.0 to 1.0)
-    this.truckSpeed = 0.00035;
+    // Pulse animation timer
+    this.time = 0;
 
-    // Sensor pulse animation
-    this.sensorPulse = 0;
-
-    // 3D Road Waypoints in World Coordinates (x: lateral -200..200, y: depth 0..1000, z: elevation 0..180)
-    this.roadSpline3D = [
-      { x: -140, y: 80,   z: 160 }, // Upper bench ramp entry
-      { x: -70,  y: 280,  z: 130 },
-      { x: 50,   y: 480,  z: 95 },  // Mid ramp curve
-      { x: 130,  y: 680,  z: 60 },  // Lower hairpin
-      { x: 20,   y: 880,  z: 25 },  // Approach to pit floor
-      { x: -90,  y: 1040, z: 0 }    // Pit loading bench floor
+    // =========================================================================
+    // MINE ROAD NETWORK GRAPH (Google Maps style interconnected haul routes)
+    // Normalized coordinates (0..1000 x 0..700) mapped to screen space
+    // =========================================================================
+    this.routes = [
+      // Route 0: Main Haul Highway (Ramp 04: Bench 01 down to Pit Floor)
+      {
+        id: 'RAMP-04-MAIN',
+        name: 'MAIN HAUL RAMP 04 (8% GRADE)',
+        color: '#F59E0B',
+        width: 38,
+        points: [
+          { x: 120, y: 80 },
+          { x: 260, y: 150 },
+          { x: 420, y: 220 },
+          { x: 620, y: 270 },
+          { x: 740, y: 360 }, // Hairpin start
+          { x: 680, y: 460 }, // Hairpin apex (Hazard Blind Curve)
+          { x: 500, y: 500 },
+          { x: 340, y: 570 },
+          { x: 220, y: 640 }
+        ]
+      },
+      // Route 1: Crusher Spur (Branches from Highway at Junction J-2)
+      {
+        id: 'CRUSHER-SPUR',
+        name: 'PRIMARY CRUSHER ACCESS SPUR',
+        color: '#38BDF8',
+        width: 28,
+        points: [
+          { x: 420, y: 220 }, // Connected to Route 0 Junction
+          { x: 540, y: 130 },
+          { x: 720, y: 110 },
+          { x: 880, y: 130 }
+        ]
+      },
+      // Route 2: Pit Floor Loop & Shovel Loading Bench
+      {
+        id: 'PIT-FLOOR-LOOP',
+        name: 'PIT FLOOR LOADING SECTOR',
+        color: '#10B981',
+        width: 30,
+        points: [
+          { x: 220, y: 640 }, // Connected to Route 0 bottom
+          { x: 380, y: 660 },
+          { x: 560, y: 640 },
+          { x: 700, y: 590 },
+          { x: 780, y: 500 }
+        ]
+      },
+      // Route 3: Auxiliary Maintenance & Inspection Track
+      {
+        id: 'SERVICE-TRACK',
+        name: 'LIGHT VEHICLE SERVICE ROAD',
+        color: '#94A3B8',
+        width: 20,
+        points: [
+          { x: 120, y: 80 },
+          { x: 160, y: 260 },
+          { x: 240, y: 410 },
+          { x: 340, y: 570 }
+        ]
+      }
     ];
 
-    // Other Fleet Vehicles
+    // =========================================================================
+    // MAP POINTS OF INTEREST (Google Maps Style Pins & Labels)
+    // =========================================================================
+    this.pois = [
+      { x: 880, y: 130, label: 'PRIMARY ORE CRUSHER #01', sub: 'CAPACITY: 4,500 t/h' },
+      { x: 120, y: 80,  label: 'PIT ENTRY & WEIGHBRIDGE', sub: 'CHECKPOINT ALPHA' },
+      { x: 680, y: 460, label: 'HAIRPIN JUNCTION (BLIND CURVE)', sub: 'MAX 15 KM/H · FOG PRONE', isHazard: true },
+      { x: 700, y: 590, label: 'LOADING BENCH FLOOR #06', sub: 'EXCAVATOR L-04 ACTIVE' }
+    ];
+
+    // =========================================================================
+    // AUTONOMOUS FLEET VEHICLES (Simulating kinematics, accel & alerts)
+    // =========================================================================
     this.vehicles = [
-      { id: 'D-07', name: 'CAT 797F // D-07', type: '400t HAUL TRUCK', progress: 0.42, state: 'warning', color: '#F59E0B' },
-      { id: 'S-01', name: 'SCOUT JEEP // S-01', type: 'LIGHT VEHICLE', progress: 0.49, state: 'critical', color: '#EF4444' },
-      { id: 'D-12', name: 'KOMATSU 930E', type: '360t HAUL TRUCK', progress: 0.78, state: 'normal', color: '#10B981' },
-      { id: 'L-04', name: 'ELECTRIC SHOVEL', type: 'PIT SHOVEL', progress: 0.95, state: 'normal', color: '#64748B' }
+      {
+        id: 'D-07',
+        name: 'CAT 797F // D-07',
+        type: '400t DUMPER',
+        routeIndex: 0,
+        progress: 0.35,
+        speed: 28, // km/h
+        targetSpeed: 30,
+        accelState: '+1.2 m/s²',
+        state: 'normal', // 'normal' | 'warning' | 'critical'
+        iconColor: '#F59E0B',
+        size: 16,
+        safetyRadius: 28,
+        isPrimary: true
+      },
+      {
+        id: 'S-01',
+        name: 'SCOUT JEEP S-01',
+        type: 'SURVEY PICKUP',
+        routeIndex: 0,
+        progress: 0.44, // Ahead of D-07 on same route
+        speed: 16,
+        targetSpeed: 20,
+        accelState: '-0.5 m/s²',
+        state: 'warning',
+        iconColor: '#EF4444',
+        size: 11,
+        safetyRadius: 20,
+        isPrimary: false
+      },
+      {
+        id: 'D-12',
+        name: 'KOMATSU 930E',
+        type: '360t DUMPER',
+        routeIndex: 1, // Crusher spur
+        progress: 0.55,
+        speed: 24,
+        targetSpeed: 26,
+        accelState: '+0.8 m/s²',
+        state: 'normal',
+        iconColor: '#10B981',
+        size: 15,
+        safetyRadius: 26,
+        isPrimary: false
+      },
+      {
+        id: 'D-03',
+        name: 'BEML BH205E',
+        type: '240t DUMPER',
+        routeIndex: 2, // Pit floor loop
+        progress: 0.22,
+        speed: 22,
+        targetSpeed: 24,
+        accelState: '+0.4 m/s²',
+        state: 'normal',
+        iconColor: '#10B981',
+        size: 14,
+        safetyRadius: 24,
+        isPrimary: false
+      },
+      {
+        id: 'W-02',
+        name: 'WATER TANKER W-02',
+        type: 'DUST CONTROL',
+        routeIndex: 3, // Service track
+        progress: 0.65,
+        speed: 18,
+        targetSpeed: 18,
+        accelState: '0.0 m/s²',
+        state: 'normal',
+        iconColor: '#38BDF8',
+        size: 13,
+        safetyRadius: 22,
+        isPrimary: false
+      }
     ];
 
     this.init();
@@ -83,7 +217,7 @@ export class HaulRoadContinuousScene {
     this.resize();
 
     // Register with MasterTicker
-    ticker.add('fosafe_3d_haul_road', (delta, elapsed) => {
+    ticker.add('fosafe_map_network_scene', (delta, elapsed) => {
       this.update(delta, elapsed);
       this.render();
     });
@@ -94,7 +228,7 @@ export class HaulRoadContinuousScene {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
-    // Cap DPR cleanly to 1.25 for peak performance and sharp rendering
+    // High performance 1x to 1.25x DPR
     this.dpr = Math.min(window.devicePixelRatio || 1, 1.25);
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
@@ -106,7 +240,7 @@ export class HaulRoadContinuousScene {
     this.hasPointerMoved = true;
     const nx = (e.clientX / window.innerWidth) * 2 - 1;
     const ny = (e.clientY / window.innerHeight) * 2 - 1;
-    this.mouse.targetX = nx * 32;
+    this.mouse.targetX = nx * 35;
     this.mouse.targetY = ny * 20;
   }
 
@@ -119,82 +253,11 @@ export class HaulRoadContinuousScene {
     this.manualFogOverride = Math.max(0.05, Math.min(1.0, density));
   }
 
-  update(delta, elapsed) {
-    // Smooth lerp scroll progress
-    this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * 0.08;
-
-    // Smooth lerp pointer parallax
-    if (!this.hasPointerMoved) {
-      this.mouse.targetX = Math.sin(elapsed * 0.0006) * 14;
-      this.mouse.targetY = Math.cos(elapsed * 0.0005) * 8;
-    }
-    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
-    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
-
-    // Progress vehicles along 3D road
-    const dt = delta / 16.6;
-    this.vehicles[0].progress = (this.vehicles[0].progress + this.truckSpeed * dt) % 1.0;
-    this.vehicles[1].progress = (this.vehicles[1].progress + this.truckSpeed * dt * 0.9) % 1.0;
-    this.vehicles[2].progress = (this.vehicles[2].progress + 0.00025 * dt) % 1.0;
-
-    // Sensor pulse wave
-    this.sensorPulse = (this.sensorPulse + 0.02 * dt) % 1.0;
-    this.fogTime += delta * 0.0005;
-
-    // Calculate dynamic fog density from scroll if not manually overridden
-    if (this.manualFogOverride !== null) {
-      this.fogDensity += (this.manualFogOverride - this.fogDensity) * 0.1;
-    } else {
-      const sp = this.scrollProgress;
-      let targetFog = 0.18;
-      if (sp < 0.15) {
-        targetFog = 0.16 + (sp / 0.15) * 0.20; // Clear to morning haze
-      } else if (sp >= 0.15 && sp < 0.35) {
-        const t = (sp - 0.15) / 0.20;
-        targetFog = 0.36 + t * 0.52; // Climbs to 0.88 (Station 02: Dense Fog Collapse)
-      } else if (sp >= 0.35 && sp < 0.65) {
-        const t = (sp - 0.35) / 0.30;
-        targetFog = 0.88 - t * 0.38; // 0.50 (Sensor penetration active)
-      } else {
-        targetFog = 0.50 - (sp - 0.65) * 0.22; // 0.28 (Control room wide view)
-      }
-      this.fogDensity += (targetFog - this.fogDensity) * 0.06;
-    }
-  }
-
-  // 3D Perspective Projection: Projects (worldX, worldY, worldZ) -> 2D Screen (x, y)
-  project3D(wx, wy, wz) {
-    const w = this.width;
-    const h = this.height;
-
-    // Dynamic camera pitch & altitude based on scroll progress
-    // Station 1: Broad pit view, Station 2-5: Zoom in close to truck bumper, Station 6-10: Fleet overview
-    const sp = this.scrollProgress;
-    const zoom = 1.0 + Math.sin(Math.min(1.0, sp * 2.2) * Math.PI * 0.5) * 0.35;
-
-    const fov = 680 * zoom;
-    const camY = -120 + sp * 80;
-    const camZ = 520 - sp * 140;
-
-    const depth = wy + 260;
-    if (depth <= 10) return null;
-
-    const scale = fov / depth;
-    const isMobile = w < 768;
-    const centerX = isMobile ? (w * 0.5 + this.mouse.x) : (w * 0.58 + this.mouse.x);
-    const centerY = h * 0.42 + this.mouse.y;
-
-    const screenX = centerX + wx * scale;
-    const screenY = centerY + (camY - wz) * scale + (wy * 0.32);
-
-    return { x: screenX, y: screenY, scale };
-  }
-
-  // Catmull-Rom interpolation on 3D road waypoints
-  getPointOn3DRoad(t) {
-    const pts = this.roadSpline3D;
+  // Evaluate point and tangent angle along road route
+  getPointOnRoute(route, progress) {
+    const pts = route.points;
     const n = pts.length - 1;
-    const ct = Math.max(0, Math.min(0.999, t));
+    const ct = Math.max(0, Math.min(0.999, progress));
     const p = ct * n;
     const i = Math.floor(p);
     const u = p - i;
@@ -214,11 +277,133 @@ export class HaulRoadContinuousScene {
         (-a0 + 3 * a1 - 3 * a2 + a3) * u3);
     };
 
+    const x = interp(p0.x, p1.x, p2.x, p3.x);
+    const y = interp(p0.y, p1.y, p2.y, p3.y);
+
+    // Calculate heading angle
+    const deltaU = 0.01;
+    const nextU = Math.min(1.0, u + deltaU);
+    const nx = interp(p0.x, p1.x, p2.x, p3.x);
+    const ny = interp(p0.y, p1.y, p2.y, p3.y);
+    const dx = (p2.x - p1.x);
+    const dy = (p2.y - p1.y);
+    const heading = Math.atan2(dy, dx);
+
+    return { x, y, heading };
+  }
+
+  // Transform internal map coordinate (0..1000, 0..700) to current screen view
+  mapToScreen(mx, my) {
+    const w = this.width;
+    const h = this.height;
+
+    // Scale map to cover viewport gracefully
+    const mapScale = Math.max(w / 1100, h / 750) * this.camera.zoom;
+    const ox = (w - 1000 * mapScale) * 0.5 + this.camera.x + this.mouse.x;
+    const oy = (h - 700 * mapScale) * 0.5 + this.camera.y + this.mouse.y;
+
     return {
-      x: interp(p0.x, p1.x, p2.x, p3.x),
-      y: interp(p0.y, p1.y, p2.y, p3.y),
-      z: interp(p0.z, p1.z, p2.z, p3.z)
+      x: ox + mx * mapScale,
+      y: oy + my * mapScale,
+      scale: mapScale
     };
+  }
+
+  update(delta, elapsed) {
+    this.time += delta * 0.001;
+    const dt = delta / 16.6;
+
+    // Smooth scroll interpolation
+    this.scrollProgress += (this.targetScrollProgress - this.scrollProgress) * 0.08;
+
+    // Gentle mouse drift if no pointer
+    if (!this.hasPointerMoved) {
+      this.mouse.targetX = Math.sin(elapsed * 0.0005) * 16;
+      this.mouse.targetY = Math.cos(elapsed * 0.0004) * 10;
+    }
+    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
+    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
+
+    // Dynamic Camera Tracking (Scroll-driven focus)
+    // Station 1: Full map overview
+    // Station 2-4: Zoom in close to Ramp 04 Hairpin Curve where D-07 encounters Scout S-01
+    // Station 5+: Smooth overview of the whole mine fleet
+    const sp = this.scrollProgress;
+    if (sp > 0.12 && sp < 0.45) {
+      // Focus on Hairpin Hazard Zone (680, 460)
+      this.camera.targetZoom = 1.35;
+      this.camera.targetX = -120;
+      this.camera.targetY = -80;
+    } else {
+      this.camera.targetZoom = 1.0;
+      this.camera.targetX = 0;
+      this.camera.targetY = 0;
+    }
+
+    this.camera.zoom += (this.camera.targetZoom - this.camera.zoom) * 0.06;
+    this.camera.x += (this.camera.targetX - this.camera.x) * 0.06;
+    this.camera.y += (this.camera.targetY - this.camera.y) * 0.06;
+
+    // =========================================================================
+    // AUTONOMOUS KINEMATICS & PROXIMITY COLLISION AVOIDANCE SIMULATION
+    // =========================================================================
+    const d07 = this.vehicles[0];
+    const s01 = this.vehicles[1];
+
+    // Calculate progress distance between D-07 and S-01 on Route 0
+    let distProgress = s01.progress - d07.progress;
+    if (distProgress < 0) distProgress += 1.0;
+
+    // Proximity threshold (~8.4 meters equivalent in map scale)
+    const isProximityAlert = distProgress > 0.01 && distProgress < 0.14;
+
+    if (isProximityAlert) {
+      // Automatic Deceleration / Emergency Braking
+      d07.state = 'critical';
+      d07.targetSpeed = 12; // Slows down automatically
+      d07.accelState = 'DECEL: -3.8 m/s² [BRAKING]';
+      d07.safetyRadius = 38;
+
+      s01.state = 'critical';
+      s01.targetSpeed = 16;
+      s01.accelState = 'DECEL: -1.2 m/s²';
+    } else {
+      // Normal Cruising & Acceleration
+      d07.state = 'normal';
+      d07.targetSpeed = 30;
+      d07.accelState = 'ACCEL: +1.8 m/s² [CLEAR]';
+      d07.safetyRadius = 26;
+
+      s01.state = 'warning';
+      s01.targetSpeed = 22;
+      s01.accelState = 'CRUISING: 22 km/h';
+    }
+
+    // Update vehicle velocities & movement along road graph
+    this.vehicles.forEach(v => {
+      // Lerp current speed to target speed
+      v.speed += (v.targetSpeed - v.speed) * 0.04;
+
+      // Distance step along route
+      const routeStep = (v.speed / 3600) * 0.065 * dt;
+      v.progress = (v.progress + routeStep) % 1.0;
+    });
+
+    // Atmospheric Fog density calculation
+    if (this.manualFogOverride !== null) {
+      this.fogDensity += (this.manualFogOverride - this.fogDensity) * 0.1;
+    } else {
+      let targetFog = 0.18;
+      if (sp < 0.15) {
+        targetFog = 0.16 + (sp / 0.15) * 0.22;
+      } else if (sp >= 0.15 && sp < 0.40) {
+        const t = (sp - 0.15) / 0.25;
+        targetFog = 0.38 + t * 0.50; // Climbs to 0.88 in Station 02
+      } else {
+        targetFog = 0.88 - (sp - 0.40) * 0.45; // Relaxes to ~0.35 in control room
+      }
+      this.fogDensity += (targetFog - this.fogDensity) * 0.06;
+    }
   }
 
   render() {
@@ -229,347 +414,339 @@ export class HaulRoadContinuousScene {
 
     const isLight = this.theme === 'light';
 
-    // 1. Clear background
-    ctx.fillStyle = isLight ? '#F8FAFC' : '#07090D';
+    // 1. Google Maps Base Map Canvas Fill
+    ctx.fillStyle = isLight ? '#F1F5F9' : '#080C14';
     ctx.fillRect(0, 0, w, h);
 
-    // 2. Draw 3D Terraced Pit Benches & Contours
-    this.draw3DPitBenches(ctx, isLight);
+    // 2. Draw Topographical Bench Terrain Polygons
+    this.drawTerrainBenches(ctx, isLight);
 
-    // 3. Draw 3D Mine Haul Road (Surface, Berms, Dashed Centerlines)
-    this.draw3DHaulRoad(ctx, isLight);
+    // 3. Draw Road Network (Google Maps Multi-Layer Highway Style)
+    this.drawRoadNetwork(ctx, isLight);
 
-    // 4. Draw Vehicles in 3D Perspective (CAT 797F, Scout, Sensors & Beams)
-    this.draw3DFleetUnits(ctx, isLight);
+    // 4. Draw Hazard Geofence Zones (Blind Hairpin Alert Perimeter)
+    this.drawHazardGeofences(ctx, isLight);
 
-    // 5. Draw Atmospheric 3D Depth Fog (Single-pass, high performance)
-    this.draw3DDepthFog(ctx, w, h, isLight);
+    // 5. Draw Autonomous Dumpers, Heading Icons & Acceleration HUDs
+    this.drawAutonomousFleet(ctx, isLight);
 
-    // 6. Draw Ambient Survey Scale & Grid HUD
-    this.drawSurveyHud(ctx, w, h, isLight);
+    // 6. Draw Map Labels & Points of Interest (POIs)
+    this.drawMapPOIs(ctx, isLight);
+
+    // 7. Draw Atmospheric Weather Fog Overlay
+    this.drawFogOverlay(ctx, w, h, isLight);
+
+    // 8. Draw Google Maps Style Technical Corner HUD
+    this.drawMapControlsHUD(ctx, w, h, isLight);
   }
 
-  draw3DPitBenches(ctx, isLight) {
+  // Draw Terraced Pit Contours & Terrain Polygons (Google Maps terrain style)
+  drawTerrainBenches(ctx, isLight) {
     ctx.save();
     ctx.lineWidth = 1;
 
-    // 4 Terraced Contours along the pit slopes
-    const benches = [
-      { z: 160, label: 'BENCH 01 // +260m' },
-      { z: 110, label: 'BENCH 02 // +220m' },
-      { z: 60,  label: 'BENCH 03 // +180m' },
-      { z: 15,  label: 'PIT FLOOR // +140m' }
+    // Bench contour layers
+    const contours = [
+      { y: 150, label: 'BENCH 01 // +260m', color: isLight ? 'rgba(226, 232, 240, 0.6)' : 'rgba(15, 23, 38, 0.4)' },
+      { y: 280, label: 'BENCH 02 // +220m', color: isLight ? 'rgba(219, 228, 238, 0.5)' : 'rgba(13, 20, 33, 0.4)' },
+      { y: 440, label: 'BENCH 03 // +180m', color: isLight ? 'rgba(210, 220, 232, 0.4)' : 'rgba(11, 17, 28, 0.4)' },
+      { y: 580, label: 'PIT FLOOR // +140m', color: isLight ? 'rgba(203, 213, 225, 0.4)' : 'rgba(9, 14, 24, 0.4)' }
     ];
 
-    benches.forEach(b => {
+    contours.forEach(c => {
+      const pLeft = this.mapToScreen(0, c.y);
+      const pRight = this.mapToScreen(1000, c.y);
+
       ctx.beginPath();
+      ctx.moveTo(pLeft.x, pLeft.y);
+      ctx.lineTo(pRight.x, pRight.y);
       ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.08)' : 'rgba(255, 255, 255, 0.05)';
       ctx.setLineDash([4, 6]);
-
-      let first = true;
-      for (let x = -280; x <= 280; x += 40) {
-        const p = this.project3D(x, 480 + (b.z * 1.8), b.z);
-        if (p) {
-          if (first) { ctx.moveTo(p.x, p.y); first = false; }
-          else ctx.lineTo(p.x, p.y);
-        }
-      }
       ctx.stroke();
 
-      // Bench label tag on leftmost projected point
-      const tagP = this.project3D(-240, 480 + (b.z * 1.8), b.z);
-      if (tagP) {
-        ctx.font = '8.5px "JetBrains Mono", monospace';
-        ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.55)' : 'rgba(148, 163, 184, 0.35)';
-        ctx.fillText(b.label, tagP.x + 6, tagP.y - 4);
-      }
+      // Bench Elevation Readout
+      ctx.font = '8.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.45)' : 'rgba(148, 163, 184, 0.35)';
+      ctx.fillText(c.label, pLeft.x + 20, pLeft.y - 4);
     });
 
     ctx.restore();
   }
 
-  draw3DHaulRoad(ctx, isLight) {
-    const steps = 48;
-    const baseHalfWidth = 26; // meters
+  // Draw Interconnected Road Network (Google Maps styling: Casing + Inner Surface + Centerline)
+  drawRoadNetwork(ctx, isLight) {
+    this.routes.forEach(route => {
+      const screenPts = route.points.map(pt => this.mapToScreen(pt.x, pt.y));
+      if (screenPts.length < 2) return;
 
-    const leftPts = [];
-    const rightPts = [];
-    const centerPts = [];
+      const scale = screenPts[0].scale;
+      const roadWidth = route.width * scale;
 
-    for (let i = 0; i <= steps; i++) {
-      const t = i / steps;
-      const pt3d = this.getPointOn3DRoad(t);
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
 
-      // Tangent vector for road perpendicular width
-      const nextPt = this.getPointOn3DRoad(Math.min(1.0, t + 0.02));
-      const dx = nextPt.x - pt3d.x;
-      const dy = nextPt.y - pt3d.y;
-      const len = Math.sqrt(dx * dx + dy * dy) || 1;
-      const nx = -dy / len;
-      const ny = dx / len;
-
-      const pCenter = this.project3D(pt3d.x, pt3d.y, pt3d.z);
-      const pLeft = this.project3D(pt3d.x + nx * baseHalfWidth, pt3d.y + ny * baseHalfWidth, pt3d.z);
-      const pRight = this.project3D(pt3d.x - nx * baseHalfWidth, pt3d.y - ny * baseHalfWidth, pt3d.z);
-
-      if (pCenter && pLeft && pRight) {
-        centerPts.push(pCenter);
-        leftPts.push(pLeft);
-        rightPts.push(pRight);
+      // Layer 1: Road Casing / Border (Dark / Light contrast boundary)
+      ctx.beginPath();
+      ctx.moveTo(screenPts[0].x, screenPts[0].y);
+      for (let i = 1; i < screenPts.length; i++) {
+        ctx.lineTo(screenPts[i].x, screenPts[i].y);
       }
-    }
+      ctx.strokeStyle = isLight ? '#CBD5E1' : '#1E293B';
+      ctx.lineWidth = roadWidth + 4 * scale;
+      ctx.stroke();
 
-    if (leftPts.length < 2) return;
+      // Layer 2: Road Surface (Asphalt / Graded Gravel Surface)
+      ctx.beginPath();
+      ctx.moveTo(screenPts[0].x, screenPts[0].y);
+      for (let i = 1; i < screenPts.length; i++) {
+        ctx.lineTo(screenPts[i].x, screenPts[i].y);
+      }
+      ctx.strokeStyle = isLight ? '#FFFFFF' : '#111827';
+      ctx.lineWidth = roadWidth;
+      ctx.stroke();
+
+      // Layer 3: Dashed Road Centerline (Google Maps Navigation Style)
+      ctx.beginPath();
+      ctx.moveTo(screenPts[0].x, screenPts[0].y);
+      for (let i = 1; i < screenPts.length; i++) {
+        ctx.lineTo(screenPts[i].x, screenPts[i].y);
+      }
+      ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.55)' : 'rgba(245, 158, 11, 0.45)';
+      ctx.lineWidth = 1.5 * scale;
+      ctx.setLineDash([8 * scale, 8 * scale]);
+      ctx.stroke();
+
+      ctx.restore();
+    });
+  }
+
+  // Draw Hazard Geofences (Red/Amber hazard zone around blind hairpin turn)
+  drawHazardGeofences(ctx, isLight) {
+    const p1 = this.mapToScreen(580, 390);
+    const p2 = this.mapToScreen(780, 510);
+    const width = p2.x - p1.x;
+    const height = p2.y - p1.y;
 
     ctx.save();
-
-    // 1. Road Bed (Asphalt / Graded Aggregate Surface in 3D)
-    ctx.beginPath();
-    ctx.moveTo(leftPts[0].x, leftPts[0].y);
-    for (let i = 1; i < leftPts.length; i++) {
-      ctx.lineTo(leftPts[i].x, leftPts[i].y);
-    }
-    for (let i = rightPts.length - 1; i >= 0; i--) {
-      ctx.lineTo(rightPts[i].x, rightPts[i].y);
-    }
-    ctx.closePath();
-
-    ctx.fillStyle = isLight ? 'rgba(226, 232, 240, 0.85)' : 'rgba(15, 20, 30, 0.75)';
-    ctx.fill();
-
-    // 2. Road Berm Shoulders (3D safety barrier boundary)
-    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.25)' : 'rgba(255, 255, 255, 0.14)';
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = isLight ? 'rgba(220, 38, 38, 0.5)' : 'rgba(239, 68, 68, 0.55)';
     ctx.lineWidth = 1.2;
-    ctx.stroke();
 
-    // 3. Dashed Centerline with Perspective
+    ctx.fillStyle = isLight ? 'rgba(220, 38, 38, 0.04)' : 'rgba(239, 68, 68, 0.06)';
     ctx.beginPath();
-    ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.7)' : 'rgba(245, 158, 11, 0.45)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([8, 8]);
-    for (let i = 0; i < centerPts.length; i++) {
-      if (i === 0) ctx.moveTo(centerPts[i].x, centerPts[i].y);
-      else ctx.lineTo(centerPts[i].x, centerPts[i].y);
-    }
+    ctx.roundRect(p1.x, p1.y, width, height, 6);
+    ctx.fill();
     ctx.stroke();
 
+    // Hazard Area Label
+    ctx.font = '700 8.5px "JetBrains Mono", monospace';
+    ctx.fillStyle = isLight ? '#DC2626' : '#EF4444';
+    ctx.fillText('⚠ GEOFENCE HAZARD: BLIND HAIRPIN JUNCTION', p1.x + 8, p1.y + 14);
     ctx.restore();
   }
 
-  draw3DFleetUnits(ctx, isLight) {
-    const truck = this.vehicles[0]; // CAT 797F // D-07
-    const scout = this.vehicles[1]; // SCOUT JEEP // S-01
+  // Draw Autonomous Dumpers moving on the road network
+  drawAutonomousFleet(ctx, isLight) {
+    // 1. Proximity Collision Alert Vector between D-07 and S-01
+    const d07 = this.vehicles[0];
+    const s01 = this.vehicles[1];
+    const r0 = this.routes[0];
 
-    const truck3D = this.getPointOn3DRoad(truck.progress);
-    const scout3D = this.getPointOn3DRoad(scout.progress);
+    const posD07Map = this.getPointOnRoute(r0, d07.progress);
+    const posS01Map = this.getPointOnRoute(r0, s01.progress);
 
-    const ptTruck = this.project3D(truck3D.x, truck3D.y, truck3D.z);
-    const ptScout = this.project3D(scout3D.x, scout3D.y, scout3D.z);
+    const sD07 = this.mapToScreen(posD07Map.x, posD07Map.y);
+    const sS01 = this.mapToScreen(posS01Map.x, posS01Map.y);
 
-    if (!ptTruck || !ptScout) return;
+    const isAlert = d07.state === 'critical';
 
     ctx.save();
 
-    // 1. Distance Proximity Laser Vector between D-07 and S-01
+    // Distance laser line connecting the two trucks
     ctx.beginPath();
-    ctx.moveTo(ptTruck.x, ptTruck.y);
-    ctx.lineTo(ptScout.x, ptScout.y);
-    ctx.strokeStyle = isLight ? 'rgba(220, 38, 38, 0.7)' : 'rgba(239, 68, 68, 0.85)';
-    ctx.lineWidth = 1.8;
+    ctx.moveTo(sD07.x, sD07.y);
+    ctx.lineTo(sS01.x, sS01.y);
+    ctx.strokeStyle = isAlert ? '#EF4444' : 'rgba(245, 158, 11, 0.5)';
+    ctx.lineWidth = isAlert ? 2.0 : 1.2;
     ctx.setLineDash([4, 4]);
     ctx.stroke();
 
-    // Midpoint Distance Warning Badge
-    const midX = (ptTruck.x + ptScout.x) * 0.5;
-    const midY = (ptTruck.y + ptScout.y) * 0.5;
+    // Floating Proximity Badge
+    const midX = (sD07.x + sS01.x) * 0.5;
+    const midY = (sD07.y + sS01.y) * 0.5;
 
     ctx.fillStyle = isLight ? '#FFFFFF' : '#111622';
-    ctx.strokeStyle = isLight ? 'rgba(220, 38, 38, 0.6)' : 'rgba(239, 68, 68, 0.7)';
+    ctx.strokeStyle = isAlert ? '#EF4444' : 'var(--accent-amber)';
     ctx.setLineDash([]);
     ctx.beginPath();
-    ctx.roundRect(midX - 34, midY - 10, 68, 20, 4);
+    ctx.roundRect(midX - 44, midY - 11, 88, 22, 5);
     ctx.fill();
     ctx.stroke();
 
-    ctx.fillStyle = isLight ? '#DC2626' : '#EF4444';
-    ctx.font = '700 9px "JetBrains Mono", monospace';
+    ctx.fillStyle = isAlert ? '#DC2626' : (isLight ? '#B45309' : '#F59E0B');
+    ctx.font = '700 8.5px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('08.4m ALERT', midX, midY);
-
-    // 2. 3D LiDAR / Radar Forward Safety Cone (Piercing forward into fog)
-    const coneLen = 55 * ptTruck.scale;
-    const coneSpread = 32 * ptTruck.scale;
-    ctx.beginPath();
-    ctx.moveTo(ptTruck.x, ptTruck.y);
-    ctx.lineTo(ptTruck.x + coneSpread, ptTruck.y + coneLen);
-    ctx.lineTo(ptTruck.x - coneSpread, ptTruck.y + coneLen);
-    ctx.closePath();
-
-    const coneGrad = ctx.createLinearGradient(ptTruck.x, ptTruck.y, ptTruck.x, ptTruck.y + coneLen);
-    if (isLight) {
-      coneGrad.addColorStop(0, 'rgba(217, 119, 6, 0.25)');
-      coneGrad.addColorStop(1, 'rgba(217, 119, 6, 0.0)');
-    } else {
-      coneGrad.addColorStop(0, 'rgba(245, 158, 11, 0.35)');
-      coneGrad.addColorStop(1, 'rgba(245, 158, 11, 0.0)');
-    }
-    ctx.fillStyle = coneGrad;
-    ctx.fill();
-
-    // 3. Projected 3D Safety Buffer Ellipse on Road Surface
-    const bufferRadius = (28 + this.sensorPulse * 6) * ptTruck.scale;
-    ctx.beginPath();
-    ctx.ellipse(ptTruck.x, ptTruck.y, bufferRadius * 1.4, bufferRadius * 0.65, 0, 0, Math.PI * 2);
-    ctx.strokeStyle = isLight ? 'rgba(217, 119, 6, 0.45)' : 'rgba(245, 158, 11, 0.55)';
-    ctx.lineWidth = 1.2;
-    ctx.setLineDash([3, 3]);
-    ctx.stroke();
-
-    // 4. Render 3D 400-ton Haul Truck (CAT 797F)
-    this.render3DTruckModel(ctx, ptTruck.x, ptTruck.y, ptTruck.scale, isLight);
-
-    // 5. Render Forward Obstacle / Scout Unit (S-01)
-    this.render3DScoutModel(ctx, ptScout.x, ptScout.y, ptScout.scale, isLight);
+    ctx.fillText(isAlert ? '08.4m [BRAKE!]' : '18.2m [SAFE]', midX, midY);
 
     ctx.restore();
+
+    // 2. Draw Each Vehicle on Map
+    this.vehicles.forEach(v => {
+      const route = this.routes[v.routeIndex];
+      const posMap = this.getPointOnRoute(route, v.progress);
+      const scr = this.mapToScreen(posMap.x, posMap.y);
+      const scale = scr.scale;
+
+      ctx.save();
+      ctx.translate(scr.x, scr.y);
+
+      // A. Dynamic Safety Buffer Ring (Pulsing green/amber/red)
+      const radius = (v.safetyRadius + (v.state === 'critical' ? Math.sin(this.time * 8) * 4 : 0)) * scale;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = v.state === 'critical' ? 'rgba(239, 68, 68, 0.6)' :
+                        v.state === 'warning' ? 'rgba(245, 158, 11, 0.45)' :
+                        'rgba(16, 185, 129, 0.35)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 3]);
+      ctx.stroke();
+
+      // B. Vehicle Body (Google Maps Navigation Arrow / Dumper Icon)
+      ctx.rotate(posMap.heading);
+
+      // Vehicle Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.beginPath();
+      ctx.roundRect(-v.size * scale * 0.7, -v.size * scale * 0.5 + 2, v.size * scale * 1.4, v.size * scale, 3);
+      ctx.fill();
+
+      // Vehicle Outer Body
+      ctx.fillStyle = v.iconColor;
+      ctx.beginPath();
+      ctx.roundRect(-v.size * scale * 0.7, -v.size * scale * 0.5, v.size * scale * 1.4, v.size * scale, 3);
+      ctx.fill();
+
+      // Directional Heading Indicator (White arrow pointing along road)
+      ctx.fillStyle = '#080C14';
+      ctx.beginPath();
+      ctx.moveTo(v.size * scale * 0.6, 0);
+      ctx.lineTo(-v.size * scale * 0.2, -v.size * scale * 0.3);
+      ctx.lineTo(-v.size * scale * 0.2, v.size * scale * 0.3);
+      ctx.closePath();
+      ctx.fill();
+
+      // Reset rotation for text tags
+      ctx.rotate(-posMap.heading);
+
+      // C. Google Maps Navigation Tooltip / Readout
+      ctx.font = '700 8.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = isLight ? '#0F172A' : '#F8FAFC';
+      ctx.fillText(v.id, 14 * scale, -7 * scale);
+
+      // Acceleration & Speed Readout (Simulating speed & auto-braking)
+      ctx.font = '400 7.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = v.state === 'critical' ? '#EF4444' : (isLight ? '#64748B' : '#94A3B8');
+      ctx.fillText(`${v.speed.toFixed(0)} km/h · ${v.accelState}`, 14 * scale, 5 * scale);
+
+      ctx.restore();
+    });
   }
 
-  // Authentic 3D Isometric Haul Truck Model with dump body, cab & dual wheels
-  render3DTruckModel(ctx, x, y, scale, isLight) {
-    const s = Math.max(0.6, Math.min(1.4, scale * 1.8));
+  // Draw Map Points of Interest (Crusher, Entry Gate, Hairpin)
+  drawMapPOIs(ctx, isLight) {
+    this.pois.forEach(poi => {
+      const scr = this.mapToScreen(poi.x, poi.y);
+      const scale = scr.scale;
 
-    ctx.save();
-    ctx.translate(x, y);
+      ctx.save();
+      ctx.translate(scr.x, scr.y);
 
-    // Dual Rear Wheels
-    ctx.fillStyle = '#0F172A';
-    ctx.fillRect(-14 * s, -6 * s, 6 * s, 12 * s);
-    ctx.fillRect(8 * s, -6 * s, 6 * s, 12 * s);
+      // POI Pin Marker
+      ctx.fillStyle = poi.isHazard ? '#EF4444' : (isLight ? '#0284C7' : '#38BDF8');
+      ctx.beginPath();
+      ctx.arc(0, 0, 4 * scale, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Front Bumper / Radiator
-    ctx.fillStyle = isLight ? '#94A3B8' : '#334155';
-    ctx.fillRect(-10 * s, 4 * s, 20 * s, 5 * s);
+      ctx.strokeStyle = isLight ? '#FFFFFF' : '#0B0E14';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-    // Giant Yellow Dump Body (3D Perspective Facet)
-    ctx.fillStyle = '#F59E0B'; // Safety Amber Mining Truck Body
-    ctx.beginPath();
-    ctx.moveTo(-11 * s, -16 * s);
-    ctx.lineTo(11 * s, -16 * s);
-    ctx.lineTo(13 * s, 2 * s);
-    ctx.lineTo(-13 * s, 2 * s);
-    ctx.closePath();
-    ctx.fill();
+      // POI Label Card
+      ctx.font = '700 8.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = poi.isHazard ? (isLight ? '#DC2626' : '#EF4444') : (isLight ? '#0F172A' : '#F8FAFC');
+      ctx.fillText(poi.label, 8 * scale, -4 * scale);
 
-    // 3D Shadow Facet on Top Body
-    ctx.fillStyle = '#D97706';
-    ctx.fillRect(-9 * s, -14 * s, 18 * s, 12 * s);
+      ctx.font = '400 7.5px "JetBrains Mono", monospace';
+      ctx.fillStyle = isLight ? '#64748B' : '#94A3B8';
+      ctx.fillText(poi.sub, 8 * scale, 6 * scale);
 
-    // Operator Cab (Left side of truck, high above ground)
-    ctx.fillStyle = isLight ? '#0F172A' : '#1E293B';
-    ctx.fillRect(-10 * s, -2 * s, 7 * s, 7 * s);
-
-    // Tinted Windshield
-    ctx.fillStyle = '#38BDF8';
-    ctx.fillRect(-9 * s, 1 * s, 5 * s, 3 * s);
-
-    // Headlights (Twin forward-casting beams)
-    ctx.fillStyle = '#FEF08A';
-    ctx.beginPath();
-    ctx.arc(-7 * s, 7 * s, 1.8 * s, 0, Math.PI * 2);
-    ctx.arc(7 * s, 7 * s, 1.8 * s, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Monospace Unit Identification Tag
-    ctx.font = '700 9px "JetBrains Mono", monospace';
-    ctx.textAlign = 'left';
-    ctx.fillStyle = isLight ? '#0F172A' : '#F8FAFC';
-    ctx.fillText('CAT 797F // D-07', 16 * s, -4 * s);
-
-    ctx.font = '400 7.5px "JetBrains Mono", monospace';
-    ctx.fillStyle = isLight ? '#64748B' : '#94A3B8';
-    ctx.fillText('SPEED: 28 km/h · DESCENDING', 16 * s, 7 * s);
-
-    ctx.restore();
+      ctx.restore();
+    });
   }
 
-  // 3D Scout Jeep Obstacle Ahead
-  render3DScoutModel(ctx, x, y, scale, isLight) {
-    const s = Math.max(0.5, Math.min(1.2, scale * 1.5));
-
-    ctx.save();
-    ctx.translate(x, y);
-
-    // Red Hazard Chassis
-    ctx.fillStyle = '#EF4444';
-    ctx.beginPath();
-    ctx.roundRect(-6 * s, -8 * s, 12 * s, 16 * s, 2);
-    ctx.fill();
-
-    // Emergency Flashing Beacon on Roof
-    ctx.fillStyle = '#FFFFFF';
-    ctx.beginPath();
-    ctx.arc(0, 0, 2.5 * s, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Hazard Identification Tag
-    ctx.font = '700 8.5px "JetBrains Mono", monospace';
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#EF4444';
-    ctx.fillText('OBSTACLE // SCOUT S-01', 14 * s, -2 * s);
-
-    ctx.font = '400 7.5px "JetBrains Mono", monospace';
-    ctx.fillStyle = isLight ? '#64748B' : '#94A3B8';
-    ctx.fillText('UNSEEN IN FOG (DISTANCE: 8.4m)', 14 * s, 8 * s);
-
-    ctx.restore();
-  }
-
-  // High-performance single-pass atmospheric 3D depth fog
-  draw3DDepthFog(ctx, w, h, isLight) {
+  // Atmospheric Weather Fog Overlay (Controlled smoothly by scroll)
+  drawFogOverlay(ctx, w, h, isLight) {
     const density = this.fogDensity;
     if (density < 0.05) return;
 
     ctx.save();
-
-    // Horizon depth fog gradient (dense in distance, fading in immediate foreground)
     const fogGrad = ctx.createLinearGradient(0, 0, 0, h);
     if (isLight) {
-      fogGrad.addColorStop(0, `rgba(226, 232, 240, ${density * 0.92})`);
-      fogGrad.addColorStop(0.45, `rgba(241, 245, 249, ${density * 0.65})`);
-      fogGrad.addColorStop(0.85, `rgba(248, 250, 252, ${density * 0.20})`);
+      fogGrad.addColorStop(0, `rgba(241, 245, 249, ${density * 0.85})`);
+      fogGrad.addColorStop(0.5, `rgba(226, 232, 240, ${density * 0.60})`);
       fogGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
     } else {
-      fogGrad.addColorStop(0, `rgba(11, 14, 20, ${density * 0.95})`);
-      fogGrad.addColorStop(0.45, `rgba(15, 20, 28, ${density * 0.70})`);
-      fogGrad.addColorStop(0.85, `rgba(11, 14, 20, ${density * 0.25})`);
-      fogGrad.addColorStop(1, 'rgba(7, 9, 13, 0)');
+      fogGrad.addColorStop(0, `rgba(8, 12, 20, ${density * 0.90})`);
+      fogGrad.addColorStop(0.5, `rgba(11, 16, 26, ${density * 0.65})`);
+      fogGrad.addColorStop(1, 'rgba(8, 12, 20, 0)');
     }
-
     ctx.fillStyle = fogGrad;
     ctx.fillRect(0, 0, w, h);
-
     ctx.restore();
   }
 
-  drawSurveyHud(ctx, w, h, isLight) {
+  // Google Maps Style Scale & Coordinates HUD
+  drawMapControlsHUD(ctx, w, h, isLight) {
     ctx.save();
     ctx.font = '600 9px "JetBrains Mono", monospace';
-    ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.45)' : 'rgba(148, 163, 184, 0.35)';
+    ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.55)' : 'rgba(148, 163, 184, 0.4)';
 
     // Top-Left Coordinates
     ctx.textAlign = 'left';
-    ctx.fillText('3D HAUL ROAD PERSPECTIVE // RAMP 04 (8% GRADE)', 28, 36);
+    ctx.fillText('LIVE MINE ROAD NETWORK // SECTOR 04 CENTRAL PIT', 28, 36);
 
-    // Top-Right Pit Bench Tag
+    // Top-Right Status
     ctx.textAlign = 'right';
-    ctx.fillText('SECTOR 04 CENTRAL PIT // SENSORS ACTIVE', w - 28, 36);
+    ctx.fillText('AUTONOMOUS COLLISION ARBITRATION ACTIVE', w - 28, 36);
+
+    // Bottom-Left Scale Bar
+    const barX = 28;
+    const barY = h - 28;
+    const barW = 80;
+    ctx.strokeStyle = isLight ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(barX, barY);
+    ctx.lineTo(barX + barW, barY);
+    ctx.moveTo(barX, barY - 4);
+    ctx.lineTo(barX, barY + 4);
+    ctx.moveTo(barX + barW, barY - 4);
+    ctx.lineTo(barX + barW, barY + 4);
+    ctx.stroke();
+
+    ctx.textAlign = 'left';
+    ctx.fillText('100m SCALE', barX + barW + 8, barY + 3);
 
     ctx.restore();
   }
 
   destroy() {
-    ticker.remove('fosafe_3d_haul_road');
+    ticker.remove('fosafe_map_network_scene');
     window.removeEventListener('resize', this.handleResize);
     window.removeEventListener('mousemove', this.handleMouseMove);
     window.removeEventListener('scroll', this.handleScroll);
