@@ -144,11 +144,11 @@ export class ExplodedVehicleUnit {
             </defs>
 
             <!-- Background Grid -->
-            <rect width="680" height="440" fill="#080A0E" />
-            <rect width="680" height="440" fill="url(#diagGrid)" />
+            <rect width="680" height="440" rx="16" fill="var(--bg-inset)" />
+            <rect width="680" height="440" rx="16" fill="url(#diagGrid)" />
 
             <!-- Technical Coordinate Ticks -->
-            <g stroke="#232B38" stroke-width="1">
+            <g stroke="var(--line-structure)" stroke-width="1">
               <line x1="40" y1="20" x2="640" y2="20" />
               <line x1="40" y1="420" x2="640" y2="420" />
               <line x1="40" y1="20" x2="40" y2="420" />
@@ -174,69 +174,69 @@ export class ExplodedVehicleUnit {
             <!-- CENTER: ESP32 CORE ENCLOSURE -->
             <g class="sensor-svg-group is-active" data-sensor="ESP32" transform="translate(290, 170)" style="cursor: pointer;">
               <!-- Outer Rugged Heat-Sink Case -->
-              <rect x="0" y="0" width="100" height="100" rx="4" fill="#141822" stroke="#F59E0B" stroke-width="2" />
+              <rect x="0" y="0" width="100" height="100" rx="8" fill="var(--bg-surface)" stroke="#F59E0B" stroke-width="2" />
               <!-- Heat-sink fins -->
-              <line x1="12" y1="8" x2="88" y2="8" stroke="#252D3D" stroke-width="2" />
-              <line x1="12" y1="16" x2="88" y2="16" stroke="#252D3D" stroke-width="2" />
+              <line x1="12" y1="8" x2="88" y2="8" stroke="var(--line-structure)" stroke-width="2" />
+              <line x1="12" y1="16" x2="88" y2="16" stroke="var(--line-structure)" stroke-width="2" />
               <!-- MCU Die -->
-              <rect x="25" y="28" width="50" height="44" rx="2" fill="#0B0D12" stroke="#3D485C" stroke-width="1.5" />
+              <rect x="25" y="28" width="50" height="44" rx="4" fill="var(--bg-inset)" stroke="#3D485C" stroke-width="1.5" />
               <text x="50" y="47" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#F59E0B" text-anchor="middle">ESP32</text>
-              <text x="50" y="59" font-family="'JetBrains Mono', monospace" font-size="7" fill="#9AA6B8" text-anchor="middle">240MHz DUAL</text>
+              <text x="50" y="59" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)" text-anchor="middle">240MHz DUAL</text>
               <circle cx="50" cy="85" r="3" fill="#10B981" />
               <text x="50" y="96" font-family="'JetBrains Mono', monospace" font-size="6" fill="#10B981" text-anchor="middle">CORE ACTIVE</text>
             </g>
 
             <!-- SENSOR 1: GPS (TOP) -->
             <g class="sensor-svg-group" data-sensor="GPS" transform="translate(295, 45)" style="cursor: pointer;">
-              <rect x="0" y="0" width="90" height="45" rx="3" fill="#11151D" stroke="#3D485C" stroke-width="1.5" />
-              <rect x="6" y="6" width="24" height="24" rx="2" fill="#202735" stroke="#F59E0B" stroke-width="1" />
+              <rect x="0" y="0" width="90" height="45" rx="6" fill="var(--bg-surface)" stroke="var(--line-structure)" stroke-width="1.5" />
+              <rect x="6" y="6" width="24" height="24" rx="3" fill="var(--bg-inset)" stroke="#F59E0B" stroke-width="1" />
               <circle cx="18" cy="18" r="4" fill="#F59E0B" />
-              <text x="36" y="20" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EDEFEF">GPS / GNSS</text>
-              <text x="36" y="32" font-family="'JetBrains Mono', monospace" font-size="7" fill="#7E8899">NEO-6M 10Hz</text>
+              <text x="36" y="20" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="var(--text-primary)">GPS / GNSS</text>
+              <text x="36" y="32" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)">NEO-6M 10Hz</text>
             </g>
 
             <!-- SENSOR 2: ULTRASONIC (TOP RIGHT) -->
             <g class="sensor-svg-group" data-sensor="ULTRASONIC" transform="translate(510, 115)" style="cursor: pointer;">
-              <rect x="0" y="0" width="120" height="50" rx="3" fill="#11151D" stroke="#3D485C" stroke-width="1.5" />
+              <rect x="0" y="0" width="120" height="50" rx="6" fill="var(--bg-surface)" stroke="var(--line-structure)" stroke-width="1.5" />
               <!-- Dual transducer circular horns -->
-              <circle cx="25" cy="25" r="14" fill="#1E2533" stroke="#F59E0B" stroke-width="1.5" />
-              <circle cx="25" cy="25" r="6" fill="#0B0D12" />
-              <circle cx="60" cy="25" r="14" fill="#1E2533" stroke="#F59E0B" stroke-width="1.5" />
-              <circle cx="60" cy="25" r="6" fill="#0B0D12" />
-              <text x="82" y="24" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EDEFEF">SONAR</text>
-              <text x="82" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="#7E8899">40kHz</text>
+              <circle cx="25" cy="25" r="14" fill="var(--bg-inset)" stroke="#F59E0B" stroke-width="1.5" />
+              <circle cx="25" cy="25" r="6" fill="var(--bg-surface)" />
+              <circle cx="60" cy="25" r="14" fill="var(--bg-inset)" stroke="#F59E0B" stroke-width="1.5" />
+              <circle cx="60" cy="25" r="6" fill="var(--bg-surface)" />
+              <text x="82" y="24" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="var(--text-primary)">SONAR</text>
+              <text x="82" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)">40kHz</text>
             </g>
 
             <!-- SENSOR 3: DHT11 (BOTTOM RIGHT) -->
             <g class="sensor-svg-group" data-sensor="DHT11" transform="translate(500, 270)" style="cursor: pointer;">
-              <rect x="0" y="0" width="125" height="50" rx="3" fill="#11151D" stroke="#3D485C" stroke-width="1.5" />
+              <rect x="0" y="0" width="125" height="50" rx="6" fill="var(--bg-surface)" stroke="var(--line-structure)" stroke-width="1.5" />
               <!-- Blue perforated plastic grid representation -->
-              <rect x="8" y="8" width="28" height="34" rx="2" fill="#1A2D4A" stroke="#3B82F6" stroke-width="1" />
+              <rect x="8" y="8" width="28" height="34" rx="4" fill="var(--bg-inset)" stroke="#3B82F6" stroke-width="1" />
               <line x1="14" y1="14" x2="30" y2="14" stroke="#60A5FA" stroke-width="1.5" />
               <line x1="14" y1="20" x2="30" y2="20" stroke="#60A5FA" stroke-width="1.5" />
               <line x1="14" y1="26" x2="30" y2="26" stroke="#60A5FA" stroke-width="1.5" />
               <line x1="14" y1="32" x2="30" y2="32" stroke="#60A5FA" stroke-width="1.5" />
-              <text x="44" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#EDEFEF">DHT11 ENV</text>
-              <text x="44" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="#7E8899">TEMP + HUMID</text>
+              <text x="44" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="var(--text-primary)">DHT11 ENV</text>
+              <text x="44" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)">TEMP + HUMID</text>
             </g>
 
             <!-- SENSOR 4: MPU6050 (BOTTOM) -->
             <g class="sensor-svg-group" data-sensor="MPU6050" transform="translate(290, 335)" style="cursor: pointer;">
-              <rect x="0" y="0" width="100" height="50" rx="3" fill="#11151D" stroke="#3D485C" stroke-width="1.5" />
-              <rect x="10" y="10" width="30" height="30" rx="1" fill="#0B0D12" stroke="#10B981" stroke-width="1" />
+              <rect x="0" y="0" width="100" height="50" rx="6" fill="var(--bg-surface)" stroke="var(--line-structure)" stroke-width="1.5" />
+              <rect x="10" y="10" width="30" height="30" rx="3" fill="var(--bg-inset)" stroke="#10B981" stroke-width="1" />
               <text x="25" y="27" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#10B981" text-anchor="middle">6-DOF</text>
-              <text x="48" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#EDEFEF">MPU6050</text>
-              <text x="48" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="#7E8899">GYRO/ACCEL</text>
+              <text x="48" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="var(--text-primary)">MPU6050</text>
+              <text x="48" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)">GYRO/ACCEL</text>
             </g>
 
             <!-- SENSOR 5: IR ARRAY (LEFT) -->
             <g class="sensor-svg-group" data-sensor="IR" transform="translate(90, 195)" style="cursor: pointer;">
-              <rect x="0" y="0" width="100" height="50" rx="3" fill="#11151D" stroke="#3D485C" stroke-width="1.5" />
+              <rect x="0" y="0" width="100" height="50" rx="6" fill="var(--bg-surface)" stroke="var(--line-structure)" stroke-width="1.5" />
               <!-- Transmitter & Receiver pair -->
-              <circle cx="20" cy="25" r="7" fill="#3B1218" stroke="#EF4444" stroke-width="1.5" />
-              <circle cx="38" cy="25" r="7" fill="#15201A" stroke="#10B981" stroke-width="1.5" />
-              <text x="52" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#EDEFEF">IR BERM</text>
-              <text x="52" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="#7E8899">38kHz OPTIC</text>
+              <circle cx="20" cy="25" r="7" fill="var(--bg-inset)" stroke="#EF4444" stroke-width="1.5" />
+              <circle cx="38" cy="25" r="7" fill="var(--bg-inset)" stroke="#10B981" stroke-width="1.5" />
+              <text x="52" y="24" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="var(--text-primary)">IR BERM</text>
+              <text x="52" y="36" font-family="'JetBrains Mono', monospace" font-size="7" fill="var(--text-muted)">38kHz OPTIC</text>
             </g>
           </svg>
         </div>
@@ -248,14 +248,14 @@ export class ExplodedVehicleUnit {
       </div>
 
       <!-- Quick Switcher Bar -->
-      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; align-items: center;">
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; align-items: center;">
         <span class="data-label" style="margin-right: 0.5rem;">EXPLORE SUBSYSTEM:</span>
-        <button class="telemetry-tag sensor-selector-pill is-active" data-sensor="ESP32">ESP32 MCU</button>
-        <button class="telemetry-tag sensor-selector-pill" data-sensor="GPS">GPS / GNSS</button>
-        <button class="telemetry-tag sensor-selector-pill" data-sensor="ULTRASONIC">ULTRASONIC</button>
-        <button class="telemetry-tag sensor-selector-pill" data-sensor="IR">IR BARRIER</button>
-        <button class="telemetry-tag sensor-selector-pill" data-sensor="MPU6050">MPU6050 IMU</button>
-        <button class="telemetry-tag sensor-selector-pill" data-sensor="DHT11">DHT11 AMBIENT</button>
+        <button class="telemetry-tag sensor-selector-pill is-active" data-sensor="ESP32" style="border-radius: var(--radius-capsule); cursor: pointer;">ESP32 MCU</button>
+        <button class="telemetry-tag sensor-selector-pill" data-sensor="GPS" style="border-radius: var(--radius-capsule); cursor: pointer;">GPS / GNSS</button>
+        <button class="telemetry-tag sensor-selector-pill" data-sensor="ULTRASONIC" style="border-radius: var(--radius-capsule); cursor: pointer;">ULTRASONIC</button>
+        <button class="telemetry-tag sensor-selector-pill" data-sensor="IR" style="border-radius: var(--radius-capsule); cursor: pointer;">IR BARRIER</button>
+        <button class="telemetry-tag sensor-selector-pill" data-sensor="MPU6050" style="border-radius: var(--radius-capsule); cursor: pointer;">MPU6050 IMU</button>
+        <button class="telemetry-tag sensor-selector-pill" data-sensor="DHT11" style="border-radius: var(--radius-capsule); cursor: pointer;">DHT11 AMBIENT</button>
       </div>
     `;
 

@@ -135,7 +135,7 @@ export class HowItWorksPage {
                   </div>
                 </div>
 
-                <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.85rem 1rem; border-radius: var(--radius-xs);">
+                <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem 1.25rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
                   <div class="survey-label" style="margin-bottom: 0.35rem;">BENCHMARK ASSUMPTIONS</div>
                   <div class="small-mono" style="color: var(--text-secondary); line-height: 1.6;">
                     • Gross Vehicle Weight: <strong style="color: var(--text-primary);">400 Tons</strong><br/>
@@ -146,7 +146,7 @@ export class HowItWorksPage {
               </div>
 
               <!-- Right: Calculated Results Card -->
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-xs); padding: 1.5rem;">
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-lg); padding: 1.75rem; box-shadow: var(--card-shadow);">
                 <span class="survey-label" style="color: var(--accent-amber);">REQUIRED STOPPING DISTANCE</span>
                 <div style="margin-top: 0.35rem; margin-bottom: 1rem;">
                   <span id="calc-total-stopping" style="font-family: var(--font-mono); font-size: 3.2rem; font-weight: 800; color: var(--text-primary); line-height: 1;">48.2 m</span>
@@ -165,7 +165,7 @@ export class HowItWorksPage {
                   </div>
                 </div>
 
-                <div style="margin-top: 1rem; background: var(--state-critical-bg); border: 1px solid var(--state-critical-border); padding: 0.75rem; border-radius: var(--radius-xs);">
+                <div style="margin-top: 1.25rem; background: var(--state-critical-bg); border: 1px solid var(--state-critical-border); padding: 0.85rem 1rem; border-radius: var(--radius-md);">
                   <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--state-critical); font-weight: 700; margin-bottom: 2px;">
                     FOG SIGHTLINE DEFICIT:
                   </div>

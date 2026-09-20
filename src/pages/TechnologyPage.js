@@ -45,7 +45,7 @@ export class TechnologyPage {
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--sp-6);">
               <!-- Core 0 -->
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-xs);">
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                   <strong style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent-amber);">CORE 0: TELEMATICS &amp; COMMS</strong>
                   <span class="survey-label" style="font-size: 0.65rem;">FREERTOS TASK</span>
@@ -62,7 +62,7 @@ export class TechnologyPage {
               </div>
 
               <!-- Core 1 -->
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-xs);">
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.5rem; border-radius: var(--radius-lg); box-shadow: var(--card-shadow);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                   <strong style="font-family: var(--font-mono); font-size: 0.9rem; color: var(--state-normal);">CORE 1: REAL-TIME SAFETY ENGINE</strong>
                   <span class="provenance-tag live" style="font-size: 0.65rem;">PRIORITY ISR</span>

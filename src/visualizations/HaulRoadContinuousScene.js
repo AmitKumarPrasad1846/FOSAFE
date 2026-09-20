@@ -255,7 +255,7 @@ export class HaulRoadContinuousScene {
     const isLight = this.theme === 'light';
 
     // 1. Clear with deep void graphite or crisp drafting paper base
-    ctx.fillStyle = isLight ? '#E8EEF5' : '#06080C';
+    ctx.fillStyle = isLight ? '#F1F5F9' : '#07090D';
     ctx.fillRect(0, 0, w, h);
 
     ctx.save();
@@ -454,12 +454,13 @@ export class HaulRoadContinuousScene {
       ctx.fill();
 
       // 4. Instrument Tag Annotation
-      ctx.font = '10px "JetBrains Mono", monospace';
-      ctx.fillStyle = '#F2F4F7';
+      const isLight = this.theme === 'light';
+      ctx.font = '600 10px "JetBrains Mono", monospace';
+      ctx.fillStyle = isLight ? '#0F172A' : '#F8FAFC';
       ctx.fillText(v.id, 16, -4);
 
-      ctx.font = '8px "JetBrains Mono", monospace';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.font = '500 8px "JetBrains Mono", monospace';
+      ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.65)';
       ctx.fillText(`${v.type.split(' ')[0]} · ${v.state.toUpperCase()}`, 16, 8);
 
       // 5. Distance vector line from D-07 to Obstacle
@@ -485,15 +486,15 @@ export class HaulRoadContinuousScene {
         ctx.arc(obsPos.x, obsPos.y, 6, 0, Math.PI * 2);
         ctx.fillStyle = '#EF4444';
         ctx.fill();
-        ctx.strokeStyle = '#F2F4F7';
+        ctx.strokeStyle = isLight ? '#0F172A' : '#F8FAFC';
         ctx.lineWidth = 1;
         ctx.stroke();
 
         // Obstacle HUD tag
-        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.font = '600 9px "JetBrains Mono", monospace';
         ctx.fillStyle = '#EF4444';
         ctx.fillText(`OBSTACLE: ${v.distToObstacle}m AHEAD`, obsPos.x + 10, obsPos.y - 6);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.75)' : 'rgba(255, 255, 255, 0.75)';
         ctx.fillText(`CLOSING: ${v.relativeSpeed}`, obsPos.x + 10, obsPos.y + 6);
 
         ctx.restore();
@@ -568,12 +569,12 @@ export class HaulRoadContinuousScene {
     const isLight = this.theme === 'light';
     ctx.save();
 
-    // Top Right Survey Coordinates & Compass Heading
+    // Top Left Survey Coordinates & Compass Heading
     ctx.font = '10px "JetBrains Mono", monospace';
-    ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.32)';
-    ctx.textAlign = 'right';
-    ctx.fillText('LAT 23°47\'12" N  LON 86°24\'38" E', w - 48, 80);
-    ctx.fillText('PIT SECTOR: BENCH-04C // RAMP-08', w - 48, 96);
+    ctx.fillStyle = isLight ? 'rgba(15, 23, 42, 0.65)' : 'rgba(255, 255, 255, 0.35)';
+    ctx.textAlign = 'left';
+    ctx.fillText('LAT 23°47\'12" N  LON 86°24\'38" E', 36, 36);
+    ctx.fillText('PIT SECTOR: BENCH-04C // RAMP-08', 36, 52);
 
     // Bottom Left Technical Scale Bar
     const barW = 100;

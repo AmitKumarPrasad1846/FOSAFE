@@ -154,7 +154,7 @@ export class SafetyLogicPipeline {
 
   render() {
     this.container.innerHTML = `
-      <div style="background: var(--bg-panel); border: 1px solid var(--line-structure); border-radius: var(--radius-xs); padding: var(--sp-6);">
+      <div style="background: var(--bg-panel); border: 1px solid var(--line-structure); border-radius: var(--radius-xl); padding: var(--sp-7); box-shadow: var(--panel-shadow); backdrop-filter: var(--glass-blur);">
         <!-- Top bar with trigger button & latency total -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; border-bottom: 1px solid var(--line-structure); padding-bottom: 1rem;">
           <div>
@@ -192,7 +192,7 @@ export class SafetyLogicPipeline {
         </div>
 
         <!-- Detail Inspector for active step -->
-        <div id="pipeline-step-detail" style="background: #0D1016; border: 1px solid var(--border-medium); border-radius: var(--radius-xs); padding: 1rem;">
+        <div id="pipeline-step-detail" style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--card-shadow);">
           <!-- Dynamically populated via updateView() -->
         </div>
       </div>

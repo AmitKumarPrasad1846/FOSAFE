@@ -216,7 +216,7 @@ export class HomePage {
                   </div>
                 </div>
 
-                <div class="small-mono" style="margin-top: var(--sp-4); padding: 0.5rem 0.75rem; background: var(--bg-inset); border: 1px solid var(--line-subtle);">
+                <div class="small-mono" style="margin-top: var(--sp-4); padding: 0.65rem 1rem; background: var(--bg-inset); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);">
                   DEFICIT ARBITRATION: Obstacle encountered 47.4m inside the unassisted stopping envelope.
                 </div>
               </div>

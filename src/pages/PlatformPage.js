@@ -156,7 +156,7 @@ export class PlatformPage {
           ${this.activeTab === 'simulator' ? `
             <div>
               <!-- SIMULATION WATERMARK NOTICE -->
-              <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1rem 1.25rem; border-radius: var(--radius-xs); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div style="background: var(--badge-sim-bg); border: 1px dashed var(--badge-sim-border); padding: 1.1rem 1.4rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; box-shadow: var(--card-shadow);">
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                   <span class="provenance-tag sim">SYNTHETIC ENVIRONMENT</span>
                   <div>
@@ -175,27 +175,27 @@ export class PlatformPage {
                     <span class="survey-label">SYNTHETIC ENGINE</span>
                     <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-top: 0.2rem;">Monte Carlo Traffic &amp; Fog Engine</h3>
                   </div>
-                  <button id="run-sim-batch-btn" class="btn-action-primary" style="font-size: 0.75rem; padding: 0.5rem 1.1rem;">
+                  <button id="run-sim-batch-btn" class="btn-action-primary" style="font-size: 0.75rem; padding: 0.55rem 1.25rem;">
                     ▶ RUN SCENARIO
                   </button>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-4); margin-bottom: 1.25rem;">
-                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem; border-radius: var(--radius-xs);">
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.2rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
                     <span class="survey-label">VIRTUAL VEHICLES</span>
                     <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.25rem;">
                       <span class="font-mono" style="font-size: 2rem; font-weight: 800; color: var(--accent-amber);">24</span>
                       <span class="small-mono" style="color: var(--text-muted);">UNITS</span>
                     </div>
                   </div>
-                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem; border-radius: var(--radius-xs);">
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.2rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
                     <span class="survey-label">MODELED FOG</span>
                     <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.25rem;">
                       <span class="font-mono" style="font-size: 2rem; font-weight: 800; color: var(--state-warning);">94.2</span>
                       <span class="small-mono" style="color: var(--text-muted);">%</span>
                     </div>
                   </div>
-                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem; border-radius: var(--radius-xs);">
+                  <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.2rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
                     <span class="survey-label">AVOIDED CONFLICTS</span>
                     <div style="display: flex; align-items: baseline; gap: 0.4rem; margin-top: 0.25rem;">
                       <span class="font-mono" style="font-size: 2rem; font-weight: 800; color: var(--state-normal);">100</span>
@@ -205,7 +205,7 @@ export class PlatformPage {
                 </div>
 
                 <div class="survey-label" style="margin-bottom: 0.35rem;">CONSOLE LOG:</div>
-                <pre id="sim-console-output" style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.85rem 1rem; border-radius: var(--radius-xs); font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; color: var(--accent-amber); height: 160px; overflow-y: auto; white-space: pre-wrap;">
+                <pre id="sim-console-output" style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem 1.25rem; border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; color: var(--accent-amber); height: 160px; overflow-y: auto; white-space: pre-wrap; box-shadow: var(--card-shadow);">
 [SIM-ENGINE] Ready. Click "RUN SCENARIO" to simulate a 24-vehicle fog convergence scenario.
                 </pre>
               </div>

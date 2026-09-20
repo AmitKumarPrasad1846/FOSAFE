@@ -56,7 +56,7 @@ export class AboutPage {
                 </p>
               </div>
 
-              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-xs); padding: 1.25rem;">
+              <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--card-shadow);">
                 <div class="survey-label" style="color: var(--accent-amber); margin-bottom: 0.75rem;">HAUL TRUCK VISIBILITY LIMITS (CAT 797F)</div>
                 <div style="display: flex; flex-direction: column; gap: 0.65rem; font-family: var(--font-mono); font-size: 0.78rem;">
                   <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--line-subtle); padding-bottom: 0.4rem;">

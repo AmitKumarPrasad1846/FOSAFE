@@ -1,12 +1,9 @@
 /* ==========================================================================
    FOSAFE v2 — Industrial Instrument Components
-   Survey linework, tactile buttons, progress rail, overlay navigation,
-   and rigorous provenance badges (Live vs Simulation).
+   Sculpted organic geometry, tactile pill buttons, progress rail,
+   floating capsule navigation, and rigorous provenance badges (Live vs Simulation).
    ========================================================================== */
 
-/* --------------------------------------------------------------------------
-   Top Instrument Navigation Header
-   -------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------
    Floating Right-Side Capsule Navbar (Desktop)
    -------------------------------------------------------------------------- */
@@ -17,15 +14,19 @@
   z-index: var(--z-nav);
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.65rem 0.35rem 0.85rem;
+  gap: 0.65rem;
+  padding: 0.4rem 0.75rem 0.4rem 0.95rem;
   background: var(--capsule-bg);
   border: 1px solid var(--capsule-border);
   border-radius: var(--radius-capsule);
   box-shadow: var(--capsule-shadow);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: transform var(--dur-base) ease, background var(--dur-base), border-color var(--dur-base);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: transform var(--dur-base) ease, background var(--dur-base), border-color var(--dur-base), box-shadow var(--dur-base);
+}
+
+.nav-capsule-desktop:hover {
+  border-color: var(--line-accent);
 }
 
 .capsule-brand-link {
@@ -39,8 +40,8 @@
 .capsule-brand-text {
   font-family: var(--font-display);
   font-size: 1.35rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   color: var(--text-primary);
 }
 
@@ -55,15 +56,15 @@
 
 .capsule-sep {
   width: 1px;
-  height: 16px;
+  height: 18px;
   background: var(--line-structure);
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
 .capsule-links-group {
   display: flex;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .capsule-nav-link {
@@ -72,14 +73,15 @@
   font-weight: 700;
   color: var(--text-secondary);
   text-decoration: none;
-  padding: 0.35rem 0.55rem;
+  padding: 0.38rem 0.65rem;
   border-radius: var(--radius-capsule);
-  transition: all var(--dur-fast);
+  transition: all var(--dur-fast) ease;
 }
 
 .capsule-nav-link:hover {
   color: var(--text-primary);
   background: var(--capsule-pill-active);
+  transform: translateY(-1px);
 }
 
 .capsule-nav-link.is-active {
@@ -100,42 +102,42 @@
   font-size: 0.6875rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all var(--dur-fast);
+  transition: all var(--dur-fast) ease;
 }
 
 .capsule-btn-icon:hover {
   border-color: var(--line-structure);
   color: var(--text-primary);
-  background: var(--steel-950);
-}
-
-.capsule-burger-lines {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 12px;
-}
-
-.capsule-burger-lines span {
-  height: 1.5px;
-  background: currentColor;
-  width: 100%;
+  background: var(--bg-elevated);
 }
 
 .theme-toggle-btn {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1;
-  padding: 0.35rem 0.5rem;
-  border-radius: 50%;
+  padding: 0.4rem 0.55rem;
+  border-radius: var(--radius-capsule);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: transform var(--dur-fast) ease, background var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--capsule-pill-active);
+  border-color: var(--line-structure);
+  transform: rotate(15deg) scale(1.1);
 }
 
 .capsule-cta-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.4rem 0.9rem;
-  background: var(--accent-amber);
+  padding: 0.45rem 1rem;
+  background: linear-gradient(135deg, var(--accent-amber), var(--accent-amber-deep));
   color: #000;
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -143,12 +145,15 @@
   letter-spacing: 0.08em;
   text-decoration: none;
   border-radius: var(--radius-capsule);
-  transition: transform 90ms ease, background var(--dur-fast);
+  box-shadow: 0 4px 14px -2px var(--accent-amber-glow);
+  transition: transform 90ms ease, box-shadow var(--dur-fast), filter var(--dur-fast);
 }
 
 .capsule-cta-btn:hover {
-  background: var(--accent-amber-hover);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px -2px var(--accent-amber-glow);
   color: #000;
+  transform: translateY(-1px);
 }
 
 .capsule-cta-btn:active {
@@ -171,8 +176,8 @@
   border: 1px solid var(--capsule-border);
   border-radius: var(--radius-capsule);
   box-shadow: var(--capsule-shadow);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   padding: 0.45rem 0.85rem;
   justify-content: space-between;
   align-items: center;
@@ -205,8 +210,8 @@
 .mobile-capsule-cta {
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.85rem;
-  background: var(--accent-amber);
+  padding: 0.4rem 0.95rem;
+  background: linear-gradient(135deg, var(--accent-amber), var(--accent-amber-deep));
   color: #000;
   font-weight: 800;
   font-size: 0.72rem;
@@ -249,11 +254,11 @@
 }
 
 .rail-pip {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--steel-700);
-  transition: all var(--dur-fast);
+  transition: all var(--dur-fast) ease;
 }
 
 .rail-label {
@@ -262,7 +267,7 @@
   letter-spacing: 0.05em;
   opacity: 0;
   transform: translateX(6px);
-  transition: all var(--dur-fast);
+  transition: all var(--dur-fast) ease;
   white-space: nowrap;
 }
 
@@ -273,8 +278,8 @@
 
 .rail-marker.is-active .rail-pip {
   background: var(--accent-amber);
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.7);
-  transform: scale(1.4);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  transform: scale(1.45);
 }
 
 .rail-marker.is-active .rail-label {
@@ -285,25 +290,21 @@
 }
 
 /* --------------------------------------------------------------------------
-   Full-Screen Navigation Index Overlay
-   -------------------------------------------------------------------------- */
-/* Index overlay removed in favor of direct streamlined capsule navigation */
-
-/* --------------------------------------------------------------------------
-   Rigorous Data Provenance Badges (Live vs Simulation)
+   Rigorous Data Provenance Badges (Live vs Simulation) - Sleek Pill Design
    -------------------------------------------------------------------------- */
 .provenance-tag {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 2px 7px;
+  gap: 0.45rem;
+  padding: 0.32rem 0.85rem;
   font-family: var(--font-mono);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-capsule);
   user-select: none;
+  box-shadow: var(--card-shadow);
 }
 
 .provenance-tag.live {
@@ -319,6 +320,7 @@
   height: 6px;
   border-radius: 50%;
   background: #10B981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
 }
 
 .provenance-tag.sim {
@@ -334,38 +336,35 @@
 }
 
 /* --------------------------------------------------------------------------
-   Asymmetric Station Panels & Technical Blueprints
+   Organic Sculptural Station Panels (Non-Boxy Architectural Cards)
    -------------------------------------------------------------------------- */
 .station-panel {
   position: relative;
   background: var(--bg-panel);
   border: 1px solid var(--line-structure);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-xl);
   padding: var(--sp-8);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: transform var(--dur-base) ease, border-color var(--dur-base) ease, box-shadow var(--dur-base) ease;
+  overflow: hidden;
 }
 
+.station-panel:hover {
+  border-color: var(--line-accent);
+}
+
+/* Ambient luminous top hairline highlight */
 .station-panel::before {
-  content: "+";
+  content: "";
   position: absolute;
-  top: -7px;
-  left: -5px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--crosshair-color);
-  line-height: 1;
-}
-
-.station-panel::after {
-  content: "+";
-  position: absolute;
-  bottom: -7px;
-  right: -5px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--crosshair-color);
-  line-height: 1;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-amber-glow), transparent);
+  pointer-events: none;
 }
 
 /* Instrument Technical Readout Box */
@@ -378,9 +377,16 @@
 
 .tech-readout-cell {
   background: var(--bg-inset);
-  border: 1px solid var(--line-subtle);
-  padding: var(--sp-4);
-  border-radius: var(--radius-none);
+  border: 1px solid var(--line-structure);
+  padding: var(--sp-5);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.tech-readout-cell:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
 }
 
 .tech-readout-cell .cell-label {
@@ -400,66 +406,75 @@
   color: var(--text-primary);
 }
 
-/* Action Buttons */
+/* --------------------------------------------------------------------------
+   Tactile Action Buttons (Non-Boxy Pill Styling)
+   -------------------------------------------------------------------------- */
 .btn-action-primary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--accent-amber);
+  padding: 0.78rem 1.6rem;
+  background: linear-gradient(135deg, var(--accent-amber), var(--accent-amber-deep));
   color: #000;
   font-family: var(--font-mono);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.78rem;
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
   border: 1px solid var(--accent-amber-hover);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-capsule);
+  box-shadow: 0 4px 18px -2px var(--accent-amber-glow);
   cursor: pointer;
-  transition: transform 90ms ease, background var(--dur-fast);
+  transition: transform 90ms ease, box-shadow var(--dur-fast), filter var(--dur-fast);
 }
 
 .btn-action-primary:hover {
-  background: #FBBF24;
+  filter: brightness(1.08);
+  box-shadow: 0 8px 24px -2px var(--accent-amber-glow);
+  transform: translateY(-2px);
 }
 
 .btn-action-primary:active {
-  transform: scale(0.97) translateY(1px);
+  transform: scale(0.97) translateY(0);
 }
 
 .btn-action-secondary {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--steel-950);
+  padding: 0.78rem 1.6rem;
+  background: var(--bg-surface);
   color: var(--text-primary);
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;
   border: 1px solid var(--line-structure);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-capsule);
+  box-shadow: var(--card-shadow);
   cursor: pointer;
-  transition: transform 90ms ease, border-color var(--dur-fast);
+  transition: transform 90ms ease, border-color var(--dur-fast), background-color var(--dur-fast);
 }
 
 .btn-action-secondary:hover {
-  border-color: var(--text-secondary);
-  color: #FFFFFF;
+  border-color: var(--accent-amber);
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  transform: translateY(-2px);
 }
 
 .btn-action-secondary:active {
-  transform: scale(0.97) translateY(1px);
+  transform: scale(0.97) translateY(0);
 }
 
 /* Keyboard focus rings */
 :focus-visible {
   outline: 2px solid var(--accent-amber);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
 }
 
 /* Responsive adjustments */

@@ -114,7 +114,7 @@ export class LoginPage {
             </div>
 
             <!-- Profile Overview Banner -->
-            <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-left: 3px solid ${current.color}; padding: 0.85rem 1rem; border-radius: var(--radius-xs); margin-bottom: 1.25rem;">
+            <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); border-left: 3px solid ${current.color}; padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; box-shadow: var(--card-shadow);">
               <div class="survey-label" style="color: ${current.color}; margin-bottom: 0.2rem;">${current.badge}</div>
               <h4 style="font-family: var(--font-display); font-size: 1.15rem; color: var(--text-primary); margin-bottom: 0.2rem;">${current.title}</h4>
               <p style="font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">${current.desc}</p>
@@ -124,17 +124,17 @@ export class LoginPage {
             <form id="portal-auth-form" style="display: flex; flex-direction: column; gap: 1rem;">
               <div>
                 <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">HARDWARE UNIT / NODE ID</label>
-                <input type="text" value="${current.unitDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-xs); cursor: not-allowed;" />
+                <input type="text" value="${current.unitDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-md); cursor: not-allowed;" />
               </div>
 
               <div>
                 <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">ASSIGNED SECTOR</label>
-                <input type="text" value="${current.zoneDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-xs); cursor: not-allowed;" />
+                <input type="text" value="${current.zoneDefault}" readonly style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.82rem; border-radius: var(--radius-md); cursor: not-allowed;" />
               </div>
 
               <div>
                 <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">OPERATOR PIN / RFID TOKEN</label>
-                <input type="password" value="882049" required style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-xs); letter-spacing: 0.2em;" />
+                <input type="password" value="882049" required style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md); letter-spacing: 0.2em;" />
               </div>
 
               <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.15rem;">

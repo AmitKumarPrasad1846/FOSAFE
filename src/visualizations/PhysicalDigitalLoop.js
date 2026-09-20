@@ -91,7 +91,7 @@ export class PhysicalDigitalLoop {
           </button>
 
           <!-- ESP32 Board Mockup with Status LED -->
-          <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.5rem 0.85rem; border-radius: var(--radius-xs); margin-top: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.6rem 0.95rem; border-radius: var(--radius-md); margin-top: 0.5rem; box-shadow: var(--card-shadow);">
             <div id="esp32-status-led" style="width: 12px; height: 12px; border-radius: 50%; background: #2B3342; transition: all 0.2s ease; border: 1px solid var(--line-strong);"></div>
             <div style="display: flex; flex-direction: column;">
               <span class="font-mono" style="font-size: 0.72rem; color: var(--text-primary); font-weight: 700;">GPIO 18 / STATUS LED</span>

@@ -137,7 +137,7 @@ export class CollaborationPage {
                   Submit mine specifications for engineering review of pit depth, fog severity, fleet composition, and radio constraints.
                 </p>
 
-                <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1rem; border-radius: var(--radius-xs);">
+                <div style="background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 1.25rem; border-radius: var(--radius-md); box-shadow: var(--card-shadow);">
                   <div class="survey-label" style="margin-bottom: 0.4rem;">VERIFICATION CRITERIA</div>
                   <div class="small-mono" style="color: var(--text-secondary); line-height: 1.6;">
                     ✓ Open-cast coal, iron-ore, limestone operations<br/>
@@ -152,13 +152,13 @@ export class CollaborationPage {
               <form id="trial-inquiry-form" style="display: flex; flex-direction: column; gap: 1rem;">
                 <div>
                   <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">MINE SITE OR OPERATOR NAME</label>
-                  <input type="text" id="input-mine-name" required placeholder="e.g. Western Pit Operations / Jharia Coalfield" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-xs);" />
+                  <input type="text" id="input-mine-name" required placeholder="e.g. Western Pit Operations / Jharia Coalfield" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                   <div>
                     <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">TARGET FLEET SIZE</label>
-                    <select id="input-fleet-size" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-xs);">
+                    <select id="input-fleet-size" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);">
                       <option value="4-10 Trucks">4 – 10 Trucks (Pilot)</option>
                       <option value="11-30 Trucks">11 – 30 Trucks</option>
                       <option value="30+ Trucks">30+ Trucks (Pit Wide)</option>
@@ -166,20 +166,20 @@ export class CollaborationPage {
                   </div>
                   <div>
                     <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">PRIMARY MINERAL</label>
-                    <input type="text" placeholder="e.g. Coal, Iron Ore" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-xs);" />
+                    <input type="text" placeholder="e.g. Coal, Iron Ore" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
                   </div>
                 </div>
 
                 <div>
                   <label class="survey-label" style="display: block; margin-bottom: 0.35rem;">ENGINEERING CONTACT</label>
-                  <input type="text" required placeholder="Name, Role, Email" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.65rem 0.85rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-xs);" />
+                  <input type="text" required placeholder="Name, Role, Email" style="width: 100%; background: var(--bg-inset); border: 1px solid var(--line-structure); padding: 0.75rem 1rem; color: var(--text-primary); font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md);" />
                 </div>
 
                 <button type="submit" class="btn-action-primary" style="margin-top: 0.25rem; justify-content: center;">
                   SUBMIT SPECIFICATION
                 </button>
 
-                <div id="trial-form-feedback" style="display: none; background: var(--state-normal-bg); border: 1px solid var(--state-normal-border); padding: 0.85rem; border-radius: var(--radius-xs); margin-top: 0.5rem;"></div>
+                <div id="trial-form-feedback" style="display: none; background: var(--state-normal-bg); border: 1px solid var(--state-normal-border); padding: 1rem; border-radius: var(--radius-md); margin-top: 0.5rem;"></div>
               </form>
             </div>
           </div>

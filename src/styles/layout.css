@@ -1,7 +1,7 @@
 /* ==========================================================================
    FOSAFE v2 — Single Continuous Scene Layout & Grid Architecture
    Persistent pinned canvas background with layered scroll-driven station panels.
-   Asymmetric editorial compositions, deliberate negative space.
+   Asymmetric editorial compositions, organic non-boxy curvature, deliberate negative space.
    ========================================================================== */
 
 /* App Container */
@@ -32,12 +32,13 @@
   display: block;
 }
 
-/* Subtle Vignette on Edges */
+/* Adaptive Theme Vignette on Edges (Light & Dark Mode compatible) */
 .scene-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(5, 6, 8, 0.75) 100%);
+  background: var(--scene-vignette);
   pointer-events: none;
+  transition: background 0.3s ease;
 }
 
 /* --------------------------------------------------------------------------
@@ -54,7 +55,7 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: calc(64px + var(--sp-8)) var(--sp-6) var(--sp-12);
+  padding: calc(72px + var(--sp-8)) var(--sp-6) var(--sp-16);
   box-sizing: border-box;
 }
 
@@ -68,7 +69,7 @@
 /* Asymmetrical Compositions */
 .station-split-left {
   display: grid;
-  grid-template-columns: minmax(360px, 580px) 1fr;
+  grid-template-columns: minmax(360px, 600px) 1fr;
   gap: var(--sp-8);
   align-items: center;
 }
@@ -104,8 +105,8 @@
 }
 
 .hero-sub-text {
-  font-size: clamp(1.1rem, 1.8vw, 1.35rem);
-  line-height: 1.5;
+  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+  line-height: 1.6;
   color: var(--text-secondary);
   margin: var(--sp-4) 0 var(--sp-6);
   max-width: 560px;
@@ -121,12 +122,20 @@
 .hero-readout-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-3);
+  gap: var(--sp-4);
   margin-top: var(--sp-8);
-  padding: var(--sp-4);
-  background: rgba(14, 18, 26, 0.9);
+  padding: var(--sp-5);
+  background: var(--bg-panel);
   border: 1px solid var(--line-structure);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.hero-readout-strip:hover {
+  border-color: var(--line-strong);
 }
 
 .hero-readout-col .col-label {
@@ -163,14 +172,21 @@
 }
 
 .comparison-card {
-  background: var(--bg-inset);
+  background: var(--bg-surface);
   border: 1px solid var(--line-structure);
-  padding: var(--sp-4);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-5);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--dur-base) ease, border-color var(--dur-base) ease;
+}
+
+.comparison-card:hover {
+  transform: translateY(-3px);
 }
 
 .comparison-card.critical {
   border-color: var(--state-critical-border);
-  background: rgba(239, 68, 68, 0.04);
+  background: var(--state-critical-bg);
 }
 
 /* --------------------------------------------------------------------------
@@ -179,7 +195,7 @@
 .approach-sequence-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--sp-4);
+  gap: var(--sp-5);
   margin-top: var(--sp-8);
 }
 
@@ -187,16 +203,27 @@
   position: relative;
   background: var(--bg-panel);
   border: 1px solid var(--line-structure);
+  border-radius: var(--radius-lg);
   padding: var(--sp-6);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 240px;
+  min-height: 220px;
+  box-shadow: var(--card-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: transform var(--dur-base) ease, border-color var(--dur-base) ease, box-shadow var(--dur-base) ease;
+}
+
+.approach-step-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-amber);
+  box-shadow: var(--hover-shadow);
 }
 
 .approach-step-card .step-idx {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--accent-amber);
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -204,15 +231,15 @@
 
 .approach-step-card .step-title {
   font-family: var(--font-display);
-  font-size: 2rem;
-  font-weight: 800;
-  color: #FFFFFF;
-  margin: var(--sp-3) 0 var(--sp-2);
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: var(--sp-2) 0 var(--sp-2);
 }
 
 .approach-step-card .step-desc {
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 0.85rem;
+  line-height: 1.55;
   color: var(--text-secondary);
 }
 
@@ -229,10 +256,21 @@
 .tier-card {
   background: var(--bg-panel);
   border: 1px solid var(--line-structure);
-  padding: var(--sp-6);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-7);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  transition: transform var(--dur-base) ease, border-color var(--dur-base) ease, box-shadow var(--dur-base) ease;
+}
+
+.tier-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-amber);
+  box-shadow: var(--hover-shadow);
 }
 
 .tier-card-header {
@@ -255,7 +293,15 @@
 .collab-spec-box {
   background: var(--bg-panel);
   border: 1px solid var(--line-structure);
-  padding: var(--sp-4);
+  border-radius: var(--radius-md);
+  padding: var(--sp-5);
+  box-shadow: var(--card-shadow);
+  transition: transform var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+
+.collab-spec-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-accent);
 }
 
 /* Global Footer */
